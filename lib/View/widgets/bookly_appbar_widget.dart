@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ClubeAppBar extends StatelessWidget implements PreferredSizeWidget {
+class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Color corDoTexto;
   final bool iconeMenu;
   final bool iconeCarrinho;
   final bool iconeSeta;
 
-  const ClubeAppBar({
+  const BooklyAppBar({
     super.key,
     required this.title,
     required this.iconeMenu,
@@ -23,7 +23,7 @@ class ClubeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFFF5F1EB),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       elevation: 0,
       centerTitle: false,
       titleSpacing: 0,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/login.dart';
+import 'package:projeto_mobile/config/light_theme.dart';
+import 'package:projeto_mobile/view/pages/clubes_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,12 +13,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeLight.lightTheme,
       title: 'BookLy',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6B8F6E)),
-        fontFamily: 'Roboto',
-      ),
       home: const LoginPage(),
     );
   }

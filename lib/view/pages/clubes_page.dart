@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/view/widgets/clube_appbar_widget.dart';
+import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/light_theme.dart';
+import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/view/widgets/rodape_navegacao_clube_widget.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
@@ -9,11 +11,15 @@ class ClubesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      //TODO: criar um widget para o AppBar - ok
-        appBar: const ClubeAppBar(title: 'Clubes do Livro'),
-      //TODO: criar um widget para o Drawer
-        drawer: Drawer(),
+      drawer: Drawer(),
+      appBar: BooklyAppBar(
+        title: 'Clubes do Livro',
+        corDoTexto: AppColors.clube,
+        iconeMenu: false,
+        iconeSeta: true,
+        iconeCarrinho: false,
+      ),
+
       body: Padding(
         //Ajeitando as bordas dos clubes
         padding: const EdgeInsets.all(16),
@@ -26,49 +32,74 @@ class ClubesPage extends StatelessWidget {
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Nome ou Tema',
-                      prefixIcon: const Icon(Icons.search),
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        fontSize: 16,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
                       filled: true,
-                      fillColor: const Color(0xFFF5F1EB),
+                      fillColor: Theme.of(context).colorScheme.secondary,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xFF8B7355), width: 1.0),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 1.0,
+                        ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xFF8B7355), width: 1.0),
+                        borderSide: BorderSide(
+                          color: Color.lerp(
+                            Theme.of(context).colorScheme.tertiary,
+                            Theme.of(context).colorScheme.primary,
+                            //tem que usar ! pq o lerp pode retornar null
+                            0.7,
+                          )!,
+                          width: 1.0,
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xFF8B7355), width: 1.0),
+                        borderSide: BorderSide(
+                          color: Color.lerp(
+                            Theme.of(context).colorScheme.tertiary,
+                            Theme.of(context).colorScheme.primary,
+                            0.7,
+                          )!,
+                          width: 1.0,
+                        ),
                       ),
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 10),
+                SizedBox(width: 10),
 
                 ElevatedButton.icon(
                   onPressed: () {},
-                  icon: const Icon(Icons.add),
-                  label: const Text("Criar Clube"),
-                  
+                  icon: Icon(Icons.add),
+                  label: Text("Criar Clube"),
+
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4A7FA5),
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.clube,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                )
+                ),
               ],
             ),
 
-            const SizedBox(height: 20),
+             SizedBox(height: 20),
 
             // Lista de clubes
             Expanded(
               child: ListView(
-                children: const [
+                children: [
                   ClubPesquisa(
                     title: "Fallen",
                     category: "Professor",
@@ -90,21 +121,21 @@ class ClubesPage extends StatelessWidget {
                     date: "",
                     //status: "Encerrado",
                   ),
-                                    ClubPesquisa(
+                  ClubPesquisa(
                     title: "Kscerato",
                     category: "Mira quente",
                     participants: 23,
                     date: "",
                     //status: "Encerrado",
                   ),
-                                    ClubPesquisa(
+                  ClubPesquisa(
                     title: "Yuri",
                     category: "Enterna Promessa",
                     participants: 23,
                     date: "",
                     //status: "Encerrado",
                   ),
-                                    ClubPesquisa(
+                  ClubPesquisa(
                     title: "Sidde",
                     category: "cabecao",
                     participants: 23,
@@ -113,13 +144,12 @@ class ClubesPage extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
 
-      //bottomNavigationBar: const ClubeRodape(),
-
+      bottomNavigationBar: ClubeRodape(),
     );
   }
 }
