@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/View/login.dart';
+import 'package:projeto_mobile/View/pages/login.dart';
 import 'package:projeto_mobile/config/light_theme.dart';
-import 'package:projeto_mobile/view/pages/clubes_page.dart';
 
 void main() {
   runApp(const MyApp());

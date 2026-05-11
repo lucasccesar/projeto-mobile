@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../widgets/bookly_logo.dart';
 import '../widgets/bookly_text_field.dart';
 import '../widgets/bookly_primary_button.dart';
+import 'recuperar_senha.dart';
+import 'cadastro.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -115,8 +117,20 @@ class _LoginCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _LinkButton(label: 'Criar conta', onPressed: () {}),
-              _LinkButton(label: 'Esqueci a senha', onPressed: () {}),
+              _LinkButton(
+                label: 'Criar conta',
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CriarContaPage()),
+                ),
+              ),
+              _LinkButton(
+                label: 'Esqueci a senha',
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RecuperarSenhaPage()),
+                ),
+              ),
             ],
           ),
         ],

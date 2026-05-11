@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/view/widgets/clube_mensagem.dart';
-import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/clube_mensagem.dart';
+import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 
 class ClubeMensagem extends StatelessWidget {
   const ClubeMensagem({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/view/login.dart';
-import 'package:projeto_mobile/widgets/bookly_logo.dart';
+import 'package:projeto_mobile/View/pages/login.dart';
+import 'package:projeto_mobile/View/widgets/bookly_logo.dart';
 
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({super.key});

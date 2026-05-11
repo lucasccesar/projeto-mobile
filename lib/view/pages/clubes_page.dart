@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/config/light_theme.dart';
-import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/view/widgets/rodape_navegacao_clube_widget.dart';
-import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/rodape_navegacao_clube_widget.dart';
+import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
 class ClubesPage extends StatelessWidget {
