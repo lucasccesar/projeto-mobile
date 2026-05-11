@@ -3,6 +3,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/config/light_theme.dart';
 import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/view/widgets/rodape_navegacao_clube_widget.dart';
+import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
 class ClubesPage extends StatelessWidget {
@@ -11,12 +12,12 @@ class ClubesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(),
+      drawer: SidebarWidget(),
       appBar: BooklyAppBar(
         title: 'Clubes do Livro',
         corDoTexto: AppColors.clube,
-        iconeMenu: false,
-        iconeSeta: true,
+        iconeMenu: true,
+        iconeSeta: false,
         iconeCarrinho: false,
       ),
 

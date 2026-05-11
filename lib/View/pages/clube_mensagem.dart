@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/view/widgets/clube_mensagem.dart';
+import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
 
 class ClubeMensagem extends StatelessWidget {
   const ClubeMensagem({super.key});
@@ -9,7 +10,7 @@ class ClubeMensagem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(),
+      drawer: SidebarWidget(),
       appBar: BooklyAppBar(
         title: 'Chat do Clube',
         corDoTexto: AppColors.clube,
@@ -40,7 +41,11 @@ class ClubeMensagem extends StatelessWidget {
           ),
         ),
 
-          //Spacer(),  
+          //Spacer(), 
+          Divider(
+            height: 1,
+            color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8),
+          ),
                  
           Container(
             width: double.infinity,
