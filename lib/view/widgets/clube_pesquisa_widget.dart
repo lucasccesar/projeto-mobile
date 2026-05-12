@@ -6,7 +6,7 @@ class ClubPesquisa extends StatelessWidget {
   final String category;
   final int participants;
   final String date;
-  //final String status;
+  final VoidCallback? onTap;
 
   const ClubPesquisa({
     super.key,
@@ -14,14 +14,14 @@ class ClubPesquisa extends StatelessWidget {
     required this.category,
     required this.participants,
     required this.date,
-    //required this.status,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     // inkwell da o efeito de toquezin
     return GestureDetector(
-      onTap: () => print('Molodas'),
+      onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(bottom: 16),
         padding: EdgeInsets.all(16),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/view/pages/clube_livro_anterior.dart';
-import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/view/widgets/clube_livro_anterior_proximo.dart';
-import 'package:projeto_mobile/view/widgets/clube_navegacao.dart';
-import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clube_livro_anterior.dart';
+import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/clube_livro_anterior_proximo.dart';
+import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
+import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 
 class ClubeLivroProximo extends StatelessWidget {
   const ClubeLivroProximo({super.key});
@@ -63,51 +64,61 @@ class ClubeLivroProximo extends StatelessWidget {
                 ClubeLivroAnteriorProximo(
                   anterior: false,
                   titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/03/2024",
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  titulo: "1984",
+                  autor: "George Orwell",
+                  data: "15/04/2024",
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  titulo: "Admirável Mundo Novo",
+                  autor: "Aldous Huxley",
+                  data: "15/05/2024",
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  titulo: "Cem Anos de Solidão",
+                  autor: "Gabriel García Márquez",
+                  data: "15/06/2024",
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  titulo: "Dom Casmurro",
+                  autor: "Machado de Assis",
+                  data: "15/07/2024",
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  titulo: "A Revolução dos Bichos",
+                  autor: "George Orwell",
+                  data: "15/08/2024",
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/03/2023",
+                  titulo: "O Pequeno Príncipe",
+                  autor: "Antoine de Saint-Exupéry",
+                  data: "15/09/2024",
                 ),
               ],
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BooklyRodape(selectedTab: NavTab.clubes),
+      bottomNavigationBar: BooklyRodape(
+        selectedTab: NavTab.clubes,
+        onTabChanged: (tab) {
+          if (tab == NavTab.catalogo) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            );
+          }
+        },
+      ),
     );
   }
 }

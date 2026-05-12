@@ -1,7 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../widgets/bookly_logo.dart';
 import '../widgets/bookly_text_field.dart';
 import '../widgets/bookly_primary_button.dart';
+import '../widgets/bookly_link_button.dart';
+import 'catalogo_page.dart';
 
 class CriarContaPage extends StatefulWidget {
   const CriarContaPage({super.key});
@@ -103,20 +105,18 @@ class _CriarContaPageState extends State<CriarContaPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      BooklyPrimaryButton(label: 'Criar Conta', onPressed: () {}),
+                      BooklyPrimaryButton(
+                        label: 'Criar Conta',
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CatalogoPage()),
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       Center(
-                        child: TextButton(
+                        child: BooklyLinkButton(
+                          label: 'Já tenho uma conta',
                           onPressed: () => Navigator.pop(context),
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: const Text(
-                            'Já tenho uma conta',
-                            style: TextStyle(color: Color(0xFF5A5A50), fontSize: 13),
-                          ),
                         ),
                       ),
                     ],

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/view/pages/clube_livro_proximo.dart';
-import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/view/widgets/clube_livro_anterior_proximo.dart';
-import 'package:projeto_mobile/view/widgets/clube_navegacao.dart';
-import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clube_livro_proximo.dart';
+import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/clube_livro_anterior_proximo.dart';
+import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
+import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 
 class ClubeLivroAnterior extends StatelessWidget {
   const ClubeLivroAnterior({super.key});
@@ -63,65 +64,75 @@ class ClubeLivroAnterior extends StatelessWidget {
                 ClubeLivroAnteriorProximo(
                   anterior: true,
                   titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkiin",
+                  autor: "J.R.R. Tolkien",
                   data: "15/03/2023",
                   nota: 4.6,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
                   titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
+                  autor: "J.R.R. Tolkien",
                   data: "15/04/2023",
                   nota: 4.2,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
-                  titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/04/2023",
-                  nota: 4.2,
+                  titulo: "A Sociedade do Anel",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/05/2023",
+                  nota: 4.5,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
-                  titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/04/2023",
-                  nota: 4.2,
+                  titulo: "As Duas Torres",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/06/2023",
+                  nota: 4.3,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
-                  titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/04/2023",
-                  nota: 4.2,
+                  titulo: "O Retorno do Rei",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/07/2023",
+                  nota: 4.7,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
-                  titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/04/2023",
-                  nota: 4.2,
+                  titulo: "O Silmarillion",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/08/2023",
+                  nota: 3.9,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
-                  titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/04/2023",
-                  nota: 4.2,
+                  titulo: "Contos Inacabados",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/09/2023",
+                  nota: 4.0,
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: true,
-                  titulo: "O Hobbit",
-                  autor: "J.R.R. Tolkiin",
-                  data: "15/04/2023",
-                  nota: 4.2,
+                  titulo: "Os Filhos de Húrin",
+                  autor: "J.R.R. Tolkien",
+                  data: "15/10/2023",
+                  nota: 4.1,
                 ),
               ],
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BooklyRodape(selectedTab: NavTab.clubes),
+      bottomNavigationBar: BooklyRodape(
+        selectedTab: NavTab.clubes,
+        onTabChanged: (tab) {
+          if (tab == NavTab.catalogo) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            );
+          }
+        },
+      ),
     );
   }
 }

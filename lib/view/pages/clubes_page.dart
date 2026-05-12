@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/config/light_theme.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clube_home.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
 class ClubesPage extends StatelessWidget {
@@ -106,42 +107,42 @@ class ClubesPage extends StatelessWidget {
                     category: "Professor",
                     participants: 12,
                     date: "14/04 - 29/04",
-                    //status: "Ativo",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
                   ),
                   ClubPesquisa(
                     title: "Molodoy",
                     category: "Furioso",
                     participants: 8,
                     date: "01/05 - 20/05",
-                    //status: "Ativo",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
                   ),
                   ClubPesquisa(
                     title: "Yekindar",
                     category: "Fraco?",
                     participants: 23,
                     date: "",
-                    //status: "Encerrado",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
                   ),
                   ClubPesquisa(
                     title: "Kscerato",
                     category: "Mira quente",
                     participants: 23,
                     date: "",
-                    //status: "Encerrado",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
                   ),
                   ClubPesquisa(
                     title: "Yuri",
                     category: "Enterna Promessa",
                     participants: 23,
                     date: "",
-                    //status: "Encerrado",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
                   ),
                   ClubPesquisa(
                     title: "Sidde",
                     category: "cabecao",
                     participants: 23,
                     date: "",
-                    //status: "Encerrado",
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
                   ),
                 ],
               ),
@@ -150,7 +151,17 @@ class ClubesPage extends StatelessWidget {
         ),
       ),
 
-      bottomNavigationBar: BooklyRodape(selectedTab: NavTab.clubes),
+      bottomNavigationBar: BooklyRodape(
+        selectedTab: NavTab.clubes,
+        onTabChanged: (tab) {
+          if (tab == NavTab.catalogo) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            );
+          }
+        },
+      ),
     );
   }
 }

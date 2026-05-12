@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/bookly_text_field.dart';
 import '../widgets/bookly_primary_button.dart';
+import '../widgets/bookly_link_button.dart';
+import 'email_enviado.dart';
 
 class RecuperarSenhaPage extends StatefulWidget {
   const RecuperarSenhaPage({super.key});
@@ -75,25 +77,19 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 24),
-                      BooklyPrimaryButton(label: 'Enviar Link', onPressed: () {}),
+                      BooklyPrimaryButton(
+                        label: 'Enviar Link',
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const EmailEnviadoPage()),
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       Center(
-                        child: TextButton.icon(
+                        child: BooklyLinkButton(
+                          label: 'Voltar ao login',
+                          icone: Icons.arrow_back,
                           onPressed: () => Navigator.pop(context),
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            size: 14,
-                            color: Color(0xFF5A5A50),
-                          ),
-                          label: const Text(
-                            'Voltar ao login',
-                            style: TextStyle(color: Color(0xFF5A5A50), fontSize: 13),
-                          ),
                         ),
                       ),
                     ],

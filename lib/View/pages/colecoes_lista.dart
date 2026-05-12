@@ -5,6 +5,8 @@ import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_card_widget.dart';
 import 'package:projeto_mobile/View/pages/colecao_home_page.dart';
 import 'package:projeto_mobile/View/pages/colecao_criar_page.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
 class ColecoesListaPage extends StatelessWidget {
@@ -132,7 +134,22 @@ class ColecoesListaPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const BooklyRodape(selectedTab: null),
+      bottomNavigationBar: BooklyRodape(
+        selectedTab: null,
+        onTabChanged: (tab) {
+          if (tab == NavTab.catalogo) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            );
+          } else if (tab == NavTab.clubes) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ClubesPage()),
+            );
+          }
+        },
+      ),
     );
   }
 }

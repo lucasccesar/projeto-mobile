@@ -4,8 +4,9 @@ enum NavTab { catalogo, clubes, leitura, favoritos, conta }
 
 class BooklyRodape extends StatefulWidget {
   final NavTab? selectedTab;
+  final void Function(NavTab)? onTabChanged;
 
-  const BooklyRodape({super.key, this.selectedTab});
+  const BooklyRodape({super.key, this.selectedTab, this.onTabChanged});
 
   @override
   State<BooklyRodape> createState() => _BooklyRodapeState();
@@ -74,7 +75,10 @@ class _BooklyRodapeState extends State<BooklyRodape> {
               final isSelected = item.tab == _selected;
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => setState(() => _selected = item.tab),
+                  onTap: () {
+                    setState(() => _selected = item.tab);
+                    widget.onTabChanged?.call(item.tab);
+                  },
                   behavior: HitTestBehavior.opaque,
                   child: _NavBarItem(item: item, isSelected: isSelected),
                 ),

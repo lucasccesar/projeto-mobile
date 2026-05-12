@@ -16,10 +16,8 @@ class AppColors {
 
   // Coleção
   static const Color colecao = Color(0xFFB8863A);
-  
-  // Fundo geral
-  //static const Color background = Color(0xFFF7F3EE);
 
-  // Texto principal
-  //static const Color textPrimary = Color(0xFF5A4633);
+  // Ações semânticas (usadas em múltiplas seções)
+  static const Color confirmar = Color(0xFF6B8F6E);
+  static const Color danger = Color(0xFFB94040);
 }

@@ -1,9 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../widgets/bookly_logo.dart';
 import '../widgets/bookly_text_field.dart';
 import '../widgets/bookly_primary_button.dart';
+import '../widgets/bookly_link_button.dart';
 import 'recuperar_senha.dart';
 import 'cadastro.dart';
+import 'catalogo_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -95,6 +97,8 @@ class _LoginCard extends StatelessWidget {
             hintText: 'seu@email.com',
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
+            fillColor: Colors.white,
+            showBorder: false,
           ),
           const SizedBox(height: 16),
           BooklyTextField(
@@ -102,6 +106,8 @@ class _LoginCard extends StatelessWidget {
             hintText: 'Senha',
             controller: senhaController,
             obscureText: !senhaVisivel,
+            fillColor: Colors.white,
+            showBorder: false,
             suffixIcon: IconButton(
               icon: Icon(
                 senhaVisivel ? Icons.visibility_off : Icons.visibility,
@@ -112,19 +118,25 @@ class _LoginCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          BooklyPrimaryButton(label: 'Entrar', onPressed: () {}),
+          BooklyPrimaryButton(
+            label: 'Entrar',
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            ),
+          ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _LinkButton(
+              BooklyLinkButton(
                 label: 'Criar conta',
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const CriarContaPage()),
                 ),
               ),
-              _LinkButton(
+              BooklyLinkButton(
                 label: 'Esqueci a senha',
                 onPressed: () => Navigator.push(
                   context,
@@ -134,29 +146,6 @@ class _LoginCard extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _LinkButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;
-
-  const _LinkButton({required this.label, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.zero,
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(color: Color(0xFF5A5A50), fontSize: 13),
       ),
     );
   }

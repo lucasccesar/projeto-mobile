@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clubes_page.dart';
+import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/widgets/bookly_logo.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -49,7 +52,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {},
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            ),
           ),
 
           ListTile(
@@ -66,7 +72,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {},
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ClubesPage()),
+            ),
           ),
 
           // TÍTULO DE SEÇÃO
@@ -116,7 +125,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {},
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
+            ),
           ),
 
           ListTile(
@@ -133,7 +145,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {},
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
+            ),
           ),
 
           Padding(

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/view/pages/clube_livro_anterior.dart';
-import 'package:projeto_mobile/view/pages/clube_livro_proximo.dart';
-import 'package:projeto_mobile/view/pages/clube_mensagem.dart';
-import 'package:projeto_mobile/view/widgets/clube_home_widget.dart';
-import 'package:projeto_mobile/view/widgets/clube_navegacao.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clube_livro_anterior.dart';
+import 'package:projeto_mobile/View/pages/clube_livro_proximo.dart';
+import 'package:projeto_mobile/View/pages/clube_mensagem.dart';
+import 'package:projeto_mobile/View/widgets/clube_home_widget.dart';
+import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
 
 
 class ClubeHome extends StatelessWidget {
@@ -226,7 +227,17 @@ class ClubeHome extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BooklyRodape(),
+      bottomNavigationBar: BooklyRodape(
+        selectedTab: NavTab.clubes,
+        onTabChanged: (tab) {
+          if (tab == NavTab.catalogo) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CatalogoPage()),
+            );
+          }
+        },
+      ),
     );
   }
 }
