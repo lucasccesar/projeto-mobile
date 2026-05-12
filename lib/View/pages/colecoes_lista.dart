@@ -3,6 +3,8 @@ import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_card_widget.dart';
+import 'package:projeto_mobile/View/pages/colecao_home_page.dart';
+import 'package:projeto_mobile/View/pages/colecao_criar_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
 class ColecoesListaPage extends StatelessWidget {
@@ -28,7 +30,13 @@ class ColecoesListaPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  // ← MODIFICADO: navega para ColecaoCriarPage
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ColecaoCriarPage()),
+                    );
+                  },
                   icon: const Icon(Icons.add, size: 16),
                   label: const Text('Nova Coleção'),
                   style: ElevatedButton.styleFrom(
@@ -59,7 +67,12 @@ class ColecoesListaPage extends StatelessWidget {
                     nome: 'Para Ler',
                     quantidadeLivros: 14,
                     corQuantidade: AppColors.clube,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ColecaoHomePage()),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -70,7 +83,12 @@ class ColecoesListaPage extends StatelessWidget {
                     nome: 'Lidos em 2025',
                     quantidadeLivros: 22,
                     corQuantidade: AppColors.catalogo,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ColecaoHomePage()),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -85,7 +103,12 @@ class ColecoesListaPage extends StatelessWidget {
                     nome: 'Favoritos',
                     quantidadeLivros: 7,
                     corQuantidade: AppColors.colecao,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ColecaoHomePage()),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -96,7 +119,12 @@ class ColecoesListaPage extends StatelessWidget {
                     nome: 'Lista de Compras',
                     quantidadeLivros: 5,
                     corQuantidade: AppColors.compra,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ColecaoHomePage()),
+                      );
+                    },
                   ),
                 ),
               ],

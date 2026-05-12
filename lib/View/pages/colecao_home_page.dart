@@ -15,8 +15,8 @@ class ColecaoHomePage extends StatelessWidget {
       appBar: BooklyAppBar(
         title: 'Livros Lidos em 2026',
         corDoTexto: AppColors.colecao,
-        iconeMenu: true,
-        iconeSeta: false,
+        iconeMenu: false,
+        iconeSeta: true,
         iconeCarrinho: false,
       ),
 
