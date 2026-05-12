@@ -4,7 +4,8 @@ import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_item_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
-import 'package:projeto_mobile/View/pages/colecao_editar_page.dart'; // ← ADICIONADO
+import 'package:projeto_mobile/View/pages/colecao_editar_page.dart';
+import 'package:projeto_mobile/View/pages/colecao_adicionar_livro_page.dart'; // ← ADICIONADO
 
 class ColecaoHomePage extends StatelessWidget {
   const ColecaoHomePage({super.key});
@@ -76,7 +77,15 @@ class ColecaoHomePage extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  // ← MODIFICADO: navega para ColecaoAdicionarLivroPage
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ColecaoAdicionarLivroPage(),
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.add, size: 12),
                   label: const Text('Adicionar'),
                   style: ElevatedButton.styleFrom(
@@ -96,7 +105,6 @@ class ColecaoHomePage extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton.icon(
-                  // ← MODIFICADO: navega para ColecaoEditarPage
                   onPressed: () {
                     Navigator.push(
                       context,
