@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/view/pages/clube_livro_anterior.dart';
 import 'package:projeto_mobile/view/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/view/widgets/clube_livro_anterior_proximo.dart';
 import 'package:projeto_mobile/view/widgets/clube_navegacao.dart';
-import 'package:projeto_mobile/view/widgets/rodape_navegacao_clube_widget.dart';
 import 'package:projeto_mobile/view/widgets/sidebar_widget.dart';
 
 class ClubeLivroProximo extends StatelessWidget {
@@ -107,7 +107,7 @@ class ClubeLivroProximo extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: ClubeRodape(),
+      bottomNavigationBar: BooklyRodape(selectedTab: NavTab.clubes),
     );
   }
 }

@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 
-// Enum para representar cada aba
 enum NavTab { catalogo, clubes, leitura, favoritos, conta }
 
-class ClubeRodape extends StatefulWidget {
-  const ClubeRodape({super.key});
+class BooklyRodape extends StatefulWidget {
+  final NavTab? selectedTab;
+
+  const BooklyRodape({super.key, this.selectedTab});
 
   @override
-  State<ClubeRodape> createState() => _ClubeRodapeState();
+  State<BooklyRodape> createState() => _BooklyRodapeState();
 }
 
-class _ClubeRodapeState extends State<ClubeRodape> {
-  NavTab _selected = NavTab.clubes;
+class _BooklyRodapeState extends State<BooklyRodape> {
+  NavTab? _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.selectedTab; // inicia com o que a página passar
+  }
 
   final List<_NavItem> _items = const [
     _NavItem(
       tab: NavTab.catalogo,
       icon: Icons.menu_book_outlined,
       label: 'Catálogo',
-      activeColor: Color(0xFF7A8C63), 
+      activeColor: Color(0xFF7A8C63),
     ),
     _NavItem(
       tab: NavTab.clubes,
@@ -30,19 +37,19 @@ class _ClubeRodapeState extends State<ClubeRodape> {
       tab: NavTab.leitura,
       icon: Icons.show_chart,
       label: 'Leitura',
-      activeColor: Color(0xFF3D9080), 
+      activeColor: Color(0xFF3D9080),
     ),
     _NavItem(
       tab: NavTab.favoritos,
       icon: Icons.favorite_border,
       label: 'Favoritos',
-      activeColor: Color(0xFFC0624E), 
+      activeColor: Color(0xFFC0624E),
     ),
     _NavItem(
       tab: NavTab.conta,
       icon: Icons.person_outline,
       label: 'Conta',
-      activeColor: Color(0xFF6B7280), 
+      activeColor: Color(0xFF6B7280),
     ),
   ];
 
@@ -69,10 +76,7 @@ class _ClubeRodapeState extends State<ClubeRodape> {
                 child: GestureDetector(
                   onTap: () => setState(() => _selected = item.tab),
                   behavior: HitTestBehavior.opaque,
-                  child: _NavBarItem(
-                    item: item,
-                    isSelected: isSelected,
-                  ),
+                  child: _NavBarItem(item: item, isSelected: isSelected),
                 ),
               );
             }).toList(),
@@ -100,7 +104,6 @@ class _NavBarItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Linha indicadora animada no topo
         AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
@@ -112,8 +115,6 @@ class _NavBarItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-
-        // Ícone com animação de cor
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           child: Icon(
@@ -124,8 +125,6 @@ class _NavBarItem extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 3),
-        
-        // Label com animação de cor
         AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: TextStyle(
