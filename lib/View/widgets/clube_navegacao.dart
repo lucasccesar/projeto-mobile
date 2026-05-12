@@ -5,11 +5,7 @@ class ClubeNavegacao extends StatefulWidget {
   final VoidCallback? onAnteriorTap;
   final VoidCallback? onProximoTap;
 
-  const ClubeNavegacao({
-    super.key,
-    this.onAnteriorTap,
-    this.onProximoTap,
-  });
+  const ClubeNavegacao({super.key, this.onAnteriorTap, this.onProximoTap});
 
   @override
   State<ClubeNavegacao> createState() => _ClubeNavegacaoState();
@@ -22,6 +18,9 @@ class _ClubeNavegacaoState extends State<ClubeNavegacao> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+
+        Divider(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.15), height: 1,),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

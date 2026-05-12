@@ -121,7 +121,7 @@ class ClubeLivroAnteriorProximo extends StatelessWidget {
             ),
           ),
 
-          // NOTA ou EM BREVE
+          // NOTA OU EM BREVE
           anterior
               ? Column(
                 //mainAxisAlignment: MainAxisAlignment.end,
