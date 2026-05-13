@@ -3,6 +3,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
+import 'package:projeto_mobile/View/pages/avaliar_livro_page.dart';
 
 class BookPage extends StatefulWidget {
   final Book livro;
@@ -24,6 +25,7 @@ class _BookPageState extends State<BookPage> {
   static const Color _shadow = Color(0xFF8B7355);
   static const Color _ecruWhite = Color(0xFFF5EFDB);
   static const Color _fuzzyWuzzy = Color(0xFFC06248);
+  static const Color _starActive = Color(0xFFD4A84B);
 
   void _abrirModalColecoes() {
     showModalBottomSheet(
@@ -42,6 +44,15 @@ class _BookPageState extends State<BookPage> {
       context,
       MaterialPageRoute(
         builder: (_) => EditarLivroPage(livro: widget.livro),
+      ),
+    );
+  }
+
+  void _abrirAvaliar() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AvaliarLivroPage(livro: widget.livro),
       ),
     );
   }
@@ -240,6 +251,37 @@ class _BookPageState extends State<BookPage> {
         const Text(
           '(128 avaliações)',
           style: TextStyle(fontSize: 11, color: _shadow),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: _abrirAvaliar,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+            decoration: BoxDecoration(
+              color: _starActive.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(99),
+              border: Border.all(
+                color: _starActive.withValues(alpha: 0.28),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.star_outline_rounded,
+                    size: 12, color: _starActive),
+                const SizedBox(width: 4),
+                Text(
+                  'Avaliar',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: _starActive.withValues(alpha: 0.85),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -511,8 +553,7 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                   Expanded(
                     child: Text(
                       widget.tituloLivro,
-                      style:
-                          const TextStyle(fontSize: 12, color: _shadow),
+                      style: const TextStyle(fontSize: 12, color: _shadow),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -534,9 +575,11 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                     ),
                   InkWell(
                     onTap: () => setState(() {
-                      selecionado
-                          ? _selecionados.remove(i)
-                          : _selecionados.add(i);
+                      if (selecionado) {
+                        _selecionados.remove(i);
+                      } else {
+                        _selecionados.add(i);
+                      }
                     }),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -547,11 +590,22 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                             width: 38,
                             height: 38,
                             decoration: BoxDecoration(
-                              color: _highland.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(9),
+                              color: selecionado
+                                  ? _highland.withValues(alpha: 0.12)
+                                  : _ecruWhite,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: selecionado
+                                    ? _highland.withValues(alpha: 0.3)
+                                    : _millbrook.withValues(alpha: 0.1),
+                                width: 1,
+                              ),
                             ),
-                            child: Icon(colecao.icone,
-                                size: 18, color: _highland),
+                            child: Icon(
+                              colecao.icone,
+                              size: 18,
+                              color: selecionado ? _highland : _shadow,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -560,10 +614,12 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                               children: [
                                 Text(
                                   colecao.nome,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: _millbrook,
+                                    color: selecionado
+                                        ? _highland
+                                        : _millbrook,
                                   ),
                                 ),
                                 Text(
@@ -579,14 +635,12 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                             width: 22,
                             height: 22,
                             decoration: BoxDecoration(
-                              color: selecionado
-                                  ? _highland
-                                  : Colors.transparent,
+                              color: selecionado ? _highland : Colors.transparent,
                               borderRadius: BorderRadius.circular(99),
                               border: Border.all(
                                 color: selecionado
                                     ? _highland
-                                    : _millbrook.withValues(alpha: 0.25),
+                                    : _millbrook.withValues(alpha: 0.2),
                                 width: 1.5,
                               ),
                             ),
@@ -604,57 +658,19 @@ class _ModalColecoesState extends State<_ModalColecoes> {
             }),
             const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add_rounded,
-                      size: 16, color: _highland),
-                  label: const Text(
-                    'Nova Coleção',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: _highland,
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 8),
-                    backgroundColor: _ecruWhite,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(99),
-                      side: BorderSide(
-                        color: _highland.withValues(alpha: 0.35),
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
               child: GestureDetector(
-                onTap:
-                    _selecionados.isEmpty ? null : () => Navigator.pop(context),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
+                onTap: () => Navigator.pop(context),
+                child: Container(
                   height: 44,
                   decoration: BoxDecoration(
-                    color: _selecionados.isEmpty
-                        ? _highland.withValues(alpha: 0.35)
-                        : _highland,
+                    color: _highland,
                     borderRadius: BorderRadius.circular(99),
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    _selecionados.isEmpty
-                        ? 'Selecione uma coleção'
-                        : 'Confirmar (${_selecionados.length})',
-                    style: const TextStyle(
+                  child: const Text(
+                    'Confirmar',
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
