@@ -3,6 +3,7 @@ import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/favoritos_page.dart';
+import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
 
 enum NavTab { catalogo, clubes, leitura, favoritos, conta }
 
@@ -67,14 +68,12 @@ class _BooklyRodapeState extends State<BooklyRodape> {
         page = const CatalogoPage();
       case NavTab.clubes:
         page = const ClubesPage();
-      /* case NavTab.leitura:
-        page = const StatusLeituraPage(); */
+      case NavTab.leitura:
+        page = const StatusLeituraPage();
       case NavTab.favoritos:
         page = const FavoritosPage();
       default:
         page = const CatalogoPage();
-      /* case NavTab.conta:
-        page = const ContaPage(); */
     }
 
     Navigator.pushReplacement(
