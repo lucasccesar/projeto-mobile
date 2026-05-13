@@ -16,6 +16,9 @@ class AppColors {
 
   // Coleção
   static const Color colecao = Color(0xFFB8863A);
+  
+  // Perfil
+  static const Color perfil = Color(0xFF5F6B7A);
 
   // Ações semânticas (usadas em múltiplas seções)
   static const Color confirmar = Color(0xFF6B8F6E);
