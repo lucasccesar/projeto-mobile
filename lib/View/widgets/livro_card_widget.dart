@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/View/pages/book_page.dart';
 
 class LivroCardWidget extends StatelessWidget {
   final Book livro;
@@ -10,7 +11,15 @@ class LivroCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ??
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BookPage(livro: livro),
+              ),
+            );
+          },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         padding: const EdgeInsets.all(14),
@@ -28,7 +37,6 @@ class LivroCardWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Capa placeholder
             Container(
               width: 56,
               height: 76,
@@ -43,7 +51,6 @@ class LivroCardWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 14),
-            // Informações do livro
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +73,8 @@ class LivroCardWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEEF1E8),
                       borderRadius: BorderRadius.circular(12),
@@ -83,7 +91,8 @@ class LivroCardWidget extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.star, size: 14, color: Color(0xFFFFC107)),
+                      const Icon(Icons.star,
+                          size: 14, color: Color(0xFFFFC107)),
                       const SizedBox(width: 3),
                       Text(
                         livro.rating.toString(),

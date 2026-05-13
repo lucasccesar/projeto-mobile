@@ -1,0 +1,680 @@
+import 'package:flutter/material.dart';
+import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+
+class BookPage extends StatefulWidget {
+  final Book livro;
+
+  const BookPage({super.key, required this.livro});
+
+  @override
+  State<BookPage> createState() => _BookPageState();
+}
+
+class _BookPageState extends State<BookPage> {
+  bool _favoritado = false;
+  String _statusLeitura = 'Lendo';
+
+  static const _statusOpcoes = ['Quero Ler', 'Lendo', 'Lido', 'Abandonado'];
+
+  static const Color _highland = Color(0xFF7A8C63);
+  static const Color _millbrook = Color(0xFF5A4631);
+  static const Color _shadow = Color(0xFF8B7355);
+  static const Color _ecruWhite = Color(0xFFF5EFDB);
+  static const Color _fuzzyWuzzy = Color(0xFFC06248);
+
+  void _abrirModalColecoes() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFFF5F0E8),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => _ModalColecoes(tituloLivro: widget.livro.title),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F0E8),
+      appBar: BooklyAppBar(
+        title: widget.livro.title,
+        corDoTexto: AppColors.catalogo,
+        iconeMenu: false,
+        iconeSeta: true,
+        iconeCarrinho: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 10, bottom: 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 16),
+            _buildSinopse(),
+            const SizedBox(height: 16),
+            _buildSeletorStatus(),
+            const SizedBox(height: 12),
+            _buildAcoesCarrinho(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Stack(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildCapa(),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.livro.title,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: _millbrook,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.livro.author,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: _shadow,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      _buildBadgeGenero(),
+                      const SizedBox(height: 6),
+                      _buildRating(),
+                      const SizedBox(height: 6),
+                      Text(
+                        'R\$${widget.livro.price.toStringAsFixed(2).replaceAll('.', ',')}',
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: _highland,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              _buildBotaoEditar(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCapa() {
+    return Stack(
+      children: [
+        Container(
+          width: 90,
+          height: 128,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                _highland.withValues(alpha: 0.145),
+                _highland.withValues(alpha: 0.314),
+              ],
+            ),
+            border: Border.all(
+              color: _highland.withValues(alpha: 0.19),
+              width: 1,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.menu_book_rounded,
+            color: _highland.withValues(alpha: 0.6),
+            size: 38,
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          child: Container(
+            width: 5,
+            height: 128,
+            decoration: BoxDecoration(
+              color: _highland.withValues(alpha: 0.25),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(7),
+                bottomLeft: Radius.circular(7),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBotaoEditar() {
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFEF8),
+        borderRadius: BorderRadius.circular(99),
+        border: Border.all(
+          color: _millbrook.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.edit_outlined, size: 13, color: _highland),
+          const SizedBox(width: 4),
+          const Text(
+            'Editar',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: _millbrook,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgeGenero() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      decoration: BoxDecoration(
+        color: _highland.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        widget.livro.genre,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: _highland,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRating() {
+    return Row(
+      children: [
+        const Icon(Icons.star_rounded, size: 13, color: _highland),
+        const SizedBox(width: 5),
+        Text(
+          widget.livro.rating.toString(),
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: _millbrook,
+          ),
+        ),
+        const SizedBox(width: 5),
+        const Text(
+          '(128 avaliações)',
+          style: TextStyle(
+            fontSize: 11,
+            color: _shadow,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSinopse() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: _ecruWhite,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _millbrook.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'SINOPSE',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: _millbrook,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _sinopsePara(widget.livro.title),
+            style: const TextStyle(
+              fontSize: 13,
+              color: _shadow,
+              height: 1.7,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeletorStatus() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.sync_rounded, size: 14, color: _highland),
+              const SizedBox(width: 6),
+              const Text(
+                'Status de Leitura',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF3D9080),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: _statusOpcoes.map((opcao) {
+              final selecionado = opcao == _statusLeitura;
+              final isLast = opcao == _statusOpcoes.last;
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: isLast ? 0 : 6),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _statusLeitura = opcao),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: selecionado ? _highland : _ecruWhite,
+                        borderRadius: BorderRadius.circular(99),
+                        border: Border.all(
+                          color: selecionado
+                              ? _highland
+                              : _millbrook.withValues(alpha: 0.18),
+                          width: 1,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        opcao,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: selecionado ? Colors.white : _shadow,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAcoesCarrinho() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  color: _highland,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.shopping_cart_outlined,
+                        size: 16, color: Colors.white),
+                    SizedBox(width: 7),
+                    Text(
+                      'Adicionar ao Carrinho',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          _buildBotaoIcone(
+            onTap: () => setState(() => _favoritado = !_favoritado),
+            icon: _favoritado
+                ? Icons.favorite_rounded
+                : Icons.favorite_border_rounded,
+            iconColor: _fuzzyWuzzy,
+          ),
+          const SizedBox(width: 8),
+          _buildBotaoIcone(
+            onTap: _abrirModalColecoes,
+            icon: Icons.bookmark_border_rounded,
+            iconColor: _highland,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBotaoIcone({
+    required VoidCallback onTap,
+    required IconData icon,
+    required Color iconColor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: _ecruWhite,
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(
+            color: _millbrook.withValues(alpha: 0.15),
+            width: 1,
+          ),
+        ),
+        child: Icon(icon, size: 18, color: iconColor),
+      ),
+    );
+  }
+
+  String _sinopsePara(String titulo) {
+    const mapa = {
+      'O Senhor dos Anéis':
+          'Uma épica aventura de fantasia que narra a jornada de Frodo Bolseiro para destruir o Um Anel e salvar a Terra-média das trevas de Sauron. Considerada a maior obra de fantasia do século XX.',
+    };
+    return mapa[titulo] ??
+        'Uma obra literária de destaque, aclamada por críticos e leitores ao redor do mundo. Um mergulho profundo em narrativas que marcaram gerações e continuam relevantes nos dias de hoje.';
+  }
+}
+
+class _ModalColecoes extends StatefulWidget {
+  final String tituloLivro;
+
+  const _ModalColecoes({required this.tituloLivro});
+
+  @override
+  State<_ModalColecoes> createState() => _ModalColecoesState();
+}
+
+class _ModalColecoesState extends State<_ModalColecoes> {
+  static const Color _highland = Color(0xFF7A8C63);
+  static const Color _millbrook = Color(0xFF5A4631);
+  static const Color _shadow = Color(0xFF8B7355);
+  static const Color _ecruWhite = Color(0xFFF5EFDB);
+
+  final List<_Colecao> _colecoes = [
+    _Colecao(nome: 'Favoritos', icone: Icons.favorite_outline_rounded, qtd: 4),
+    _Colecao(nome: 'Para o Verão', icone: Icons.wb_sunny_outlined, qtd: 7),
+    _Colecao(nome: 'Clássicos', icone: Icons.auto_stories_outlined, qtd: 12),
+    _Colecao(nome: 'Recomendados', icone: Icons.thumb_up_outlined, qtd: 3),
+  ];
+
+  final Set<int> _selecionados = {};
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).viewInsets.bottom
+        + MediaQuery.of(context).padding.bottom;
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomPadding),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: _millbrook.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(99),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Adicionar à Coleção',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: _millbrook,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(Icons.close_rounded,
+                        size: 20, color: _shadow),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  const Icon(Icons.menu_book_rounded, size: 13, color: _shadow),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: Text(
+                      widget.tituloLivro,
+                      style: const TextStyle(fontSize: 12, color: _shadow),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            ...List.generate(_colecoes.length, (i) {
+              final colecao = _colecoes[i];
+              final selecionado = _selecionados.contains(i);
+              return Column(
+                children: [
+                  if (i > 0)
+                    Divider(
+                      height: 1,
+                      indent: 20,
+                      endIndent: 20,
+                      color: _millbrook.withValues(alpha: 0.08),
+                    ),
+                  InkWell(
+                    onTap: () => setState(() {
+                      selecionado
+                          ? _selecionados.remove(i)
+                          : _selecionados.add(i);
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 38,
+                            height: 38,
+                            decoration: BoxDecoration(
+                              color: _highland.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                            child: Icon(colecao.icone,
+                                size: 18, color: _highland),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  colecao.nome,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: _millbrook,
+                                  ),
+                                ),
+                                Text(
+                                  '${colecao.qtd} livros',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: _shadow,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            width: 22,
+                            height: 22,
+                            decoration: BoxDecoration(
+                              color: selecionado
+                                  ? _highland
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(99),
+                              border: Border.all(
+                                color: selecionado
+                                    ? _highland
+                                    : _millbrook.withValues(alpha: 0.25),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: selecionado
+                                ? const Icon(Icons.check_rounded,
+                                    size: 13, color: Colors.white)
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add_rounded,
+                      size: 16, color: _highland),
+                  label: const Text(
+                    'Nova Coleção',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: _highland,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 8),
+                    backgroundColor: _ecruWhite,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(99),
+                      side: BorderSide(
+                        color: _highland.withValues(alpha: 0.35),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: GestureDetector(
+                onTap: _selecionados.isEmpty
+                    ? null
+                    : () => Navigator.pop(context),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: _selecionados.isEmpty
+                        ? _highland.withValues(alpha: 0.35)
+                        : _highland,
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    _selecionados.isEmpty
+                        ? 'Selecione uma coleção'
+                        : 'Confirmar (${_selecionados.length})',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Colecao {
+  final String nome;
+  final IconData icone;
+  final int qtd;
+
+  const _Colecao({required this.nome, required this.icone, required this.qtd});
+}
