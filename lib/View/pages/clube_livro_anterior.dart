@@ -26,12 +26,12 @@ class ClubeLivroAnterior extends StatelessWidget {
       body: Column(
         children: [
           ClubeNavegacao(
-            onProximoTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ClubeLivroProximo()),
-              );
-            },
+            abaSelecionada: 1,
+            onAtualTap: () => Navigator.pop(context),
+            onProximoTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ClubeLivroProximo()),
+            ),
           ),
 
           Divider(
