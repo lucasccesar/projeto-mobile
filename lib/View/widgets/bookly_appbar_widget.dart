@@ -39,7 +39,7 @@ class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
           : iconeSeta
           ? IconButton(
               icon: Icon(Icons.arrow_back, color: Color(0xFF333333)),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.maybePop(context),
             )
           : null,
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/clube_criar.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
@@ -74,7 +75,12 @@ class ClubesPage extends StatelessWidget {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeCriar()),
+                    );
+                  },
                   icon: Icon(Icons.add),
                   label: Text('Criar Clube'),
                   style: ElevatedButton.styleFrom(
