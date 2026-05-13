@@ -8,6 +8,7 @@ import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/adicionar_livro_page.dart';
+import 'package:projeto_mobile/View/pages/favoritos_page.dart';
 
 class CatalogoPage extends StatefulWidget {
   const CatalogoPage({super.key});
@@ -122,6 +123,11 @@ class _CatalogoPageState extends State<CatalogoPage> {
     } else if (tab == NavTab.favoritos) {
       Navigator.pushReplacement(
         context,
+        MaterialPageRoute(builder: (_) => const FavoritosPage()),
+      );
+    } else if (tab == NavTab.leitura) {
+      Navigator.pushReplacement(
+        context,
         MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
       );
     }
@@ -141,7 +147,6 @@ class _CatalogoPageState extends State<CatalogoPage> {
       ),
       body: Column(
         children: [
-          // Barra de busca + botão Adicionar
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Row(
@@ -206,7 +211,6 @@ class _CatalogoPageState extends State<CatalogoPage> {
               ],
             ),
           ),
-          // Lista de livros
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.only(top: 4, bottom: 12),
@@ -218,9 +222,8 @@ class _CatalogoPageState extends State<CatalogoPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BooklyRodape(
+      bottomNavigationBar: const BooklyRodape(
         selectedTab: NavTab.catalogo,
-        onTabChanged: _onTabChanged,
       ),
     );
   }

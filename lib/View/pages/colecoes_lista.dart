@@ -134,21 +134,8 @@ class ColecoesListaPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BooklyRodape(
-        selectedTab: null,
-        onTabChanged: (tab) {
-          if (tab == NavTab.catalogo) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const CatalogoPage()),
-            );
-          } else if (tab == NavTab.clubes) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const ClubesPage()),
-            );
-          }
-        },
+      bottomNavigationBar: const BooklyRodape(
+        selectedTab: NavTab.leitura,
       ),
     );
   }

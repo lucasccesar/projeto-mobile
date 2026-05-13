@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/clube_livro_anterior.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_livro_anterior_proximo.dart';
@@ -16,13 +15,12 @@ class ClubeLivroProximo extends StatelessWidget {
     return Scaffold(
       drawer: SidebarWidget(),
       appBar: BooklyAppBar(
-        title: "Clube do Livro",
+        title: 'Clube do Livro',
         iconeMenu: false,
         iconeCarrinho: false,
         iconeSeta: true,
         corDoTexto: AppColors.clube,
       ),
-
       body: Column(
         children: [
           ClubeNavegacao(
@@ -33,7 +31,6 @@ class ClubeLivroProximo extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const ClubeLivroAnterior()),
             ),
           ),
-
           Divider(
             height: 1,
             color: Color.lerp(
@@ -42,7 +39,6 @@ class ClubeLivroProximo extends StatelessWidget {
               0.8,
             ),
           ),
-
           Expanded(
             child: ListView(
               children: [
@@ -53,7 +49,7 @@ class ClubeLivroProximo extends StatelessWidget {
                     height: 20,
                     width: double.infinity,
                     child: Text(
-                      "Próximos livros planejados para o clube",
+                      'Próximos livros planejados para o clube',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.tertiary,
                       ),
@@ -63,61 +59,53 @@ class ClubeLivroProximo extends StatelessWidget {
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Senhor dos Anéis",
-                  autor: "J.R.R. Tolkien",
-                  data: "15/03/2024",
+                  titulo: 'O Senhor dos Anéis',
+                  autor: 'J.R.R. Tolkien',
+                  data: '15/03/2024',
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "1984",
-                  autor: "George Orwell",
-                  data: "15/04/2024",
+                  titulo: '1984',
+                  autor: 'George Orwell',
+                  data: '15/04/2024',
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "Admirável Mundo Novo",
-                  autor: "Aldous Huxley",
-                  data: "15/05/2024",
+                  titulo: 'Admirável Mundo Novo',
+                  autor: 'Aldous Huxley',
+                  data: '15/05/2024',
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "Cem Anos de Solidão",
-                  autor: "Gabriel García Márquez",
-                  data: "15/06/2024",
+                  titulo: 'Cem Anos de Solidão',
+                  autor: 'Gabriel García Márquez',
+                  data: '15/06/2024',
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "Dom Casmurro",
-                  autor: "Machado de Assis",
-                  data: "15/07/2024",
+                  titulo: 'Dom Casmurro',
+                  autor: 'Machado de Assis',
+                  data: '15/07/2024',
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "A Revolução dos Bichos",
-                  autor: "George Orwell",
-                  data: "15/08/2024",
+                  titulo: 'A Revolução dos Bichos',
+                  autor: 'George Orwell',
+                  data: '15/08/2024',
                 ),
                 ClubeLivroAnteriorProximo(
                   anterior: false,
-                  titulo: "O Pequeno Príncipe",
-                  autor: "Antoine de Saint-Exupéry",
-                  data: "15/09/2024",
+                  titulo: 'O Pequeno Príncipe',
+                  autor: 'Antoine de Saint-Exupéry',
+                  data: '15/09/2024',
                 ),
               ],
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BooklyRodape(
+      bottomNavigationBar: const BooklyRodape(
         selectedTab: NavTab.clubes,
-        onTabChanged: (tab) {
-          if (tab == NavTab.catalogo) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const CatalogoPage()),
-            );
-          }
-        },
       ),
     );
   }

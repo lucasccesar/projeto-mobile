@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/clubes_page.dart';
+import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
+import 'package:projeto_mobile/View/pages/favoritos_page.dart';
 
 enum NavTab { catalogo, clubes, leitura, favoritos, conta }
 
 class BooklyRodape extends StatefulWidget {
   final NavTab? selectedTab;
-  final void Function(NavTab)? onTabChanged;
 
-  const BooklyRodape({super.key, this.selectedTab, this.onTabChanged});
+  const BooklyRodape({super.key, this.selectedTab});
 
   @override
   State<BooklyRodape> createState() => _BooklyRodapeState();
@@ -18,7 +21,7 @@ class _BooklyRodapeState extends State<BooklyRodape> {
   @override
   void initState() {
     super.initState();
-    _selected = widget.selectedTab; // inicia com o que a página passar
+    _selected = widget.selectedTab;
   }
 
   final List<_NavItem> _items = const [
@@ -54,6 +57,32 @@ class _BooklyRodapeState extends State<BooklyRodape> {
     ),
   ];
 
+  void _onTap(NavTab tab) {
+    if (tab == _selected) return;
+    setState(() => _selected = tab);
+
+    Widget page;
+    switch (tab) {
+      case NavTab.catalogo:
+        page = const CatalogoPage();
+      case NavTab.clubes:
+        page = const ClubesPage();
+      /* case NavTab.leitura:
+        page = const StatusLeituraPage(); */
+      case NavTab.favoritos:
+        page = const FavoritosPage();
+      default:
+        page = const CatalogoPage();
+      /* case NavTab.conta:
+        page = const ContaPage(); */
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => page),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -75,10 +104,7 @@ class _BooklyRodapeState extends State<BooklyRodape> {
               final isSelected = item.tab == _selected;
               return Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    setState(() => _selected = item.tab);
-                    widget.onTabChanged?.call(item.tab);
-                  },
+                  onTap: () => _onTap(item.tab),
                   behavior: HitTestBehavior.opaque,
                   child: _NavBarItem(item: item, isSelected: isSelected),
                 ),

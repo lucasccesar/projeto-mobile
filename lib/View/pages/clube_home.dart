@@ -221,16 +221,8 @@ class ClubeHome extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BooklyRodape(
+      bottomNavigationBar: const BooklyRodape(
         selectedTab: NavTab.clubes,
-        onTabChanged: (tab) {
-          if (tab == NavTab.catalogo) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const CatalogoPage()),
-            );
-          }
-        },
       ),
     );
   }

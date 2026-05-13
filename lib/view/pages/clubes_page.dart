@@ -3,7 +3,6 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
-import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/clube_home.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
@@ -21,13 +20,10 @@ class ClubesPage extends StatelessWidget {
         iconeSeta: false,
         iconeCarrinho: false,
       ),
-
       body: Padding(
-        //Ajeitando as bordas dos clubes
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            // Busca + botão
             Row(
               children: [
                 Expanded(
@@ -57,7 +53,6 @@ class ClubesPage extends StatelessWidget {
                           color: Color.lerp(
                             Theme.of(context).colorScheme.tertiary,
                             Theme.of(context).colorScheme.primary,
-                            //tem que usar ! pq o lerp pode retornar null
                             0.7,
                           )!,
                           width: 1.0,
@@ -77,14 +72,11 @@ class ClubesPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SizedBox(width: 10),
-
                 ElevatedButton.icon(
                   onPressed: () {},
                   icon: Icon(Icons.add),
-                  label: Text("Criar Clube"),
-
+                  label: Text('Criar Clube'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.clube,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -95,54 +87,69 @@ class ClubesPage extends StatelessWidget {
                 ),
               ],
             ),
-
-             SizedBox(height: 20),
-
-            // Lista de clubes
+            SizedBox(height: 20),
             Expanded(
               child: ListView(
                 children: [
                   ClubPesquisa(
-                    title: "Fallen",
-                    category: "Professor",
+                    title: 'Fallen',
+                    category: 'Professor',
                     participants: 12,
-                    date: "14/04 - 29/04",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
+                    date: '14/04 - 29/04',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                    ),
                   ),
                   ClubPesquisa(
-                    title: "Molodoy",
-                    category: "Furioso",
+                    title: 'Molodoy',
+                    category: 'Furioso',
                     participants: 8,
-                    date: "01/05 - 20/05",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
+                    date: '01/05 - 20/05',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                    ),
                   ),
                   ClubPesquisa(
-                    title: "Yekindar",
-                    category: "Fraco?",
+                    title: 'Yekindar',
+                    category: 'Fraco?',
                     participants: 23,
-                    date: "",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
+                    date: '',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                    ),
                   ),
                   ClubPesquisa(
-                    title: "Kscerato",
-                    category: "Mira quente",
+                    title: 'Kscerato',
+                    category: 'Mira quente',
                     participants: 23,
-                    date: "",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
+                    date: '',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                    ),
                   ),
                   ClubPesquisa(
-                    title: "Yuri",
-                    category: "Enterna Promessa",
+                    title: 'Yuri',
+                    category: 'Enterna Promessa',
                     participants: 23,
-                    date: "",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
+                    date: '',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                    ),
                   ),
                   ClubPesquisa(
-                    title: "Sidde",
-                    category: "cabecao",
+                    title: 'Sidde',
+                    category: 'cabecao',
                     participants: 23,
-                    date: "",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClubeHome())),
+                    date: '',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                    ),
                   ),
                 ],
               ),
@@ -150,17 +157,8 @@ class ClubesPage extends StatelessWidget {
           ],
         ),
       ),
-
-      bottomNavigationBar: BooklyRodape(
+      bottomNavigationBar: const BooklyRodape(
         selectedTab: NavTab.clubes,
-        onTabChanged: (tab) {
-          if (tab == NavTab.catalogo) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const CatalogoPage()),
-            );
-          }
-        },
       ),
     );
   }
