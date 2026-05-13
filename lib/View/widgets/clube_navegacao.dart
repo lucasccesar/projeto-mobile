@@ -1,61 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
-class ClubeNavegacao extends StatefulWidget {
+class ClubeNavegacao extends StatelessWidget {
+  final int abaSelecionada; // 0=atual, 1=anterior, 2=proximo
+  final VoidCallback? onAtualTap;
   final VoidCallback? onAnteriorTap;
   final VoidCallback? onProximoTap;
 
-  const ClubeNavegacao({super.key, this.onAnteriorTap, this.onProximoTap});
-
-  @override
-  State<ClubeNavegacao> createState() => _ClubeNavegacaoState();
-}
-
-class _ClubeNavegacaoState extends State<ClubeNavegacao> {
-  int _abaSelecionada = 0;
+  const ClubeNavegacao({
+    super.key,
+    required this.abaSelecionada,
+    this.onAtualTap,
+    this.onAnteriorTap,
+    this.onProximoTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-
-        Divider(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.15), height: 1,),
-
+        Divider(
+          color: Theme.of(context).colorScheme.tertiary.withOpacity(0.15),
+          height: 1,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _Aba(
               icone: Icons.menu_book_outlined,
               label: 'Atual',
-              selecionada: _abaSelecionada == 0,
-              onTap: () => setState(() => _abaSelecionada = 0),
+              selecionada: abaSelecionada == 0,
+              onTap: onAtualTap,
             ),
             _Aba(
               icone: Icons.skip_previous_outlined,
               label: 'Anteriores',
-              selecionada: _abaSelecionada == 1,
-              onTap: () {
-                setState(() => _abaSelecionada = 1);
-                widget.onAnteriorTap?.call();
-              },
+              selecionada: abaSelecionada == 1,
+              onTap: onAnteriorTap,
             ),
             _Aba(
               icone: Icons.skip_next_outlined,
               label: 'Próximos',
-              selecionada: _abaSelecionada == 2,
-              onTap: () {
-                setState(() => _abaSelecionada = 2);
-                widget.onProximoTap?.call();
-              },
+              selecionada: abaSelecionada == 2,
+              onTap: onProximoTap,
             ),
           ],
         ),
-        // linha que fica embaixo de cada aba
         Row(
           children: [
-            _Linha(selecionada: _abaSelecionada == 0),
-            _Linha(selecionada: _abaSelecionada == 1),
-            _Linha(selecionada: _abaSelecionada == 2),
+            _Linha(selecionada: abaSelecionada == 0),
+            _Linha(selecionada: abaSelecionada == 1),
+            _Linha(selecionada: abaSelecionada == 2),
           ],
         ),
       ],
@@ -67,13 +62,13 @@ class _Aba extends StatelessWidget {
   final IconData icone;
   final String label;
   final bool selecionada;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _Aba({
     required this.icone,
     required this.label,
     required this.selecionada,
-    required this.onTap,
+    this.onTap,
   });
 
   @override
@@ -107,7 +102,7 @@ class _Aba extends StatelessWidget {
 class _Linha extends StatelessWidget {
   final bool selecionada;
 
-  const _Linha({required this.selecionada});
+   _Linha({required this.selecionada});
 
   @override
   Widget build(BuildContext context) {

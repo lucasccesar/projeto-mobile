@@ -9,7 +9,6 @@ import 'package:projeto_mobile/View/pages/clube_mensagem.dart';
 import 'package:projeto_mobile/View/widgets/clube_home_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
 
-
 class ClubeHome extends StatelessWidget {
   const ClubeHome({super.key});
 
@@ -90,9 +89,11 @@ class ClubeHome extends StatelessWidget {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.push(
-                          context, 
-                          MaterialPageRoute(builder:(_)
-                          => const ClubeMensagem()),);
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ClubeMensagem(),
+                            ),
+                          );
                         },
                         icon: Icon(Icons.chat_bubble_outline, size: 18),
                         label: Text('Abrir Chat'),
@@ -143,21 +144,17 @@ class ClubeHome extends StatelessWidget {
 
           // Abas de navegação
           ClubeNavegacao(
-            onAnteriorTap: () {
-              // TODO: navegar para ClubeLivroAnterior
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ClubeLivroAnterior()),
-              );
-            },
-            onProximoTap: () {
-              // TODO: navegar para ClubeLivroProximo
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ClubeLivroProximo()),
-              );
-            },
+            abaSelecionada: 0,
+            onAnteriorTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ClubeLivroAnterior()),
+            ),
+            onProximoTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ClubeLivroProximo()),
+            ),
           ),
+
           Divider(
             color: Theme.of(context).colorScheme.tertiary.withOpacity(0.15),
             height: 1,
@@ -168,11 +165,10 @@ class ClubeHome extends StatelessWidget {
           // resto da tela
           Expanded(
             child: SingleChildScrollView(
-              padding:  EdgeInsets.all(5),
+              padding: EdgeInsets.all(5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   ClubeHomeWidget(),
 
                   SizedBox(height: 5),
@@ -184,9 +180,7 @@ class ClubeHome extends StatelessWidget {
                       'Uma aventura emocionante sobre coragem e amizade, escolhida por votação do grupo. Venha discutir no chat!',
                       textAlign: TextAlign.justify, // TODO: variavel
                       style: TextStyle(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.tertiary,
+                        color: Theme.of(context).colorScheme.tertiary,
                         fontSize: 14,
                       ),
                     ),
@@ -196,7 +190,7 @@ class ClubeHome extends StatelessWidget {
 
                   //botao
                   Padding(
-                    padding: EdgeInsets.fromLTRB(18.0,0,18.0,0),
+                    padding: EdgeInsets.fromLTRB(18.0, 0, 18.0, 0),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
