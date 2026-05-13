@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
 
 class BookPage extends StatefulWidget {
   final Book livro;
@@ -33,6 +34,15 @@ class _BookPageState extends State<BookPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => _ModalColecoes(tituloLivro: widget.livro.title),
+    );
+  }
+
+  void _abrirEditar() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditarLivroPage(livro: widget.livro),
+      ),
     );
   }
 
@@ -68,58 +78,48 @@ class _BookPageState extends State<BookPage> {
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Stack(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildCapa(),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 2),
-                      Text(
-                        widget.livro.title,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: _millbrook,
-                          height: 1.3,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.livro.author,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: _shadow,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      _buildBadgeGenero(),
-                      const SizedBox(height: 6),
-                      _buildRating(),
-                      const SizedBox(height: 6),
-                      Text(
-                        'R\$${widget.livro.price.toStringAsFixed(2).replaceAll('.', ',')}',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: _highland,
-                        ),
-                      ),
-                    ],
+          _buildCapa(),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 2),
+                Text(
+                  widget.livro.title,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: _millbrook,
+                    height: 1.3,
                   ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              _buildBotaoEditar(),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  widget.livro.author,
+                  style: const TextStyle(fontSize: 13, color: _shadow),
+                ),
+                const SizedBox(height: 6),
+                _buildBadgeGenero(),
+                const SizedBox(height: 6),
+                _buildRating(),
+                const SizedBox(height: 6),
+                Text(
+                  'R\$${widget.livro.price.toStringAsFixed(2).replaceAll('.', ',')}',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: _highland,
+                  ),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(width: 4),
+          _buildBotaoEditar(),
         ],
       ),
     );
@@ -173,31 +173,34 @@ class _BookPageState extends State<BookPage> {
   }
 
   Widget _buildBotaoEditar() {
-    return Container(
-      height: 30,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFEF8),
-        borderRadius: BorderRadius.circular(99),
-        border: Border.all(
-          color: _millbrook.withValues(alpha: 0.15),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.edit_outlined, size: 13, color: _highland),
-          const SizedBox(width: 4),
-          const Text(
-            'Editar',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: _millbrook,
-            ),
+    return GestureDetector(
+      onTap: _abrirEditar,
+      child: Container(
+        height: 30,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFEF8),
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(
+            color: _millbrook.withValues(alpha: 0.15),
+            width: 1,
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.edit_outlined, size: 13, color: _highland),
+            const SizedBox(width: 4),
+            const Text(
+              'Editar',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: _millbrook,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -236,10 +239,7 @@ class _BookPageState extends State<BookPage> {
         const SizedBox(width: 5),
         const Text(
           '(128 avaliações)',
-          style: TextStyle(
-            fontSize: 11,
-            color: _shadow,
-          ),
+          style: TextStyle(fontSize: 11, color: _shadow),
         ),
       ],
     );
@@ -458,8 +458,8 @@ class _ModalColecoesState extends State<_ModalColecoes> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom
-        + MediaQuery.of(context).padding.bottom;
+    final bottomPadding = MediaQuery.of(context).viewInsets.bottom +
+        MediaQuery.of(context).padding.bottom;
 
     return SafeArea(
       top: false,
@@ -505,12 +505,14 @@ class _ModalColecoesState extends State<_ModalColecoes> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  const Icon(Icons.menu_book_rounded, size: 13, color: _shadow),
+                  const Icon(Icons.menu_book_rounded,
+                      size: 13, color: _shadow),
                   const SizedBox(width: 5),
                   Expanded(
                     child: Text(
                       widget.tituloLivro,
-                      style: const TextStyle(fontSize: 12, color: _shadow),
+                      style:
+                          const TextStyle(fontSize: 12, color: _shadow),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -567,9 +569,7 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                                 Text(
                                   '${colecao.qtd} livros',
                                   style: const TextStyle(
-                                    fontSize: 12,
-                                    color: _shadow,
-                                  ),
+                                      fontSize: 12, color: _shadow),
                                 ),
                               ],
                             ),
@@ -638,9 +638,8 @@ class _ModalColecoesState extends State<_ModalColecoes> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
               child: GestureDetector(
-                onTap: _selecionados.isEmpty
-                    ? null
-                    : () => Navigator.pop(context),
+                onTap:
+                    _selecionados.isEmpty ? null : () => Navigator.pop(context),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   height: 44,
