@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/book_page.dart';
+import 'package:projeto_mobile/View/pages/clube_config.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
@@ -8,6 +10,7 @@ import 'package:projeto_mobile/View/pages/clube_livro_proximo.dart';
 import 'package:projeto_mobile/View/pages/clube_mensagem.dart';
 import 'package:projeto_mobile/View/widgets/clube_home_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
+import 'package:projeto_mobile/models/book.dart';
 
 class ClubeHome extends StatelessWidget {
   const ClubeHome({super.key});
@@ -113,7 +116,12 @@ class ClubeHome extends StatelessWidget {
                     // Botão Config
                     OutlinedButton.icon(
                       onPressed: () {
-                        // TODO: abrir configurações
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ClubeConfig(),
+                          ),
+                        );
                       },
                       icon: Icon(Icons.settings_outlined, size: 18),
                       label: Text('Config'),
@@ -195,7 +203,21 @@ class ClubeHome extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO: navegar para detalhes do livro
+                          final livro = Book(
+                            id: '1',
+                            title: 'O Senhor dos Anéis',
+                            author: 'J.R.R. Tolkien',
+                            genre: 'Fantasia',
+                            price: 59.90,
+                            rating: 9.8,
+                          );
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BookPage(livro: livro),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.clube,
@@ -221,9 +243,7 @@ class ClubeHome extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BooklyRodape(
-        selectedTab: NavTab.clubes,
-      ),
+      bottomNavigationBar: const BooklyRodape(selectedTab: NavTab.clubes),
     );
   }
 }

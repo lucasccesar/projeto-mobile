@@ -32,13 +32,13 @@ class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: iconeMenu
           ? Builder(
               builder: (context) => IconButton(
-                icon: const Icon(Icons.menu, color: Color(0xFF333333)),
+                icon:  Icon(Icons.menu, color: Theme.of(context).colorScheme.tertiary),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               ),
             )
           : iconeSeta
           ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Color(0xFF333333)),
+              icon: Icon(Icons.chevron_left, color: Theme.of(context).colorScheme.tertiary),
               onPressed: () => Navigator.maybePop(context),
             )
           : null,
@@ -64,7 +64,7 @@ class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: Icon(
               Icons.shopping_cart_outlined,
-              color: Color(0xFF333333),
+              color: Theme.of(context).colorScheme.tertiary,
             ),
             onPressed: () {},
           ),
