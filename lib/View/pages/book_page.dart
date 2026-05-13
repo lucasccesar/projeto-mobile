@@ -27,6 +27,41 @@ class _BookPageState extends State<BookPage> {
   static const Color _fuzzyWuzzy = Color(0xFFC06248);
   static const Color _starActive = Color(0xFFD4A84B);
 
+  static const List<_Comentario> _comentarios = [
+    _Comentario(
+      autor: 'Ana Lima',
+      nota: 10,
+      texto:
+          'Uma obra-prima absoluta! A construção do mundo e dos personagens é simplesmente inigualável. Li três vezes e sempre descubro algo novo.',
+      data: 'há 2 dias',
+      iniciais: 'AL',
+    ),
+    _Comentario(
+      autor: 'Carlos Mendes',
+      nota: 9,
+      texto:
+          'Tolkien criou um universo inteiro com linguagens, histórias e culturas próprias. O ritmo pode ser lento no início, mas vale cada página.',
+      data: 'há 1 semana',
+      iniciais: 'CM',
+    ),
+    _Comentario(
+      autor: 'Beatriz Souza',
+      nota: 10,
+      texto:
+          'Impossível não se apaixonar pela Terra-Média. A jornada de Frodo é emocionante do início ao fim. Um dos melhores livros que já li.',
+      data: 'há 2 semanas',
+      iniciais: 'BS',
+    ),
+    _Comentario(
+      autor: 'Rafael Torres',
+      nota: 8,
+      texto:
+          'Leitura densa, mas recompensadora. As batalhas e os momentos de amizade entre os personagens são memoráveis.',
+      data: 'há 1 mês',
+      iniciais: 'RT',
+    ),
+  ];
+
   void _abrirModalColecoes() {
     showModalBottomSheet(
       context: context,
@@ -80,6 +115,8 @@ class _BookPageState extends State<BookPage> {
             _buildSeletorStatus(),
             const SizedBox(height: 12),
             _buildAcoesCarrinho(),
+            const SizedBox(height: 20),
+            _buildComentarios(),
           ],
         ),
       ),
@@ -268,8 +305,7 @@ class _BookPageState extends State<BookPage> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.star_outline_rounded,
-                    size: 12, color: _starActive),
+                Icon(Icons.star_outline_rounded, size: 12, color: _starActive),
                 const SizedBox(width: 4),
                 Text(
                   'Avaliar',
@@ -441,6 +477,130 @@ class _BookPageState extends State<BookPage> {
     );
   }
 
+  Widget _buildComentarios() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'COMENTÁRIOS',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: _millbrook,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 2),
+          const Text(
+            '4 comentários',
+            style: TextStyle(fontSize: 11, color: _shadow),
+          ),
+          const SizedBox(height: 14),
+          ..._comentarios.map((c) => _buildCardComentario(c)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardComentario(_Comentario comentario) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: _ecruWhite,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _millbrook.withValues(alpha: 0.10),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: _highland.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(99),
+                  border: Border.all(
+                    color: _highland.withValues(alpha: 0.2),
+                    width: 1,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  comentario.iniciais,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: _highland,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      comentario.autor,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: _millbrook,
+                      ),
+                    ),
+                    Text(
+                      comentario.data,
+                      style: const TextStyle(fontSize: 11, color: _shadow),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: _starActive.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.star_rounded, size: 11, color: _starActive),
+                    const SizedBox(width: 3),
+                    Text(
+                      '${comentario.nota}/10',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: _starActive.withValues(alpha: 0.85),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            comentario.texto,
+            style: const TextStyle(
+              fontSize: 13,
+              color: _shadow,
+              height: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildBotaoIcone({
     required VoidCallback onTap,
     required IconData icon,
@@ -472,6 +632,22 @@ class _BookPageState extends State<BookPage> {
     return mapa[titulo] ??
         'Uma obra literária de destaque, aclamada por críticos e leitores ao redor do mundo. Um mergulho profundo em narrativas que marcaram gerações e continuam relevantes nos dias de hoje.';
   }
+}
+
+class _Comentario {
+  final String autor;
+  final int nota;
+  final String texto;
+  final String data;
+  final String iniciais;
+
+  const _Comentario({
+    required this.autor,
+    required this.nota,
+    required this.texto,
+    required this.data,
+    required this.iniciais,
+  });
 }
 
 class _ModalColecoes extends StatefulWidget {
@@ -617,9 +793,8 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: selecionado
-                                        ? _highland
-                                        : _millbrook,
+                                    color:
+                                        selecionado ? _highland : _millbrook,
                                   ),
                                 ),
                                 Text(
@@ -635,7 +810,9 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                             width: 22,
                             height: 22,
                             decoration: BoxDecoration(
-                              color: selecionado ? _highland : Colors.transparent,
+                              color: selecionado
+                                  ? _highland
+                                  : Colors.transparent,
                               borderRadius: BorderRadius.circular(99),
                               border: Border.all(
                                 color: selecionado
