@@ -18,6 +18,7 @@ class _ClubeConfigState extends State<ClubeConfig> {
   final _limiteMembrosController = TextEditingController();
   final _buscarLivroController = TextEditingController();
   final _nomeOuCargoController = TextEditingController();
+  int membros = 4;
 
   @override
   void dispose() {
@@ -101,7 +102,7 @@ class _ClubeConfigState extends State<ClubeConfig> {
                   SizedBox(height: 16),
 
                   BooklyTextField(
-                    label: 'Tema / Gênero principal',
+                    label: 'Tema / Gênero',
                     hintText: 'Ex: Aventura',
                     controller: _temaController,
                     showBorder: true,
@@ -136,17 +137,17 @@ class _ClubeConfigState extends State<ClubeConfig> {
                 ),
               ),
               child: Column(
-                spacing: 12,
+                spacing: 14,
                 children: [
 
                   BooklyTextField(
-                    label: 'Busque um Membro',
+                    label: 'MEMBROS ($membros)',
                     hintText: 'Digite seu nome/cargo',
                     controller: _nomeOuCargoController,
                     showBorder: true,
                   ),
 
-                  SizedBox(height:1),
+                  //SizedBox(height:1),
 
                   ClubeMembro(
                     cargo: 'membro',
