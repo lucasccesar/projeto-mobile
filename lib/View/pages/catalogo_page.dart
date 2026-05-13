@@ -7,6 +7,7 @@ import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
+import 'package:projeto_mobile/View/pages/adicionar_livro_page.dart';
 
 class CatalogoPage extends StatefulWidget {
   const CatalogoPage({super.key});
@@ -18,7 +19,7 @@ class CatalogoPage extends StatefulWidget {
 class _CatalogoPageState extends State<CatalogoPage> {
   final _searchController = TextEditingController();
 
-  static const _livros = <Book>[
+  final _livros = <Book>[
     Book(
       id: '1',
       title: 'O Senhor dos Anéis',
@@ -102,6 +103,16 @@ class _CatalogoPageState extends State<CatalogoPage> {
     super.dispose();
   }
 
+  Future<void> _navegarParaAdicionar() async {
+    final livro = await Navigator.push<Book>(
+      context,
+      MaterialPageRoute(builder: (_) => const AdicionarLivroPage()),
+    );
+    if (livro != null) {
+      setState(() => _livros.add(livro));
+    }
+  }
+
   void _onTabChanged(NavTab tab) {
     if (tab == NavTab.clubes) {
       Navigator.pushReplacement(
@@ -173,7 +184,7 @@ class _CatalogoPageState extends State<CatalogoPage> {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: _navegarParaAdicionar,
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('Adicionar'),
                   style: ElevatedButton.styleFrom(

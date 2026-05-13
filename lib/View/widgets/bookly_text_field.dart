@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class BooklyTextField extends StatelessWidget {
   final String? label;
   final String hintText;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final TextInputType keyboardType;
   final bool obscureText;
   final Widget? suffixIcon;
@@ -16,7 +16,7 @@ class BooklyTextField extends StatelessWidget {
     super.key,
     this.label,
     required this.hintText,
-    required this.controller,
+    this.controller,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.suffixIcon,
