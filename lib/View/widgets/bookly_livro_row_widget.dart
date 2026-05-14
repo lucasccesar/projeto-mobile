@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'book_thumb_widget.dart';
 import 'bookly_checkbox_widget.dart';
+import 'bookly_botao_remover_widget.dart';
 
 /// Row de livro reutilizável para listas de coleção.
 ///
@@ -61,17 +62,9 @@ class BooklyLivroRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           if (onRemover != null)
-            GestureDetector(
-              onTap: onRemover,
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE57373).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                child: const Icon(Icons.close, size: 15, color: Color(0xFFE57373)),
-              ),
+            BooklyBotaoRemover(
+              onRemover: onRemover!,
+              cor: const Color(0xFFE57373),
             )
           else if (selecionado != null)
             BooklyCheckbox(selecionado: selecionado!),

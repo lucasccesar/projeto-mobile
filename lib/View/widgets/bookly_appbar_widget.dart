@@ -7,6 +7,8 @@ class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool iconeCarrinho;
   final bool iconeSeta;
 
+  final VoidCallback? onCarrinhoTap;
+
   const BooklyAppBar({
     super.key,
     required this.title,
@@ -14,6 +16,7 @@ class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.iconeCarrinho,
     required this.iconeSeta,
     required this.corDoTexto,
+    this.onCarrinhoTap,
   });
   //TODO: criar um widget para o Drawer
   //TODO: config alutra e largura appbar - OK
@@ -66,7 +69,7 @@ class BooklyAppBar extends StatelessWidget implements PreferredSizeWidget {
               Icons.shopping_cart_outlined,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onPressed: () {},
+            onPressed: onCarrinhoTap,
           ),
       ],
     );

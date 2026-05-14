@@ -7,8 +7,9 @@ import 'package:projeto_mobile/View/pages/avaliar_livro_page.dart';
 
 class BookPage extends StatefulWidget {
   final Book livro;
+  final void Function(Book)? onAdicionarAoCarrinho;
 
-  const BookPage({super.key, required this.livro});
+  const BookPage({super.key, required this.livro, this.onAdicionarAoCarrinho});
 
   @override
   State<BookPage> createState() => _BookPageState();
@@ -101,7 +102,7 @@ class _BookPageState extends State<BookPage> {
         corDoTexto: AppColors.catalogo,
         iconeMenu: false,
         iconeSeta: true,
-        iconeCarrinho: true,
+        iconeCarrinho: false,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 10, bottom: 40),
@@ -432,7 +433,23 @@ class _BookPageState extends State<BookPage> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                widget.onAdicionarAoCarrinho?.call(widget.livro);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${widget.livro.title} adicionado ao carrinho',
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    backgroundColor: AppColors.compra,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
               child: Container(
                 height: 44,
                 decoration: BoxDecoration(

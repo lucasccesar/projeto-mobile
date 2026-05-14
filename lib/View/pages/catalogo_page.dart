@@ -9,6 +9,8 @@ import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/adicionar_livro_page.dart';
 import 'package:projeto_mobile/View/pages/favoritos_page.dart';
+import 'package:projeto_mobile/View/pages/carrinho_page.dart';
+import 'package:projeto_mobile/View/pages/book_page.dart';
 
 class CatalogoPage extends StatefulWidget {
   const CatalogoPage({super.key});
@@ -20,72 +22,14 @@ class CatalogoPage extends StatefulWidget {
 class _CatalogoPageState extends State<CatalogoPage> {
   final _searchController = TextEditingController();
 
-  final _livros = <Book>[
-    Book(
-      id: '1',
-      title: 'O Senhor dos Anéis',
-      author: 'J.R.R. Tolkien',
-      genre: 'Fantasia',
-      rating: 9.8,
-      price: 89.90,
-    ),
-    Book(
-      id: '2',
-      title: 'Cem Anos de Solidão',
-      author: 'Gabriel García Márquez',
-      genre: 'Realismo Mágico',
-      rating: 9.5,
-      price: 74.90,
-    ),
-    Book(
-      id: '3',
-      title: '1984',
-      author: 'George Orwell',
-      genre: 'Distopia',
-      rating: 9.3,
-      price: 59.90,
-    ),
-    Book(
-      id: '4',
-      title: 'Duna',
-      author: 'Frank Herbert',
-      genre: 'Ficção Científica',
-      rating: 9.1,
-      price: 99.90,
-    ),
-    Book(
-      id: '5',
-      title: 'Dom Quixote',
-      author: 'Miguel de Cervantes',
-      genre: 'Clássico',
-      rating: 8.9,
-      price: 64.90,
-    ),
-    Book(
-      id: '6',
-      title: 'A Revolução dos Bichos',
-      author: 'George Orwell',
-      genre: 'Fábula',
-      rating: 9.0,
-      price: 49.90,
-    ),
-    Book(
-      id: '7',
-      title: 'O Grande Gatsby',
-      author: 'F. Scott Fitzgerald',
-      genre: 'Clássico',
-      rating: 8.7,
-      price: 54.90,
-    ),
-    Book(
-      id: '8',
-      title: 'Crime e Castigo',
-      author: 'Fiódor Dostoiévski',
-      genre: 'Romance Psicológico',
-      rating: 9.2,
-      price: 69.90,
-    ),
-  ];
+  final _livros = <Book>[];
+  final _carrinho = <Book>[];
+
+  void _adicionarAoCarrinho(Book livro) {
+    if (!_carrinho.any((b) => b.id == livro.id)) {
+      setState(() => _carrinho.add(livro));
+    }
+  }
 
   List<Book> get _livrosFiltrados {
     final query = _searchController.text.toLowerCase();
@@ -137,13 +81,17 @@ class _CatalogoPageState extends State<CatalogoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F0E8),
-      drawer: const SidebarWidget(),
+      drawer: SidebarWidget(carrinho: _carrinho),
       appBar: BooklyAppBar(
         title: 'Catálogo',
         corDoTexto: AppColors.catalogo,
         iconeMenu: true,
         iconeSeta: false,
         iconeCarrinho: true,
+        onCarrinhoTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => CarrinhoPage(itens: _carrinho)),
+        ),
       ),
       body: Column(
         children: [
@@ -216,7 +164,19 @@ class _CatalogoPageState extends State<CatalogoPage> {
               padding: const EdgeInsets.only(top: 4, bottom: 12),
               itemCount: _livrosFiltrados.length,
               itemBuilder: (context, index) {
-                return LivroCardWidget(livro: _livrosFiltrados[index]);
+                final livro = _livrosFiltrados[index];
+                return LivroCardWidget(
+                  livro: livro,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BookPage(
+                        livro: livro,
+                        onAdicionarAoCarrinho: _adicionarAoCarrinho,
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
           ),
