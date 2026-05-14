@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
 
 class ColecaoItemWidget extends StatelessWidget {
   final String titulo;
@@ -43,19 +44,7 @@ class ColecaoItemWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 52,
-              height: 76,
-              decoration: BoxDecoration(
-                color: Color.lerp(AppColors.colecao, Colors.white, 0.7),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.menu_book_rounded,
-                color: AppColors.colecao,
-                size: 32,
-              ),
-            ),
+            const BooklyCapaWidget(cor: AppColors.colecao, largura: 52, altura: 76),
 
             const SizedBox(width: 16),
 

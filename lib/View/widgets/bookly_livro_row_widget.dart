@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'book_thumb_widget.dart';
+import 'bookly_capa_widget.dart';
 import 'bookly_checkbox_widget.dart';
 import 'bookly_botao_remover_widget.dart';
 
@@ -36,7 +36,7 @@ class BooklyLivroRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          BookThumbWidget(cor: cor),
+          BooklyCapaWidget(cor: cor, largura: 46, altura: 62),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

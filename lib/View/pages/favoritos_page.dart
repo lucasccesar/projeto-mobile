@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/pages/catalogo_page.dart';
@@ -123,7 +124,7 @@ class _FavoritoCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const _BookThumbFav(),
+          const BooklyCapaWidget(cor: AppColors.favoritos, largura: 56, altura: 76),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -217,57 +218,6 @@ class _FavoritoCard extends StatelessWidget {
   }
 }
 
-class _BookThumbFav extends StatelessWidget {
-  const _BookThumbFav();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: 56,
-          height: 76,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.favoritos.withValues(alpha: 0.10),
-                AppColors.favoritos.withValues(alpha: 0.22),
-              ],
-            ),
-            border: Border.all(
-              color: AppColors.favoritos.withValues(alpha: 0.15),
-              width: 1,
-            ),
-          ),
-          alignment: Alignment.center,
-          child: Icon(
-            Icons.menu_book_rounded,
-            color: AppColors.favoritos.withValues(alpha: 0.55),
-            size: 26,
-          ),
-        ),
-        Positioned(
-          left: 0,
-          top: 0,
-          child: Container(
-            width: 4,
-            height: 76,
-            decoration: BoxDecoration(
-              color: AppColors.favoritos.withValues(alpha: 0.30),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                bottomLeft: Radius.circular(8),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _EmptyFavoritos extends StatelessWidget {
   const _EmptyFavoritos();

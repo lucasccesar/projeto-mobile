@@ -3,6 +3,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 
 class AvaliarLivroPage extends StatefulWidget {
@@ -85,50 +86,7 @@ class _AvaliarLivroPageState extends State<AvaliarLivroPage> {
     return BooklyCardSection(
       child: Row(
         children: [
-          Stack(
-            children: [
-              Container(
-                width: 52,
-                height: 72,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      _highland.withValues(alpha: 0.145),
-                      _highland.withValues(alpha: 0.314),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: _highland.withValues(alpha: 0.19),
-                    width: 1,
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.menu_book_rounded,
-                  color: _highland.withValues(alpha: 0.6),
-                  size: 22,
-                ),
-              ),
-              Positioned(
-                left: 0,
-                top: 0,
-                child: Container(
-                  width: 4,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    color: _highland.withValues(alpha: 0.25),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(6),
-                      bottomLeft: Radius.circular(6),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          const BooklyCapaWidget(cor: AppColors.catalogo, largura: 52, altura: 72),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

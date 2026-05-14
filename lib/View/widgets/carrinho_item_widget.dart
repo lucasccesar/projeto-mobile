@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/carrinho_item.dart';
 import 'package:projeto_mobile/View/widgets/bookly_botao_remover_widget.dart';
+import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
 
 class CarrinhoItemWidget extends StatelessWidget {
   final CarrinhoItem item;
@@ -28,32 +29,12 @@ class CarrinhoItemWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _Capa(),
+          const BooklyCapaWidget(cor: AppColors.compra, largura: 58, altura: 78),
           const SizedBox(width: 14),
           Expanded(child: _Info(item: item)),
           const SizedBox(width: 8),
           BooklyBotaoRemover(onRemover: onRemover),
         ],
-      ),
-    );
-  }
-}
-
-class _Capa extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 58,
-      height: 78,
-      decoration: BoxDecoration(
-        color: AppColors.compra.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      alignment: Alignment.center,
-      child: const Icon(
-        Icons.menu_book_rounded,
-        color: AppColors.compra,
-        size: 30,
       ),
     );
   }

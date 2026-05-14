@@ -3,6 +3,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
+import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
 import 'package:projeto_mobile/View/pages/avaliar_livro_page.dart';
 
 class BookPage extends StatefulWidget {
@@ -175,50 +176,7 @@ class _BookPageState extends State<BookPage> {
   }
 
   Widget _buildCapa() {
-    return Stack(
-      children: [
-        Container(
-          width: 90,
-          height: 128,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(7),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                _highland.withValues(alpha: 0.145),
-                _highland.withValues(alpha: 0.314),
-              ],
-            ),
-            border: Border.all(
-              color: _highland.withValues(alpha: 0.19),
-              width: 1,
-            ),
-          ),
-          alignment: Alignment.center,
-          child: Icon(
-            Icons.menu_book_rounded,
-            color: _highland.withValues(alpha: 0.6),
-            size: 38,
-          ),
-        ),
-        Positioned(
-          left: 0,
-          top: 0,
-          child: Container(
-            width: 5,
-            height: 128,
-            decoration: BoxDecoration(
-              color: _highland.withValues(alpha: 0.25),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(7),
-                bottomLeft: Radius.circular(7),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+    return const BooklyCapaWidget(cor: AppColors.catalogo, largura: 90, altura: 128);
   }
 
   Widget _buildBotaoEditar() {

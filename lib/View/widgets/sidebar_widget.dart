@@ -7,6 +7,7 @@ import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/carrinho_page.dart';
 import 'package:projeto_mobile/View/widgets/bookly_logo.dart';
+import 'package:projeto_mobile/View/pages/historico_compras_page.dart';
 
 class SidebarWidget extends StatelessWidget {
   final List<Book> carrinho;
@@ -204,7 +205,13 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HistoricoComprasPage()),
+              );
+            },
           ),
 
           Spacer(),
