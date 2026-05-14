@@ -139,7 +139,6 @@ class _ClubeConfigState extends State<ClubeConfig> {
               child: Column(
                 spacing: 14,
                 children: [
-
                   BooklyTextField(
                     label: 'MEMBROS ($membros)',
                     hintText: 'Digite seu nome/cargo',
@@ -148,7 +147,6 @@ class _ClubeConfigState extends State<ClubeConfig> {
                   ),
 
                   //SizedBox(height:1),
-
                   ClubeMembro(
                     cargo: 'membro',
                     nome: 'Pedro',
@@ -175,6 +173,29 @@ class _ClubeConfigState extends State<ClubeConfig> {
                     onRemover: () {},
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 18, 0, 18),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    //TODO: logica de config
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.clube,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Text(
+                    'Confirmar Mudanças',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             ),
           ],

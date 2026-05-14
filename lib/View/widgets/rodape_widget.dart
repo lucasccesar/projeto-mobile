@@ -3,7 +3,9 @@ import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/clubes_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/favoritos_page.dart';
+import 'package:projeto_mobile/View/pages/perfil_home.dart';
 import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
+import 'package:projeto_mobile/config/app_colors.dart';
 
 enum NavTab { catalogo, clubes, leitura, favoritos, conta }
 
@@ -30,31 +32,31 @@ class _BooklyRodapeState extends State<BooklyRodape> {
       tab: NavTab.catalogo,
       icon: Icons.menu_book_outlined,
       label: 'Catálogo',
-      activeColor: Color(0xFF7A8C63),
+      activeColor: AppColors.catalogo,
     ),
     _NavItem(
       tab: NavTab.clubes,
       icon: Icons.people_outline,
       label: 'Clubes',
-      activeColor: Color(0xFF4A7FA5),
+      activeColor: AppColors.clube,
     ),
     _NavItem(
       tab: NavTab.leitura,
       icon: Icons.show_chart,
       label: 'Leitura',
-      activeColor: Color(0xFF3D9080),
+      activeColor: AppColors.leitura,
     ),
     _NavItem(
       tab: NavTab.favoritos,
       icon: Icons.favorite_border,
       label: 'Favoritos',
-      activeColor: Color(0xFFC0624E),
+      activeColor: AppColors.favoritos,
     ),
     _NavItem(
       tab: NavTab.conta,
       icon: Icons.person_outline,
       label: 'Conta',
-      activeColor: Color(0xFF6B7280),
+      activeColor: AppColors.perfil,
     ),
   ];
 
@@ -72,6 +74,8 @@ class _BooklyRodapeState extends State<BooklyRodape> {
         page = const StatusLeituraPage();
       case NavTab.favoritos:
         page = const FavoritosPage();
+      case NavTab.conta:
+        page = const PerfilHome();
       default:
         page = const CatalogoPage();
     }
@@ -85,8 +89,8 @@ class _BooklyRodapeState extends State<BooklyRodape> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFF9F4EE),
+      decoration:  BoxDecoration(
+        color: Theme.of(context).colorScheme.secondary,
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -153,7 +157,7 @@ class _NavBarItem extends StatelessWidget {
             color: color,
           ),
         ),
-        const SizedBox(height: 3),
+        SizedBox(height: 3),
         AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: TextStyle(

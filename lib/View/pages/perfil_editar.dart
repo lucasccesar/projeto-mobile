@@ -46,7 +46,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
             Center(
               child: CircleAvatar(
                 radius: 40,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 child: Icon(Icons.person, size: 40, color: AppColors.clube),
               ),
             ),

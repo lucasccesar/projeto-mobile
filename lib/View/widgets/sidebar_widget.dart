@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/perfil_home.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
@@ -21,13 +22,16 @@ class SidebarWidget extends StatelessWidget {
       child: Column(
         children: [
           //TODO: AJEITAR TAMANHO DO DRAWERHEADER
-          SizedBox(height: 140,
+          SizedBox(
+            height: 140,
             child: DrawerHeader(
               child: Row(
                 children: [
-                  Icon(Icons.book_outlined,
-                  size: 44,
-                  color: AppColors.catalogo),
+                  Icon(
+                    Icons.book_outlined,
+                    size: 44,
+                    color: AppColors.catalogo,
+                  ),
                   SizedBox(width: 12),
                   Text(
                     'BookLy',
@@ -217,28 +221,57 @@ class SidebarWidget extends StatelessWidget {
           Spacer(),
           Divider(
             height: 1,
-            color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8),
+            color: Color.lerp(
+              Theme.of(context).colorScheme.tertiary,
+              Colors.white,
+              0.8,
+            ),
           ),
-          
+
           ListTile(
             leading: Icon(Icons.person_outline),
-            title: Text('Perfil', style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold, fontSize: 16)),
-            trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.tertiary),
-            onTap: () {},
+            title: Text(
+              'Perfil',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.tertiary,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            trailing: Icon(
+              Icons.chevron_right,
+              color: Theme.of(context).colorScheme.tertiary,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PerfilHome()),
+              );
+            },
           ),
 
           ListTile(
             leading: Icon(Icons.logout),
-            title: Text('Sair', style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold, fontSize: 16)),
-            trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.tertiary),
+            title: Text(
+              'Sair',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.tertiary,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            trailing: Icon(
+              Icons.chevron_right,
+              color: Theme.of(context).colorScheme.tertiary,
+            ),
             onTap: () {
               Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LoginPage(),)
-          );},
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+            },
           ),
-            SizedBox(height: 16,)
+          SizedBox(height: 16),
         ],
       ),
     );
