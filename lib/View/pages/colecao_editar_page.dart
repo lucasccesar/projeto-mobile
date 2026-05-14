@@ -5,7 +5,6 @@ import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
 import 'package:projeto_mobile/View/widgets/bookly_livro_row_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
-import 'package:projeto_mobile/View/pages/colecao_home_page.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 
 class ColecaoEditarPage extends StatefulWidget {
@@ -50,11 +49,7 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
   }
 
   void _salvar() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const ColecaoHomePage()),
-      (route) => route.isFirst,
-    );
+    Navigator.pop(context);
   }
 
   @override

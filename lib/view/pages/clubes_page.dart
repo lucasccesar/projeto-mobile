@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/clube_criar.dart';
+import 'package:projeto_mobile/View/widgets/bookly_search_bar.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
@@ -28,50 +29,7 @@ class ClubesPage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Nome ou Tema',
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.tertiary,
-                        fontSize: 16,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.secondary,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.secondary,
-                          width: 1.0,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Theme.of(context).colorScheme.primary,
-                            0.7,
-                          )!,
-                          width: 1.0,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Theme.of(context).colorScheme.primary,
-                            0.7,
-                          )!,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: BooklySearchBar(hintText: 'Nome ou Tema'),
                 ),
                 SizedBox(width: 10),
                 ElevatedButton.icon(

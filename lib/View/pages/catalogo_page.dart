@@ -5,10 +5,8 @@ import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/livro_card_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
-import 'package:projeto_mobile/View/pages/clubes_page.dart';
-import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
+import 'package:projeto_mobile/View/widgets/bookly_search_bar.dart';
 import 'package:projeto_mobile/View/pages/adicionar_livro_page.dart';
-import 'package:projeto_mobile/View/pages/favoritos_page.dart';
 import 'package:projeto_mobile/View/pages/carrinho_page.dart';
 import 'package:projeto_mobile/View/pages/book_page.dart';
 
@@ -58,25 +56,6 @@ class _CatalogoPageState extends State<CatalogoPage> {
     }
   }
 
-  void _onTabChanged(NavTab tab) {
-    if (tab == NavTab.clubes) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const ClubesPage()),
-      );
-    } else if (tab == NavTab.favoritos) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const FavoritosPage()),
-      );
-    } else if (tab == NavTab.leitura) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,39 +79,14 @@ class _CatalogoPageState extends State<CatalogoPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: BooklySearchBar(
                     controller: _searchController,
+                    hintText: 'Título, autor ou gênero...',
                     onChanged: (_) => setState(() {}),
-                    decoration: InputDecoration(
-                      hintText: 'Título, autor ou gênero...',
-                      hintStyle: const TextStyle(
-                        color: Color(0xFFAAAAAA),
-                        fontSize: 14,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Color(0xFFAAAAAA),
-                        size: 20,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: AppColors.catalogo.withValues(alpha: 0.5),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
+                    fillColor: Colors.white,
+                    focusedBorderColor: AppColors.catalogo.withValues(alpha: 0.5),
+                    focusedBorderWidth: 1.5,
+                    showEnabledBorder: false,
                   ),
                 ),
                 const SizedBox(width: 10),

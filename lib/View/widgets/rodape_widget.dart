@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/clubes_page.dart';
-import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/favoritos_page.dart';
-import 'package:projeto_mobile/View/pages/perfil_home.dart';
+import 'package:projeto_mobile/View/pages/perfil_editar.dart';
 import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
@@ -75,9 +74,7 @@ class _BooklyRodapeState extends State<BooklyRodape> {
       case NavTab.favoritos:
         page = const FavoritosPage();
       case NavTab.conta:
-        page = const PerfilHome();
-      default:
-        page = const CatalogoPage();
+        page = const PerfilEditar();
     }
 
     Navigator.pushReplacement(

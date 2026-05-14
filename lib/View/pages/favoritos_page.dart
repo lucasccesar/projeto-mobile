@@ -5,9 +5,6 @@ import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
-import 'package:projeto_mobile/View/pages/catalogo_page.dart';
-import 'package:projeto_mobile/View/pages/clube_home.dart';
-import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 
 class FavoritosPage extends StatefulWidget {
   const FavoritosPage({super.key});
@@ -46,25 +43,6 @@ class _FavoritosPageState extends State<FavoritosPage> {
 
   void _removerFavorito(String id) {
     setState(() => _favoritos.removeWhere((l) => l.id == id));
-  }
-
-  void _onTabChanged(NavTab tab) {
-    if (tab == NavTab.catalogo) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const CatalogoPage()),
-      );
-    } else if (tab == NavTab.clubes) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const ClubeHome()),
-      );
-    } else if (tab == NavTab.leitura) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
-      );
-    }
   }
 
   @override

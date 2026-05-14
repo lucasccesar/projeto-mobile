@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/bookly_search_bar.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_item_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
@@ -28,52 +29,7 @@ class ColecaoHomePage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Título, autor ou gênero...',
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.tertiary,
-                        fontSize: 13,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Theme.of(context).colorScheme.tertiary,
-                        size: 15,
-                      ),
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.secondary,
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 34),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Theme.of(context).colorScheme.primary,
-                            0.7,
-                          )!,
-                          width: 1.0,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Theme.of(context).colorScheme.primary,
-                            0.7,
-                          )!,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: BooklySearchBar(hintText: 'Título, autor ou gênero...'),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton.icon(

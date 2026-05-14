@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
+import 'package:projeto_mobile/View/pages/carrinho_page.dart';
+import 'package:projeto_mobile/View/pages/clubes_page.dart';
+import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 import 'package:projeto_mobile/View/pages/favoritos_page.dart';
-import 'package:projeto_mobile/View/pages/perfil_home.dart';
+import 'package:projeto_mobile/View/pages/historico_compras_page.dart';
+import 'package:projeto_mobile/View/pages/login.dart';
+import 'package:projeto_mobile/View/pages/perfil_editar.dart';
 import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/pages/login.dart';
-import 'package:projeto_mobile/View/pages/catalogo_page.dart';
-import 'package:projeto_mobile/View/pages/clubes_page.dart';
-import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
-import 'package:projeto_mobile/View/pages/carrinho_page.dart';
-import 'package:projeto_mobile/View/widgets/bookly_logo.dart';
-import 'package:projeto_mobile/View/pages/historico_compras_page.dart';
 
 class SidebarWidget extends StatelessWidget {
   final List<Book> carrinho;
@@ -214,13 +213,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const HistoricoComprasPage()),
-              );
-            },
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const HistoricoComprasPage()),
+            ),
           ),
 
           Spacer(),
@@ -247,12 +243,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const PerfilHome()),
-              );
-            },
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PerfilEditar()),
+            ),
           ),
 
           ListTile(

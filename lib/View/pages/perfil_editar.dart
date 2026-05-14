@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/bookly_primary_button.dart';
 import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
 class PerfilEditar extends StatefulWidget {
@@ -53,30 +54,13 @@ class _PerfilEditarState extends State<PerfilEditar> {
 
             SizedBox(height: 24),
 
-            // Seção Informações Pessoais
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
-                ),
-              ),
+            BooklyCardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'INFORMAÇÕES PESSOAIS',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
+                  BooklySectionLabel(
+                    texto: 'Informações Pessoais',
+                    cor: Theme.of(context).colorScheme.tertiary,
                   ),
 
                   SizedBox(height: 16),
@@ -103,31 +87,13 @@ class _PerfilEditarState extends State<PerfilEditar> {
 
             SizedBox(height: 16),
 
-            // Seção Alterar Senha
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
-                ),
-              ),
+            BooklyCardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    //TODO: validar se as senhas sao iguais
-                    'ALTERAR SENHA',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: AppColors.perfil,
-                    ),
+                  BooklySectionLabel(
+                    texto: 'Alterar Senha', //TODO: validar se as senhas sao iguais
+                    cor: AppColors.perfil,
                   ),
 
                   SizedBox(height: 16),

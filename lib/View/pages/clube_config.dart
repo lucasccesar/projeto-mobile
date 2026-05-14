@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
 import 'package:projeto_mobile/View/widgets/clube_mebro.dart';
+import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
 class ClubeConfig extends StatefulWidget {
@@ -65,30 +66,11 @@ class _ClubeConfigState extends State<ClubeConfig> {
 
             SizedBox(height: 20),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
-                ),
-              ),
+            BooklyCardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'INFORMAÇÕES DO CLUBE',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
+                  BooklySectionLabel(texto: 'Informações do Clube', cor: AppColors.clube),
 
                   SizedBox(height: 16),
 
@@ -110,7 +92,6 @@ class _ClubeConfigState extends State<ClubeConfig> {
 
                   SizedBox(height: 16),
 
-                  // Descrição
                   BooklyTextField(
                     label: 'Descrição',
                     hintText: 'Apresente o clube para novos membros...',
@@ -124,18 +105,7 @@ class _ClubeConfigState extends State<ClubeConfig> {
 
             SizedBox(height: 16),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
-                ),
-              ),
+            BooklyCardSection(
               child: Column(
                 spacing: 14,
                 children: [
@@ -146,7 +116,6 @@ class _ClubeConfigState extends State<ClubeConfig> {
                     showBorder: true,
                   ),
 
-                  //SizedBox(height:1),
                   ClubeMembro(
                     cargo: 'membro',
                     nome: 'Pedro',

@@ -107,9 +107,10 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       const SizedBox(height: 24),
                       BooklyPrimaryButton(
                         label: 'Criar Conta',
-                        onPressed: () => Navigator.pushReplacement(
+                        onPressed: () => Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (_) => const CatalogoPage()),
+                          (route) => false,
                         ),
                       ),
                       const SizedBox(height: 16),

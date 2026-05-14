@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/bookly_primary_button.dart';
 import '../widgets/bookly_link_button.dart';
-import 'login.dart';
 
 class EmailEnviadoPage extends StatelessWidget {
   const EmailEnviadoPage({super.key});
@@ -50,10 +49,9 @@ class EmailEnviadoPage extends StatelessWidget {
                 const SizedBox(height: 32),
                 BooklyPrimaryButton(
                   label: 'Voltar ao Login',
-                  onPressed: () => Navigator.pushAndRemoveUntil(
+                  onPressed: () => Navigator.popUntil(
                     context,
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
-                    (route) => false,
+                    (route) => route.isFirst,
                   ),
                 ),
                 const SizedBox(height: 16),

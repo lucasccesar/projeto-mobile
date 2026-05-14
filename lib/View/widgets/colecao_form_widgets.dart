@@ -44,25 +44,33 @@ class BooklySectionLabel extends StatelessWidget {
   }
 }
 
-/// Botão de ação primária para páginas de coleção (verde, pill, altura fixa).
+/// Botão de ação primária para páginas de formulário (pill, altura fixa).
 /// Passe [onPressed] como null para desabilitar com opacidade reduzida.
+/// [cor] substitui a cor padrão [AppColors.confirmar].
 class BooklyActionButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
+  final Color? cor;
 
-  const BooklyActionButton({super.key, required this.label, this.onPressed});
+  const BooklyActionButton({
+    super.key,
+    required this.label,
+    this.onPressed,
+    this.cor,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = cor ?? AppColors.confirmar;
     return SizedBox(
       width: double.infinity,
       height: 43,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.confirmar,
+          backgroundColor: bgColor,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.confirmar.withValues(alpha: 0.45),
+          disabledBackgroundColor: bgColor.withValues(alpha: 0.45),
           disabledForegroundColor: Colors.white.withValues(alpha: 0.7),
           elevation: 0,
           shape: RoundedRectangleBorder(

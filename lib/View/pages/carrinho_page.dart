@@ -4,7 +4,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/carrinho_item.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/carrinho_lista_widget.dart';
+import 'package:projeto_mobile/View/widgets/carrinho_item_widget.dart';
 import 'package:projeto_mobile/View/pages/finalizar_compra_page.dart';
 
 class CarrinhoPage extends StatefulWidget {
@@ -29,7 +29,10 @@ class _CarrinhoPageState extends State<CarrinhoPage> {
   int get _totalItens => _itens.fold(0, (s, i) => s + i.quantidade);
 
   void _remover(String livroId) {
-    setState(() => _itens.removeWhere((i) => i.livro.id == livroId));
+    setState(() {
+      _itens.removeWhere((i) => i.livro.id == livroId);
+      widget.itens.removeWhere((b) => b.id == livroId);
+    });
   }
 
   @override
@@ -45,9 +48,16 @@ class _CarrinhoPageState extends State<CarrinhoPage> {
       ),
       body: _itens.isEmpty
           ? const CarrinhoVazio()
-          : CarrinhoListaWidget(
-              itens: _itens,
-              onRemover: _remover,
+          : ListView.builder(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              itemCount: _itens.length,
+              itemBuilder: (context, index) {
+                final item = _itens[index];
+                return CarrinhoItemWidget(
+                  item: item,
+                  onRemover: () => _remover(item.livro.id),
+                );
+              },
             ),
       bottomNavigationBar: CarrinhoRodape(
         totalItens: _totalItens,

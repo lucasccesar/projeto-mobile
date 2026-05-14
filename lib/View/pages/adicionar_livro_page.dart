@@ -142,28 +142,10 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 43,
-              child: ElevatedButton(
-                onPressed: _podeSubmeter ? _submeter : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.catalogo,
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor:
-                      AppColors.catalogo.withValues(alpha: 0.45),
-                  disabledForegroundColor:
-                      Colors.white.withValues(alpha: 0.7),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(99),
-                  ),
-                ),
-                child: const Text(
-                  'Adicionar Livro',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ),
+            BooklyActionButton(
+              label: 'Adicionar Livro',
+              cor: AppColors.catalogo,
+              onPressed: _podeSubmeter ? _submeter : null,
             ),
             const SizedBox(height: 8),
             TextButton(

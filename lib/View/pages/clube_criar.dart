@@ -64,30 +64,11 @@ class _ClubeCriarState extends State<ClubeCriar> {
 
             SizedBox(height: 20),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
-                ),
-              ),
+            BooklyCardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'SOBRE O CLUBE',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
+                  BooklySectionLabel(texto: 'Sobre o Clube', cor: AppColors.clube),
 
                   SizedBox(height: 16),
 
@@ -109,7 +90,6 @@ class _ClubeCriarState extends State<ClubeCriar> {
 
                   SizedBox(height: 16),
 
-                  // Descrição
                   BooklyTextField(
                     label: 'Descrição',
                     hintText: 'Apresente o clube para novos membros...',
@@ -120,7 +100,6 @@ class _ClubeCriarState extends State<ClubeCriar> {
 
                   SizedBox(height: 16),
 
-                  // Limite de membros
                   BooklyTextField(
                     label: 'Limite de membros',
                     hintText: '10',
@@ -133,30 +112,12 @@ class _ClubeCriarState extends State<ClubeCriar> {
             ),
             SizedBox(height: 16),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.tertiary.withOpacity(0.2),
-                ),
-              ),
+            BooklyCardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'ADICIONAR LIVRO',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
+                  BooklySectionLabel(texto: 'Adicionar Livro', cor: AppColors.clube),
+                  SizedBox(height: 12),
                   BooklyTextField(
                     hintText: 'Buscar livro…',
                     controller: _buscarLivroController,

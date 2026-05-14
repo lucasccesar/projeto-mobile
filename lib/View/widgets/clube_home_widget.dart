@@ -6,10 +6,9 @@ class ClubeHomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Card do livro
@@ -143,7 +142,6 @@ class ClubeHomeWidget extends StatelessWidget {
       
           ],
         ),
-      ),
     );
   }
 }

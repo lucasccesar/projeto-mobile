@@ -4,7 +4,6 @@ import 'package:projeto_mobile/View/pages/clube_config.dart';
 import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/clube_livro_anterior.dart';
 import 'package:projeto_mobile/View/pages/clube_livro_proximo.dart';
 import 'package:projeto_mobile/View/pages/clube_mensagem.dart';
