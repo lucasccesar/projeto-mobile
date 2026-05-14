@@ -19,6 +19,7 @@ class AppColors {
   
   // Perfil
   static const Color perfil = Color(0xFF5F6B7A);
+  
   // Leitura Status
   static const Color leitura = Color(0xFF3D9080);
 

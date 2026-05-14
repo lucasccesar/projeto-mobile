@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/favoritos_page.dart';
 import 'package:projeto_mobile/View/pages/perfil_home.dart';
+import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
@@ -117,7 +119,10 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () {},
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const StatusLeituraPage()),
+            ),
           ),
 
           ListTile(
@@ -136,7 +141,7 @@ class SidebarWidget extends StatelessWidget {
             ),
             onTap: () => Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
+              MaterialPageRoute(builder: (_) => const FavoritosPage()),
             ),
           ),
 
