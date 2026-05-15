@@ -29,7 +29,7 @@ class BooklySearchBar extends StatelessWidget {
 
     return TextField(
       controller: controller,
-      onChanged: onChanged,
+      onChanged: null,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(color: scheme.tertiary, fontSize: 14),
