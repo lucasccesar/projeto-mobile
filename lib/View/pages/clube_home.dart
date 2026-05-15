@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/book_page.dart';
 import 'package:projeto_mobile/View/pages/clube_config.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/pages/clube_livro_anterior.dart';
@@ -242,7 +242,7 @@ class ClubeHome extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BooklyRodape(selectedTab: NavTab.clubes),
+      bottomNavigationBar: const Rodape(selectedTab: NavTab.clubes),
     );
   }
 }

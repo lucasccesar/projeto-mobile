@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/livro_selecionavel.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
-import 'package:projeto_mobile/View/widgets/bookly_livro_row_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
+import 'package:projeto_mobile/View/widgets/livro_row_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
 
@@ -71,11 +71,11 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                       texto: 'Detalhes da Coleção', cor: AppColors.colecao),
                   const SizedBox(height: 13),
                   BooklyTextField(
@@ -94,11 +94,11 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
               ),
             ),
             const SizedBox(height: 12),
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                       texto: 'Livros da Coleção', cor: AppColors.colecao),
                   const SizedBox(height: 12),
                   if (_livros.isEmpty)
@@ -117,7 +117,7 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
                       final livro = entry.value;
                       return Column(
                         children: [
-                          BooklyLivroRow(
+                          LivroRow(
                             titulo: livro.titulo,
                             autor: livro.autor,
                             cor: livro.cor,
@@ -133,7 +133,7 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
               ),
             ),
             const SizedBox(height: 20),
-            BooklyActionButton(
+            ActionButton(
               label: 'Salvar alterações',
               onPressed: _podeSubmeter ? _salvar : null,
             ),

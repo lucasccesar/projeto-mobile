@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class BooklyLogo extends StatelessWidget {
+class Logo extends StatelessWidget {
   final String? subtitle;
 
-  const BooklyLogo({super.key, this.subtitle});
+  const Logo({super.key, this.subtitle});
 
   static const Color _verde = Color(0xFF6B8F6E);
 

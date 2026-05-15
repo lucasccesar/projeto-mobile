@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/pages/clube_livro_proximo.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_livro_anterior_proximo.dart';
 import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
@@ -118,7 +118,7 @@ class ClubeLivroAnterior extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BooklyRodape(
+      bottomNavigationBar: const Rodape(
         selectedTab: NavTab.clubes,
       ),
     );

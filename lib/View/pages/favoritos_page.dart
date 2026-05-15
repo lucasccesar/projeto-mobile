@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 
@@ -70,7 +70,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
                 );
               },
             ),
-      bottomNavigationBar: const BooklyRodape(
+      bottomNavigationBar: const Rodape(
         selectedTab: NavTab.favoritos,
       ),
     );
@@ -102,7 +102,7 @@ class _FavoritoCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const BooklyCapaWidget(cor: AppColors.favoritos, largura: 56, altura: 76),
+          const CapaWidget(cor: AppColors.favoritos, largura: 56, altura: 76),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

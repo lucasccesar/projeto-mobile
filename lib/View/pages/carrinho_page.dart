@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/View/widgets/bookly_primary_button.dart';
+import 'package:projeto_mobile/View/widgets/primary_button.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/carrinho_item.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/carrinho_item_widget.dart';
 import 'package:projeto_mobile/View/pages/finalizar_compra_page.dart';
 
@@ -156,7 +156,7 @@ class CarrinhoRodape extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            BooklyPrimaryButton(
+            PrimaryButton(
               label: 'Finalizar Compra',
               onPressed: totalItens > 0 ? onFinalizar : null,
               cor: AppColors.compra,

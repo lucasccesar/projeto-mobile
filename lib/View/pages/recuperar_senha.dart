@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/bookly_text_field.dart';
-import '../widgets/bookly_primary_button.dart';
-import '../widgets/bookly_link_button.dart';
+import '../widgets/text_field.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/link_button.dart';
 import 'email_enviado.dart';
 
 class RecuperarSenhaPage extends StatefulWidget {
@@ -77,7 +77,7 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 24),
-                      BooklyPrimaryButton(
+                      PrimaryButton(
                         label: 'Enviar Link',
                         onPressed: () => Navigator.push(
                           context,
@@ -86,7 +86,7 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
                       ),
                       const SizedBox(height: 16),
                       Center(
-                        child: BooklyLinkButton(
+                        child: LinkButton(
                           label: 'Voltar ao login',
                           icone: Icons.arrow_back,
                           onPressed: () => Navigator.pop(context),

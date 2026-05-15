@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BooklyCapaWidget extends StatelessWidget {
+class CapaWidget extends StatelessWidget {
   final Color cor;
   final double largura;
   final double altura;
 
-  const BooklyCapaWidget({
+  const CapaWidget({
     super.key,
     required this.cor,
     this.largura = 52,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/clube_criar.dart';
-import 'package:projeto_mobile/View/widgets/bookly_search_bar.dart';
+import 'package:projeto_mobile/View/widgets/search_bar.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/pages/clube_home.dart';
@@ -123,7 +123,7 @@ class ClubesPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const BooklyRodape(
+      bottomNavigationBar: const Rodape(
         selectedTab: NavTab.clubes,
       ),
     );

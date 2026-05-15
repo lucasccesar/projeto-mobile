@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_primary_button.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/primary_button.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
@@ -54,11 +54,11 @@ class _PerfilEditarState extends State<PerfilEditar> {
 
             SizedBox(height: 24),
 
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                     texto: 'Informações Pessoais',
                     cor: Theme.of(context).colorScheme.tertiary,
                   ),
@@ -87,11 +87,11 @@ class _PerfilEditarState extends State<PerfilEditar> {
 
             SizedBox(height: 16),
 
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                     texto: 'Alterar Senha', //TODO: validar se as senhas sao iguais
                     cor: AppColors.perfil,
                   ),
@@ -132,7 +132,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
             SizedBox(height: 24),
 
             // Botão Salvar
-            BooklyPrimaryButton(label: 'Salvar alterações',
+            PrimaryButton(label: 'Salvar alterações',
              onPressed: () {
               //TODO: Linkar com o backend
              }),

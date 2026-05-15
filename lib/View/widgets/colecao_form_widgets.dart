@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
-class BooklyCardSection extends StatelessWidget {
+class CardSection extends StatelessWidget {
   final Widget child;
 
-  const BooklyCardSection({super.key, required this.child});
+  const CardSection({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +24,11 @@ class BooklyCardSection extends StatelessWidget {
   }
 }
 
-class BooklySectionLabel extends StatelessWidget {
+class SectionLabel extends StatelessWidget {
   final String texto;
   final Color cor;
 
-  const BooklySectionLabel({super.key, required this.texto, required this.cor});
+  const SectionLabel({super.key, required this.texto, required this.cor});
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +47,12 @@ class BooklySectionLabel extends StatelessWidget {
 /// Botão de ação primária para páginas de formulário (pill, altura fixa).
 /// Passe [onPressed] como null para desabilitar com opacidade reduzida.
 /// [cor] substitui a cor padrão [AppColors.confirmar].
-class BooklyActionButton extends StatelessWidget {
+class ActionButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final Color? cor;
 
-  const BooklyActionButton({
+  const ActionButton({
     super.key,
     required this.label,
     this.onPressed,

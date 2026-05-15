@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/historico_compras_page.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
 import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/perfil_button_widget.dart';
 import 'package:projeto_mobile/View/widgets/perfil_card.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
@@ -100,7 +100,7 @@ class PerfilHome extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BooklyRodape( selectedTab: NavTab.conta,),
+      bottomNavigationBar: Rodape( selectedTab: NavTab.conta,),
     );
   }
 }

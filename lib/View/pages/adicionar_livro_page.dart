@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 
 class AdicionarLivroPage extends StatefulWidget {
@@ -62,11 +62,11 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                       texto: 'Informações', cor: AppColors.catalogo),
                   const SizedBox(height: 13),
                   BooklyTextField(
@@ -142,7 +142,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               ),
             ),
             const SizedBox(height: 20),
-            BooklyActionButton(
+            ActionButton(
               label: 'Adicionar Livro',
               cor: AppColors.catalogo,
               onPressed: _podeSubmeter ? _submeter : null,

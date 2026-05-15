@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/clube_mebro.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
@@ -66,11 +66,11 @@ class _ClubeConfigState extends State<ClubeConfig> {
 
             SizedBox(height: 20),
 
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(texto: 'Informações do Clube', cor: AppColors.clube),
+                  SectionLabel(texto: 'Informações do Clube', cor: AppColors.clube),
 
                   SizedBox(height: 16),
 
@@ -105,7 +105,7 @@ class _ClubeConfigState extends State<ClubeConfig> {
 
             SizedBox(height: 16),
 
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 spacing: 14,
                 children: [

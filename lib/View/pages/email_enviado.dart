@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/bookly_primary_button.dart';
-import '../widgets/bookly_link_button.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/link_button.dart';
 
 class EmailEnviadoPage extends StatelessWidget {
   const EmailEnviadoPage({super.key});
@@ -47,7 +47,7 @@ class EmailEnviadoPage extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Color(0xFF7A7A6E)),
                 ),
                 const SizedBox(height: 32),
-                BooklyPrimaryButton(
+                PrimaryButton(
                   label: 'Voltar ao Login',
                   onPressed: () => Navigator.popUntil(
                     context,
@@ -55,7 +55,7 @@ class EmailEnviadoPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                BooklyLinkButton(
+                LinkButton(
                   label: 'Reenviar Email',
                   onPressed: () {},
                 ),

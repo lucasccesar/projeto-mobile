@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
-import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
+import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 
 class AvaliarLivroPage extends StatefulWidget {
@@ -71,7 +71,7 @@ class _AvaliarLivroPageState extends State<AvaliarLivroPage> {
             const SizedBox(height: 14),
             _buildCampoComentario(),
             const SizedBox(height: 24),
-            BooklyActionButton(
+            ActionButton(
               label: 'Enviar avaliação',
               onPressed: _podeEnviar ? _enviar : null,
             ),
@@ -83,10 +83,10 @@ class _AvaliarLivroPageState extends State<AvaliarLivroPage> {
   }
 
   Widget _buildIdentificacaoLivro() {
-    return BooklyCardSection(
+    return CardSection(
       child: Row(
         children: [
-          const BooklyCapaWidget(cor: AppColors.catalogo, largura: 52, altura: 72),
+          const CapaWidget(cor: AppColors.catalogo, largura: 52, altura: 72),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -132,11 +132,11 @@ class _AvaliarLivroPageState extends State<AvaliarLivroPage> {
   }
 
   Widget _buildSeletorEstrelas() {
-    return BooklyCardSection(
+    return CardSection(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BooklySectionLabel(
+          SectionLabel(
             texto: 'Sua nota',
             cor: AppColors.catalogo,
           ),
@@ -233,11 +233,11 @@ class _AvaliarLivroPageState extends State<AvaliarLivroPage> {
   }
 
   Widget _buildCampoComentario() {
-    return BooklyCardSection(
+    return CardSection(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BooklySectionLabel(
+          SectionLabel(
             texto: 'Comentário',
             cor: AppColors.catalogo,
           ),

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 /// Botão de texto sutil usado nas páginas de autenticação.
 /// Passe [icone] para exibir um ícone à esquerda do label (ex: seta de voltar).
-class BooklyLinkButton extends StatelessWidget {
+class LinkButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final IconData? icone;
 
-  const BooklyLinkButton({
+  const LinkButton({
     super.key,
     required this.label,
     required this.onPressed,

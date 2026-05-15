@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
-import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
+import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 import 'package:projeto_mobile/View/pages/avaliar_livro_page.dart';
 
 class BookPage extends StatefulWidget {
@@ -176,7 +176,7 @@ class _BookPageState extends State<BookPage> {
   }
 
   Widget _buildCapa() {
-    return const BooklyCapaWidget(cor: AppColors.catalogo, largura: 90, altura: 128);
+    return const CapaWidget(cor: AppColors.catalogo, largura: 90, altura: 128);
   }
 
   Widget _buildBotaoEditar() {

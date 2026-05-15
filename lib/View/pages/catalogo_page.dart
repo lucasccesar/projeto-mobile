@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/livro_card_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_search_bar.dart';
+import 'package:projeto_mobile/View/widgets/search_bar.dart';
 import 'package:projeto_mobile/View/pages/adicionar_livro_page.dart';
 import 'package:projeto_mobile/View/pages/carrinho_page.dart';
 import 'package:projeto_mobile/View/pages/book_page.dart';
@@ -20,7 +20,40 @@ class CatalogoPage extends StatefulWidget {
 class _CatalogoPageState extends State<CatalogoPage> {
   final _searchController = TextEditingController();
 
-  final _livros = <Book>[];
+  final _livros = <Book>[
+    const Book(
+      id: '1',
+      title: 'O Senhor dos Anéis',
+      author: 'J.R.R. Tolkien',
+      genre: 'Fantasia',
+      rating: 4.9,
+      price: 59.90,
+    ),
+    const Book(
+      id: '2',
+      title: '1984',
+      author: 'George Orwell',
+      genre: 'Distopia',
+      rating: 4.8,
+      price: 39.90,
+    ),
+    const Book(
+      id: '3',
+      title: 'Dom Casmurro',
+      author: 'Machado de Assis',
+      genre: 'Romance',
+      rating: 4.5,
+      price: 29.90,
+    ),
+    const Book(
+      id: '4',
+      title: 'O Pequeno Príncipe',
+      author: 'Antoine de Saint-Exupéry',
+      genre: 'Ficção',
+      rating: 4.7,
+      price: 24.90,
+    ),
+  ];
   final _carrinho = <Book>[];
 
   void _adicionarAoCarrinho(Book livro) {
@@ -136,7 +169,7 @@ class _CatalogoPageState extends State<CatalogoPage> {
           ),
         ],
       ),
-      bottomNavigationBar: const BooklyRodape(
+      bottomNavigationBar: const Rodape(
         selectedTab: NavTab.catalogo,
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/carrinho_item.dart';
-import 'package:projeto_mobile/View/widgets/bookly_botao_remover_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
+import 'package:projeto_mobile/View/widgets/botao_remover_widget.dart';
+import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 
 class CarrinhoItemWidget extends StatelessWidget {
   final CarrinhoItem item;
@@ -29,11 +29,11 @@ class CarrinhoItemWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const BooklyCapaWidget(cor: AppColors.compra, largura: 58, altura: 78),
+          const CapaWidget(cor: AppColors.compra, largura: 58, altura: 78),
           const SizedBox(width: 14),
           Expanded(child: _Info(item: item)),
           const SizedBox(width: 8),
-          BooklyBotaoRemover(onRemover: onRemover),
+          BotaoRemover(onRemover: onRemover),
         ],
       ),
     );

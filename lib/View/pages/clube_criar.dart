@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/clube_home.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_livro_row_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/livro_row_widget.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
@@ -64,11 +64,11 @@ class _ClubeCriarState extends State<ClubeCriar> {
 
             SizedBox(height: 20),
 
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(texto: 'Sobre o Clube', cor: AppColors.clube),
+                  SectionLabel(texto: 'Sobre o Clube', cor: AppColors.clube),
 
                   SizedBox(height: 16),
 
@@ -112,18 +112,18 @@ class _ClubeCriarState extends State<ClubeCriar> {
             ),
             SizedBox(height: 16),
 
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(texto: 'Adicionar Livro', cor: AppColors.clube),
+                  SectionLabel(texto: 'Adicionar Livro', cor: AppColors.clube),
                   SizedBox(height: 12),
                   BooklyTextField(
                     hintText: 'Buscar livro…',
                     controller: _buscarLivroController,
                   ),
                   //TODO: terminar logica
-                  BooklyLivroRow(
+                  LivroRow(
                     titulo: 'Molodoy',
                     autor: 'Fallen',
                     cor: AppColors.clube,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_text_field.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 
 class EditarLivroPage extends StatefulWidget {
@@ -126,11 +126,11 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                     texto: 'Informações do Livro',
                     cor: AppColors.catalogo,
                   ),
@@ -159,11 +159,11 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
               ),
             ),
             const SizedBox(height: 12),
-            BooklyCardSection(
+            CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BooklySectionLabel(
+                  SectionLabel(
                     texto: 'Preço',
                     cor: AppColors.catalogo,
                   ),
@@ -178,7 +178,7 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
               ),
             ),
             const SizedBox(height: 20),
-            BooklyActionButton(
+            ActionButton(
               label: 'Salvar alterações',
               onPressed: _podeSubmeter ? _salvar : null,
             ),

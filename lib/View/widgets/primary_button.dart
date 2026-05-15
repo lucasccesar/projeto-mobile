@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BooklyPrimaryButton extends StatelessWidget {
+class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final Color? cor;
 
-  const BooklyPrimaryButton({
+  const PrimaryButton({
     super.key,
     required this.label,
     required this.onPressed,

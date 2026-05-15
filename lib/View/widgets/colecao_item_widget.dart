@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
+import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 
 class ColecaoItemWidget extends StatelessWidget {
   final String titulo;
@@ -44,7 +44,7 @@ class ColecaoItemWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const BooklyCapaWidget(cor: AppColors.colecao, largura: 52, altura: 76),
+            const CapaWidget(cor: AppColors.colecao, largura: 52, altura: 76),
 
             const SizedBox(width: 16),
 

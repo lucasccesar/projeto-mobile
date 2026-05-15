@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 
-class BooklyBotaoRemover extends StatelessWidget {
+class BotaoRemover extends StatelessWidget {
   final VoidCallback onRemover;
   final Color cor;
 
-  const BooklyBotaoRemover({
+  const BotaoRemover({
     super.key,
     required this.onRemover,
     this.cor = AppColors.compra,

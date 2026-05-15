@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/models/book.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/livro_card_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
@@ -108,7 +108,7 @@ class StatusLeituraPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BooklyRodape(
+      bottomNavigationBar: const Rodape(
         selectedTab: NavTab.leitura,
       ),
     );

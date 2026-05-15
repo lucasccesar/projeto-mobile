@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/bookly_logo.dart';
-import '../widgets/bookly_text_field.dart';
-import '../widgets/bookly_primary_button.dart';
-import '../widgets/bookly_link_button.dart';
+import '../widgets/logo.dart';
+import '../widgets/text_field.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/link_button.dart';
 import 'recuperar_senha.dart';
 import 'cadastro.dart';
 import 'catalogo_page.dart';
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const BooklyLogo(subtitle: 'Sua biblioteca digital favorita'),
+                const Logo(subtitle: 'Sua biblioteca digital favorita'),
                 const SizedBox(height: 32),
                 _LoginCard(
                   emailController: _emailController,
@@ -118,7 +118,7 @@ class _LoginCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          BooklyPrimaryButton(
+          PrimaryButton(
             label: 'Entrar',
             onPressed: () => Navigator.pushReplacement(
               context,
@@ -129,14 +129,14 @@ class _LoginCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              BooklyLinkButton(
+              LinkButton(
                 label: 'Criar conta',
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const CriarContaPage()),
                 ),
               ),
-              BooklyLinkButton(
+              LinkButton(
                 label: 'Esqueci a senha',
                 onPressed: () => Navigator.push(
                   context,

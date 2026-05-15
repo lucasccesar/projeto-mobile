@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/pedido.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/bookly_capa_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 
 class HistoricoComprasPage extends StatelessWidget {
   const HistoricoComprasPage({super.key});
@@ -219,7 +219,7 @@ class _LivroItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
-          const BooklyCapaWidget(cor: AppColors.compra, largura: 48, altura: 64),
+          const CapaWidget(cor: AppColors.compra, largura: 48, altura: 64),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

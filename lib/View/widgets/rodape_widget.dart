@@ -9,16 +9,16 @@ import 'package:projeto_mobile/config/app_colors.dart';
 
 enum NavTab { catalogo, clubes, leitura, favoritos, conta }
 
-class BooklyRodape extends StatefulWidget {
+class Rodape extends StatefulWidget {
   final NavTab? selectedTab;
 
-  const BooklyRodape({super.key, this.selectedTab});
+  const Rodape({super.key, this.selectedTab});
 
   @override
-  State<BooklyRodape> createState() => _BooklyRodapeState();
+  State<Rodape> createState() => _RodapeState();
 }
 
-class _BooklyRodapeState extends State<BooklyRodape> {
+class _RodapeState extends State<Rodape> {
   NavTab? _selected;
 
   @override

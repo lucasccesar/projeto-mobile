@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/bookly_logo.dart';
-import '../widgets/bookly_text_field.dart';
-import '../widgets/bookly_primary_button.dart';
-import '../widgets/bookly_link_button.dart';
+import '../widgets/logo.dart';
+import '../widgets/text_field.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/link_button.dart';
 import 'catalogo_page.dart';
 
 class CriarContaPage extends StatefulWidget {
@@ -43,7 +43,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const BooklyLogo(),
+                const Logo(),
                 const SizedBox(height: 32),
                 Container(
                   padding: const EdgeInsets.all(24),
@@ -105,7 +105,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      BooklyPrimaryButton(
+                      PrimaryButton(
                         label: 'Criar Conta',
                         onPressed: () => Navigator.pushAndRemoveUntil(
                           context,
@@ -115,7 +115,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       ),
                       const SizedBox(height: 16),
                       Center(
-                        child: BooklyLinkButton(
+                        child: LinkButton(
                           label: 'Já tenho uma conta',
                           onPressed: () => Navigator.pop(context),
                         ),

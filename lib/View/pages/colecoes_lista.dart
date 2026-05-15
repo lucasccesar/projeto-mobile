@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/View/widgets/bookly_appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/widgets/colecao_card_widget.dart';
@@ -134,7 +134,7 @@ class ColecoesListaPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const BooklyRodape(
+      bottomNavigationBar: const Rodape(
         selectedTab: NavTab.leitura,
       ),
     );

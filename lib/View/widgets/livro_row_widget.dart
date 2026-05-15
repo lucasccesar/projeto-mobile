@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'bookly_capa_widget.dart';
-import 'bookly_checkbox_widget.dart';
-import 'bookly_botao_remover_widget.dart';
+import 'capa_widget.dart';
+import 'checkbox_widget.dart';
+import 'botao_remover_widget.dart';
 
 /// Row de livro reutilizável para listas de coleção.
 ///
 /// Modo checkbox: passe [selecionado] + [onToggle] → mostra checkbox e torna a linha tocável.
 /// Modo remover: passe [onRemover] → mostra botão vermelho de remoção.
-class BooklyLivroRow extends StatelessWidget {
+class LivroRow extends StatelessWidget {
   final String titulo;
   final String autor;
   final Color cor;
@@ -19,7 +19,7 @@ class BooklyLivroRow extends StatelessWidget {
   // Modo remover
   final VoidCallback? onRemover;
 
-  const BooklyLivroRow({
+  const LivroRow({
     super.key,
     required this.titulo,
     required this.autor,
@@ -36,7 +36,7 @@ class BooklyLivroRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          BooklyCapaWidget(cor: cor, largura: 46, altura: 62),
+          CapaWidget(cor: cor, largura: 46, altura: 62),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -62,7 +62,7 @@ class BooklyLivroRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           if (onRemover != null)
-            BooklyBotaoRemover(
+            BotaoRemover(
               onRemover: onRemover!,
               cor: const Color(0xFFE57373),
             )
