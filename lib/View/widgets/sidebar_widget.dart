@@ -7,6 +7,7 @@ import 'package:projeto_mobile/View/pages/favoritos_page.dart';
 import 'package:projeto_mobile/View/pages/historico_compras_page.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
 import 'package:projeto_mobile/View/pages/perfil_editar.dart';
+import 'package:projeto_mobile/View/pages/perfil_home.dart';
 import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
@@ -245,7 +246,7 @@ class SidebarWidget extends StatelessWidget {
             ),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const PerfilEditar()),
+              MaterialPageRoute(builder: (_) => const PerfilHome()),
             ),
           ),
 
