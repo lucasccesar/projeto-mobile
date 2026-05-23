@@ -135,7 +135,7 @@ class ColecoesListaPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: const Rodape(
-        selectedTab: NavTab.leitura,
+        //selectedTab: NavTab.leitura,
       ),
     );
   }

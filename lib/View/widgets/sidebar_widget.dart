@@ -214,7 +214,7 @@ class SidebarWidget extends StatelessWidget {
               Icons.chevron_right,
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            onTap: () => Navigator.pushReplacement(
+            onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const HistoricoComprasPage()),
             ),
