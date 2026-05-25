@@ -6,6 +6,8 @@ import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/View/pages/clube_home.dart';
+import 'package:projeto_mobile/models/clube_do_livro.dart';
+import 'package:projeto_mobile/services/clube_do_livro_service.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
 class ClubesPage extends StatelessWidget {
@@ -13,6 +15,9 @@ class ClubesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final clubeService = ClubeDoLivroService();
+
     return Scaffold(
       drawer: SidebarWidget(),
       appBar: BooklyAppBar(
@@ -51,81 +56,53 @@ class ClubesPage extends StatelessWidget {
                 ),
               ],
             ),
-
             SizedBox(height: 20),
-            
+
             Expanded(
-              child: ListView(
-                children: [
-                  ClubPesquisa(
-                    title: 'Fallen',
-                    category: 'Professor',
-                    participants: 12,
-                    date: '14/04 - 29/04',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
-                    ),
-                  ),
-                  ClubPesquisa(
-                    title: 'Molodoy',
-                    category: 'Furioso',
-                    participants: 8,
-                    date: '01/05 - 20/05',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
-                    ),
-                  ),
-                  ClubPesquisa(
-                    title: 'Yekindar',
-                    category: 'Fraco?',
-                    participants: 23,
-                    date: '',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
-                    ),
-                  ),
-                  ClubPesquisa(
-                    title: 'Kscerato',
-                    category: 'Mira quente',
-                    participants: 23,
-                    date: '',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
-                    ),
-                  ),
-                  ClubPesquisa(
-                    title: 'Yuri',
-                    category: 'Enterna Promessa',
-                    participants: 23,
-                    date: '',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
-                    ),
-                  ),
-                  ClubPesquisa(
-                    title: 'Sidde',
-                    category: 'cabecao',
-                    participants: 23,
-                    date: '',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
-                    ),
-                  ),
-                ],
+              child: FutureBuilder<List<ClubeDoLivro>>(
+                future: clubeService.fetchClubesDoLivro(),
+                builder: (context, snapshot) {
+
+                  
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Erro ao carregar clubes', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                    );
+                  }
+                
+                  final clubes = snapshot.data ?? [];
+                  if (clubes.isEmpty) {
+                    return Center(child: Text('Nenhum clube encontrado', style: TextStyle(color: Theme.of(context).colorScheme.error)));
+                  }
+
+
+                  return ListView.builder(
+                    itemCount: clubes.length,
+                    itemBuilder: (context, index) {
+                      final clube = clubes[index];
+                      return ClubPesquisa(
+                        title: clube.nome,
+                        category: clube.tema,
+                        participants: clube.participantes,
+                        date: '',        // TODO: puxar do backend dps
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ClubeHome()),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: const Rodape(
-        selectedTab: NavTab.clubes,
-      ),
+      bottomNavigationBar: const Rodape(selectedTab: NavTab.clubes),
     );
   }
 }

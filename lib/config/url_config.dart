@@ -12,7 +12,7 @@ class ApiConfig {
     }
 
     if (Platform.isIOS) {
-      return 'http://localhost:8000';
+      return 'http://localhost:8080';
     }
 
     return 'http://localhost:8000';
