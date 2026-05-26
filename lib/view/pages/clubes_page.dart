@@ -10,14 +10,26 @@ import 'package:projeto_mobile/models/clube_do_livro.dart';
 import 'package:projeto_mobile/services/clube_do_livro_service.dart';
 import '../widgets/clube_pesquisa_widget.dart';
 
-class ClubesPage extends StatelessWidget {
+class ClubesPage extends StatefulWidget {
   const ClubesPage({super.key});
 
   @override
+  State<ClubesPage> createState() => _ClubesPageState();
+}
+
+class _ClubesPageState extends State<ClubesPage> {
+  final ClubeDoLivroService clubeService = ClubeDoLivroService();
+  late Future<List<ClubeDoLivro>> _future;
+  String _busca = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _future = clubeService.fetchClubesDoLivro();
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-    final clubeService = ClubeDoLivroService();
-
     return Scaffold(
       drawer: SidebarWidget(),
       appBar: BooklyAppBar(
@@ -34,7 +46,14 @@ class ClubesPage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: BooklySearchBar(hintText: 'Nome ou Tema'),
+                  child: BooklySearchBar(
+                    hintText: 'Nome ou Tema',
+                    onChanged: (value) {
+                      setState(() {
+                        _busca = value;
+                      });
+                    },
+                  ),
                 ),
                 SizedBox(width: 10),
                 ElevatedButton.icon(
@@ -57,38 +76,59 @@ class ClubesPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-
             Expanded(
               child: FutureBuilder<List<ClubeDoLivro>>(
-                future: clubeService.fetchClubesDoLivro(),
+                future: _future,
                 builder: (context, snapshot) {
-
-                  
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   if (snapshot.hasError) {
                     return Center(
-                      child: Text('Erro ao carregar clubes', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      child: Text(
+                        'Erro ao carregar clubes',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
                     );
                   }
-                
+
                   final clubes = snapshot.data ?? [];
+
                   if (clubes.isEmpty) {
-                    return Center(child: Text('Nenhum clube encontrado', style: TextStyle(color: Theme.of(context).colorScheme.error)));
+                    return Center(
+                      child: Text(
+                        'Nenhum clube encontrado',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    );
                   }
 
+                  final clubesFiltrados = clubes.where((clube) {
+                    final buscaLower = _busca.toLowerCase();
+                    return clube.nome.toLowerCase().contains(buscaLower) ||
+                        clube.tema.toLowerCase().contains(buscaLower);
+                  }).toList();
+
+                  if (clubesFiltrados.isEmpty) {
+                    return Center(
+                      child: Text('Nenhum clube encontrado para essa busca', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                    );
+                  }
 
                   return ListView.builder(
-                    itemCount: clubes.length,
+                    itemCount: clubesFiltrados.length,
                     itemBuilder: (context, index) {
-                      final clube = clubes[index];
+                      final clube = clubesFiltrados[index];
                       return ClubPesquisa(
                         title: clube.nome,
                         category: clube.tema,
                         participants: clube.participantes,
-                        date: '',        // TODO: puxar do backend dps
+                        date: clube.datas,
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => const ClubeHome()),

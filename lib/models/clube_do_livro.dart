@@ -4,6 +4,7 @@ class ClubeDoLivro {
   final String descricao;
   final String tema;
   int participantes;
+  String datas;
 
   ClubeDoLivro({
     required this.id,
@@ -11,6 +12,7 @@ class ClubeDoLivro {
     required this.descricao,
     required this.tema,
     this.participantes = 0,
+    this.datas = 'Sem datas definidas',
   });
   factory ClubeDoLivro.fromJson(Map<String, dynamic> json) {
     return ClubeDoLivro(

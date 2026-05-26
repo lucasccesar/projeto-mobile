@@ -1,0 +1,41 @@
+// lib/services/book_club_assignment_service.dart
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:projeto_mobile/config/url_config.dart';
+import 'package:projeto_mobile/config/token_config.dart';
+
+class BookClubAssignmentService {
+  final url = ApiConfig.baseUrl;
+
+  Future<String> fetchDateRange(String clubId) async {
+    final response = await http.get(
+      Uri.parse('$url/api/bookclubassignment/club/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final content = json['content'] as List;
+
+      if (content.isEmpty) return 'Sem data';
+
+      // pega o primeiro assignment do clube
+      final assignment = content.first;
+      final start = assignment['startDate'];   
+      final finish = assignment['finishDate'];
+
+      // formata para mes e dia 
+      return '${_formatDate(start)} - ${_formatDate(finish)}';
+    } else {
+      return 'Sem data';
+    }
+  }
+
+  String _formatDate(String date) {
+    final parts = date.split('-');
+    return '${parts[2]}/${parts[1]}';
+  }
+}

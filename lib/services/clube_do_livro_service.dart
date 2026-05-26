@@ -4,11 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/config/url_config.dart';
 import 'package:projeto_mobile/models/clube_do_livro.dart';
+import 'package:projeto_mobile/services/clube_assignment.dart';
 import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
 class ClubeDoLivroService {
   final url = ApiConfig.baseUrl;
   final participantUserService = ParticipantUserService();
+  final bookClubAssignmentService = BookClubAssignmentService();
 
   Future<List<ClubeDoLivro>> fetchClubesDoLivro() async {
     final response = await http.get(
@@ -33,6 +35,7 @@ class ClubeDoLivroService {
       
       await Future.wait(clubes.map((clube) async {
         clube.participantes = await participantUserService.fetchParticipantCount(clube.id);
+        clube.datas = await bookClubAssignmentService.fetchDateRange(clube.id);
       }));
 
       return clubes;
