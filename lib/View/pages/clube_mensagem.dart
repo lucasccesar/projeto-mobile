@@ -3,9 +3,33 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_mensagem.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/models/clube_mensagem.dart';
+import 'package:projeto_mobile/services/clube_mensagem_service.dart';
 
-class ClubeMensagem extends StatelessWidget {
-  const ClubeMensagem({super.key});
+class ClubeMensagem extends StatefulWidget {
+  final String clubeId;
+  const ClubeMensagem({super.key, required this.clubeId});
+
+  @override
+  State<ClubeMensagem> createState() => _ClubeMensagemState();
+}
+
+class _ClubeMensagemState extends State<ClubeMensagem> {
+  final ClubeMensagemService _service = ClubeMensagemService();
+  final ScrollController _scrollController = ScrollController();
+  late Future<List<ClubeMensagemModel>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _service.fetchMensagens(widget.clubeId);
+  }
+
+
+  String _formatarHora(DateTime data) {
+    final local = data.toLocal(); 
+    return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,42 +42,72 @@ class ClubeMensagem extends StatelessWidget {
         iconeSeta: true,
         iconeCarrinho: false,
       ),
-
       body: Column(
         children: [
-          //TODO: deixar container resposivo
-          //TODO: lista de mensagens rolavel
-        Expanded(
-          child: ListView(
-            padding:  EdgeInsets.all(8),
-            children: [
-              ClubeMensagemWidget(autor: 'Molodas', texto: 'Alguém já começou a ler o livro deste mês?', hora: '10:00', isMe: false),
-              ClubeMensagemWidget(autor: 'Eu', texto: 'Sim! Já estou no capítulo 5, adorando até agora.', hora: '10:01', isMe: true),
-              ClubeMensagemWidget(autor: 'Molodas', texto: 'Que bom! Eu também, a escrita é incrível.', hora: '10:02', isMe: false),
-              ClubeMensagemWidget(autor: 'Ana', texto: 'Li a versão em inglês e é ainda melhor no original.', hora: '10:05', isMe: false),
-              ClubeMensagemWidget(autor: 'Eu', texto: 'Preciso tentar a versão original então!', hora: '10:06', isMe: true),
-              ClubeMensagemWidget(autor: 'Carlos', texto: 'Alguém quer marcar um encontro para discutir?', hora: '10:10', isMe: false),
-              ClubeMensagemWidget(autor: 'Ana', texto: 'Boa ideia! Que tal no próximo sábado?', hora: '10:11', isMe: false),
-              ClubeMensagemWidget(autor: 'Molodas', texto: 'Sábado perfeito para mim!', hora: '10:12', isMe: false),
-              ClubeMensagemWidget(autor: 'Eu', texto: 'Combinado, sábado às 15h então?', hora: '10:13', isMe: true),
-              ClubeMensagemWidget(autor: 'Carlos', texto: 'Perfeito, estarei lá!', hora: '10:14', isMe: false),
-            ],
-          ),
-        ),
+          Expanded(
+            child: FutureBuilder<List<ClubeMensagemModel>>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          //Spacer(), 
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      'Erro ao carregar mensagens',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  );
+                }
+
+                final mensagens = snapshot.data ?? [];
+
+                if (mensagens.isEmpty) {
+                  return Center(
+                    child: Text('Nenhuma mensagem ainda. Seja o primeiro!', style:TextStyle(color: Theme.of(context).colorScheme.error)),
+                  );
+                }
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: mensagens.length,
+                  itemBuilder: (context, index) {
+                    final mensagem = mensagens[index];
+                    // TODO: substituir pelo id do usuário logado
+                    const String meuUserId = 'de47c4dd-52ad-42c1-b894-c9ed11263885';
+                    final bool isMe = mensagem.userId == meuUserId;
+
+                    return ClubeMensagemWidget(
+                      autor: isMe ? 'Eu' : mensagem.userId,
+                      texto: mensagem.message,
+                      hora: _formatarHora(mensagem.messageDate),
+                      isMe: isMe,
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+
           Divider(
             height: 1,
-            color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8),
+            color: Color.lerp(
+              Theme.of(context).colorScheme.tertiary,
+              Colors.white,
+              0.8,
+            ),
           ),
-                 
+
           Container(
             width: double.infinity,
             height: 80,
             child: Row(
               children: [
                 SizedBox(width: 14),
-                //enviar mensagem
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
@@ -62,11 +116,8 @@ class ClubeMensagem extends StatelessWidget {
                         color: AppColors.clube,
                         fontSize: 17,
                       ),
-                      
                       fillColor: Theme.of(context).colorScheme.secondary,
                       filled: true,
-                      hintMaxLines: null,
-
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
@@ -75,10 +126,8 @@ class ClubeMensagem extends StatelessWidget {
                             Colors.white,
                             0.8,
                           )!,
-                          width: 1.0,
                         ),
                       ),
-
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
@@ -87,10 +136,8 @@ class ClubeMensagem extends StatelessWidget {
                             Colors.white,
                             0.8,
                           )!,
-                          width: 1.0,
                         ),
                       ),
-
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
@@ -99,16 +146,12 @@ class ClubeMensagem extends StatelessWidget {
                             Colors.white,
                             0.8,
                           )!,
-                          width: 1.0,
                         ),
                       ),
                     ),
                   ),
                 ),
-
                 SizedBox(width: 10),
-
-                //botao de enviar msgm
                 Container(
                   width: 40,
                   height: 40,
@@ -118,13 +161,12 @@ class ClubeMensagem extends StatelessWidget {
                   ),
                   child: IconButton(
                     onPressed: () {
-                      print('teste');
+                      // TODO: implementar envio de mensagem
                     },
                     icon: Icon(Icons.send),
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-
                 SizedBox(width: 14),
               ],
             ),

@@ -10,9 +10,11 @@ import 'package:projeto_mobile/View/pages/clube_mensagem.dart';
 import 'package:projeto_mobile/View/widgets/clube_home_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/models/clube_do_livro.dart';
 
 class ClubeHome extends StatelessWidget {
-  const ClubeHome({super.key});
+  final ClubeDoLivro clube;
+  const ClubeHome({super.key, required this.clube});
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +59,8 @@ class ClubeHome extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          //TODO: variavel nome
                           Text(
-                            'Aventureiros do Texto',
+                            clube.nome,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.tertiary,
                               fontSize: 16,
@@ -68,8 +69,7 @@ class ClubeHome extends StatelessWidget {
                           ),
                           SizedBox(height: 2),
                           Text(
-                            //TODO: variavel tema e numero de participantes
-                            'Tema: Aventura • 12 participantes',
+                            'Tema: ${clube.tema} • ${clube.participantes} participantes',
                             style: TextStyle(
                               color: AppColors.clube,
                               fontSize: 15,
@@ -93,7 +93,7 @@ class ClubeHome extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const ClubeMensagem(),
+                              builder: (_) => ClubeMensagem(clubeId: clube.id),
                             ),
                           );
                         },
@@ -180,12 +180,12 @@ class ClubeHome extends StatelessWidget {
 
                   SizedBox(height: 5),
 
-                  //descricao do livro
+                  //descricao do clube
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0),
                     child: Text(
-                      'Uma aventura emocionante sobre coragem e amizade, escolhida por votação do grupo. Venha discutir no chat!',
-                      textAlign: TextAlign.justify, // TODO: variavel
+                      clube.descricao,
+                      textAlign: TextAlign.justify, 
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.tertiary,
                         fontSize: 14,

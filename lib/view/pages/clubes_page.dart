@@ -131,7 +131,7 @@ class _ClubesPageState extends State<ClubesPage> {
                         date: clube.datas,
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const ClubeHome()),
+                          MaterialPageRoute(builder: (_) =>  ClubeHome(clube: clube)),
                         ),
                       );
                     },

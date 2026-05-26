@@ -5,6 +5,7 @@ import 'package:projeto_mobile/View/widgets/livro_row_widget.dart';
 import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/models/clube_do_livro.dart';
 
 class ClubeCriar extends StatefulWidget {
   const ClubeCriar({super.key});
@@ -14,6 +15,7 @@ class ClubeCriar extends StatefulWidget {
 }
 
 class _ClubeCriarState extends State<ClubeCriar> {
+  late final ClubeDoLivro clube;
   final _nomeController = TextEditingController();
   final _temaController = TextEditingController();
   final _descricaoController = TextEditingController();
@@ -140,7 +142,7 @@ class _ClubeCriarState extends State<ClubeCriar> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const ClubeHome()),
+                      MaterialPageRoute(builder: (_) =>  ClubeHome(clube: clube)),
                     );
                   },
                   style: ElevatedButton.styleFrom(

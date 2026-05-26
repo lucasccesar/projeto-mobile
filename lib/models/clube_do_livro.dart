@@ -18,7 +18,11 @@ class ClubeDoLivro {
     return ClubeDoLivro(
       id: json['id'],
       nome: json['name'],
-      descricao: json['description'] ?? "Clube sem descrição", //pode ser null
+      
+      descricao: json['description']?.isEmpty == true || json['description'] == null
+        ? 'Clube sem descrição'
+        : json['description'], //pode ser null
+
       tema: json['theme'],
     );
   }
