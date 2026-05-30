@@ -16,19 +16,72 @@ class ClubeMensagem extends StatefulWidget {
 
 class _ClubeMensagemState extends State<ClubeMensagem> {
   final ClubeMensagemService _service = ClubeMensagemService();
-  final ScrollController _scrollController = ScrollController();
-  late Future<List<ClubeMensagemModel>> _future;
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();   
+  List<ClubeMensagemModel> _mensagens = [];                      
+  bool _enviando = false;                                           
+
+  static const String userId = 'b505235f-3641-49c7-abc7-770323d90528';
 
   @override
   void initState() {
     super.initState();
-    _future = _service.fetchMensagens(widget.clubeId);
+    _carregarMensagens();
   }
 
+  Future<void> _carregarMensagens() async {
+    final mensagens = await _service.fetchMensagens(widget.clubeId);
+    setState(() => _mensagens = mensagens);
+    _scrollParaBaixo();
+  }
+
+  Future<void> _enviarMensagem() async {
+    final texto = _controller.text.trim();
+    if (texto.isEmpty || _enviando) return;
+
+    setState(() => _enviando = true);
+
+    try {
+      final novaMensagem = await _service.enviarMensagem(
+        clubId: widget.clubeId,
+        userId: userId,
+        message: texto,
+      );
+
+      _controller.clear();
+      setState(() => _mensagens.add(novaMensagem));
+      _scrollParaBaixo();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao enviar mensagem')),
+      );
+    } finally {
+      setState(() => _enviando = false);
+    }
+  }
+
+  void _scrollParaBaixo() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
 
   String _formatarHora(DateTime data) {
-    final local = data.toLocal(); 
+    final local = data.toLocal();
     return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -45,61 +98,28 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<List<ClubeMensagemModel>>(
-              future: _future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      'Erro ao carregar mensagens',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                  );
-                }
-
-                final mensagens = snapshot.data ?? [];
-
-                if (mensagens.isEmpty) {
-                  return Center(
-                    child: Text('Nenhuma mensagem ainda. Seja o primeiro!', style:TextStyle(color: Theme.of(context).colorScheme.error)),
-                  );
-                }
-
-                return ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(8),
-                  itemCount: mensagens.length,
-                  itemBuilder: (context, index) {
-                    final mensagem = mensagens[index];
-                    // TODO: substituir pelo id do usuário logado
-                    const String meuUserId = 'de47c4dd-52ad-42c1-b894-c9ed11263885';
-                    final bool isMe = mensagem.userId == meuUserId;
-
-                    return ClubeMensagemWidget(
-                      autor: isMe ? 'Eu' : mensagem.userId,
-                      texto: mensagem.message,
-                      hora: _formatarHora(mensagem.messageDate),
-                      isMe: isMe,
-                    );
-                  },
-                );
-              },
-            ),
+            child: _mensagens.isEmpty
+                ? const Center(child: Text('Nenhuma mensagem ainda. Seja o primeiro!'))
+                : ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(8),
+                    itemCount: _mensagens.length,
+                    itemBuilder: (context, index) {
+                      final mensagem = _mensagens[index];
+                      final bool isMe = mensagem.userId == userId;
+                      return ClubeMensagemWidget(
+                        autor: isMe ? 'Eu' : mensagem.userId,
+                        texto: mensagem.message,
+                        hora: _formatarHora(mensagem.messageDate),
+                        isMe: isMe,
+                      );
+                    },
+                  ),
           ),
 
           Divider(
             height: 1,
-            color: Color.lerp(
-              Theme.of(context).colorScheme.tertiary,
-              Colors.white,
-              0.8,
-            ),
+            color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8),
           ),
 
           Container(
@@ -110,42 +130,29 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
                 SizedBox(width: 14),
                 Expanded(
                   child: TextField(
+                    controller: _controller,        
+                    onSubmitted: (_) => _enviarMensagem(), 
                     decoration: InputDecoration(
                       hintText: 'Escrever mensagem...',
-                      hintStyle: TextStyle(
-                        color: AppColors.clube,
-                        fontSize: 17,
-                      ),
+                      hintStyle: TextStyle(color: AppColors.clube, fontSize: 17),
                       fillColor: Theme.of(context).colorScheme.secondary,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Colors.white,
-                            0.8,
-                          )!,
+                          color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8)!,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Colors.white,
-                            0.8,
-                          )!,
+                          color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8)!,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Colors.white,
-                            0.8,
-                          )!,
+                          color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8)!,
                         ),
                       ),
                     ),
@@ -159,13 +166,16 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
                     color: AppColors.clube,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: IconButton(
-                    onPressed: () {
-                      // TODO: implementar envio de mensagem
-                    },
-                    icon: Icon(Icons.send),
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  child: _enviando
+                      ? const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        )
+                      : IconButton(
+                          onPressed: _enviarMensagem,
+                          icon: Icon(Icons.send),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                 ),
                 SizedBox(width: 14),
               ],
