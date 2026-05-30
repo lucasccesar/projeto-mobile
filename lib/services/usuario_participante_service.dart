@@ -22,4 +22,46 @@ class ParticipantUserService {
       throw Exception('Erro ao buscar usuários participantes');
     }
   }
+
+  Future<void> entrarNoClube({
+    required String userId,
+    required String clubId,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$url/api/participantuser'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'user': {'id': userId},
+        'club': {'idBookClub': clubId},
+        'entryDate': '',
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Erro ao entrar no clube');
+    }
+  }
+
+  Future<bool> usuarioEhParticipante({
+    required String clubId,
+    required String userId,
+  }) async {
+    final response = await http.get(
+      Uri.parse('$url/api/participantuser/byclub/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List content = json['content'];
+      return content.any((p) => p['userId'] == userId);
+    }
+    return false;
+  }
 }

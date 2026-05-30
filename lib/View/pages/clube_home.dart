@@ -11,12 +11,48 @@ import 'package:projeto_mobile/View/widgets/clube_home_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/clube_do_livro.dart';
+import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
-class ClubeHome extends StatelessWidget {
+class ClubeHome extends StatefulWidget {
   final ClubeDoLivro clube;
   const ClubeHome({super.key, required this.clube});
 
   @override
+  State<ClubeHome> createState() => _ClubeHomeState();
+}
+
+class _ClubeHomeState extends State<ClubeHome> {
+  final ParticipantUserService _participantService = ParticipantUserService();
+  late Future<bool> _ehParticipante;
+
+  // TODO: substituir pelo id do usuário logado
+  static const String meuUserId = 'b505235f-3641-49c7-abc7-770323d90528';
+
+  @override
+  void initState() {
+    super.initState();
+    _ehParticipante = _verificarParticipacao();
+  }
+
+  Future<bool> _verificarParticipacao() async {
+    final count = await _participantService.fetchParticipantCount(widget.clube.id);
+    // busca a lista completa para verificar se o usuário está
+    return await _participantService.usuarioEhParticipante(
+      clubId: widget.clube.id,
+      userId: meuUserId,
+    );
+  }
+
+  Future<void> _entrarNoClube() async {
+    await _participantService.entrarNoClube(
+      userId: meuUserId,
+      clubId: widget.clube.id,
+    );
+    setState(() {
+      _ehParticipante = Future.value(true);
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BooklyAppBar(
@@ -60,7 +96,7 @@ class ClubeHome extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            clube.nome,
+                            widget.clube.nome,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.tertiary,
                               fontSize: 16,
@@ -69,7 +105,7 @@ class ClubeHome extends StatelessWidget {
                           ),
                           SizedBox(height: 2),
                           Text(
-                            'Tema: ${clube.tema} • ${clube.participantes} participantes',
+                            'Tema: ${widget.clube.tema} • ${widget.clube.participantes} participantes',
                             style: TextStyle(
                               color: AppColors.clube,
                               fontSize: 15,
@@ -86,19 +122,49 @@ class ClubeHome extends StatelessWidget {
                 // botao abrir chat e config
                 Row(
                   children: [
-                    // Botão Abrir Chat
+                    // botão entrar
+                    FutureBuilder<bool>(
+                      future: _ehParticipante,
+                      builder: (context, snapshot) {
+                        final ehParticipante = snapshot.data ?? true;
+                        if (ehParticipante)
+                          return SizedBox.shrink(); //esconde o botão
+
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: ElevatedButton.icon(
+                              onPressed: _entrarNoClube,
+                              icon: Icon(Icons.group_add_outlined, size: 18),
+                              label: Text('Entrar'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.clube,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // botão abrir chat
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => ClubeMensagem(clubeId: clube.id),
+                              builder: (_) =>
+                                  ClubeMensagem(clubeId: widget.clube.id),
                             ),
                           );
                         },
                         icon: Icon(Icons.chat_bubble_outline, size: 18),
-                        label: Text('Abrir Chat'),
+                        label: Text('Chat'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.clube,
                           foregroundColor: Colors.white,
@@ -112,7 +178,7 @@ class ClubeHome extends StatelessWidget {
 
                     SizedBox(width: 10),
 
-                    // Botão Config
+                    // botão config
                     OutlinedButton.icon(
                       onPressed: () {
                         Navigator.push(
@@ -184,8 +250,8 @@ class ClubeHome extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0),
                     child: Text(
-                      clube.descricao,
-                      textAlign: TextAlign.justify, 
+                      widget.clube.descricao,
+                      textAlign: TextAlign.justify,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.tertiary,
                         fontSize: 14,
