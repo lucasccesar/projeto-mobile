@@ -21,7 +21,7 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
   List<ClubeMensagemModel> _mensagens = [];                      
   bool _enviando = false;                                           
 
-  static const String userId = 'b505235f-3641-49c7-abc7-770323d90528';
+  static const String userId = 'c9ebcfc1-78dd-4583-b35a-7ed3d7578530';
 
   @override
   void initState() {
@@ -52,6 +52,7 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
       setState(() => _mensagens.add(novaMensagem));
       _scrollParaBaixo();
     } catch (e) {
+      print('Erro ao enviar mensagem: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Erro ao enviar mensagem')),
       );

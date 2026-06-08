@@ -25,30 +25,31 @@ class ClubeMensagemService {
     }
   }
 
-  
   Future<ClubeMensagemModel> enviarMensagem({
-  required String clubId,
-  required String userId,
-  required String message,
-}) async {
-  final response = await http.post(
-    Uri.parse('$url/api/clubmessage'),
-    headers: {
-      'Authorization': 'Bearer ${TokenConfig.token}',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
-      'message': message,
-      'user': {'id': userId},
-      'club': {'idBookClub': clubId},
-    }),
-  );
+    required String clubId,
+    required String userId,
+    required String message,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$url/api/clubmessage'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'message': message,
+        'user': {'id': userId},
+        'club': {'idBookClub': clubId},
+      }),
+    );
 
-  if (response.statusCode == 201) {
-    final json = jsonDecode(response.body);
-    return ClubeMensagemModel.fromJson(json);
-  } else {
-    throw Exception('Erro ao enviar mensagem');
+    if (response.statusCode == 201) {
+      final json = jsonDecode(response.body);
+      return ClubeMensagemModel.fromJson(json);
+    } else {
+      print('STATUS ENVIO: ${response.statusCode}');
+      print('BODY ENVIO: ${response.body}');
+      throw Exception('Erro ao enviar mensagem');
+    }
   }
-}
 }

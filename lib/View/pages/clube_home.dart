@@ -15,7 +15,12 @@ import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
 class ClubeHome extends StatefulWidget {
   final ClubeDoLivro clube;
-  const ClubeHome({super.key, required this.clube});
+  final bool jaParticipante;
+  const ClubeHome({
+    super.key,
+    required this.clube,
+    this.jaParticipante = false,
+  });
 
   @override
   State<ClubeHome> createState() => _ClubeHomeState();
@@ -26,16 +31,23 @@ class _ClubeHomeState extends State<ClubeHome> {
   late Future<bool> _ehParticipante;
 
   // TODO: substituir pelo id do usuário logado
-  static const String meuUserId = 'b505235f-3641-49c7-abc7-770323d90528';
+  static const String meuUserId = 'c9ebcfc1-78dd-4583-b35a-7ed3d7578530';
 
   @override
   void initState() {
     super.initState();
-    _ehParticipante = _verificarParticipacao();
+    if (widget.jaParticipante) {
+      widget.clube.participantes = 1;
+      _ehParticipante = Future.value(true);
+    } else {
+      _ehParticipante = _verificarParticipacao();
+    }
   }
 
   Future<bool> _verificarParticipacao() async {
-    final count = await _participantService.fetchParticipantCount(widget.clube.id);
+    final count = await _participantService.fetchParticipantCount(
+      widget.clube.id,
+    );
     // busca a lista completa para verificar se o usuário está
     return await _participantService.usuarioEhParticipante(
       clubId: widget.clube.id,

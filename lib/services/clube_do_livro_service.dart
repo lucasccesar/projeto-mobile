@@ -27,22 +27,59 @@ class ClubeDoLivroService {
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       final List content = jsonResponse['content'];
-      
+
       final clubes = content
           .map((clubedolivro) => ClubeDoLivro.fromJson(clubedolivro))
           .toList();
 
-      
-      await Future.wait(clubes.map((clube) async {
-        clube.participantes = await participantUserService.fetchParticipantCount(clube.id);
-        clube.datas = await bookClubAssignmentService.fetchDateRange(clube.id);
-      }));
+      await Future.wait(
+        clubes.map((clube) async {
+          clube.participantes = await participantUserService
+              .fetchParticipantCount(clube.id);
+          clube.datas = await bookClubAssignmentService.fetchDateRange(
+            clube.id,
+          );
+        }),
+      );
 
       return clubes;
     } else {
       throw Exception(
         'Erro ao buscar clubes do livro',
       ); // + response.statusCode.toString());
+    }
+  }
+
+  Future<ClubeDoLivro> criarClube({
+    required String nome,
+    required String tema,
+    required String descricao,
+    required String creatorId,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$url/api/bookclub'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'name': nome,
+        'theme': tema,
+        'description': descricao,
+        'creator': {'id': creatorId},
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      final json = jsonDecode(response.body);
+      return ClubeDoLivro(
+        id: json['id'],
+        nome: json['name'],
+        descricao: json['description'] ?? 'Clube sem descrição',
+        tema: json['theme'] ?? '',
+      );
+    } else {
+      throw Exception('Erro ao criar clube — status: ${response.statusCode}');
     }
   }
 }
