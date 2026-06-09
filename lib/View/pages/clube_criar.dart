@@ -19,36 +19,60 @@ class _ClubeCriarState extends State<ClubeCriar> {
   final _nomeController = TextEditingController();
   final _temaController = TextEditingController();
   final _descricaoController = TextEditingController();
-  final _limiteMembrosController = TextEditingController();
   final _buscarLivroController = TextEditingController();
   LivroSelecionavel? _livroSelecionado;
   final ClubeDoLivroService _clubeService = ClubeDoLivroService();
   bool _criando = false;
+  String? _frequenciaSelecionada;
 
   //TODO:substituir pelo id do user logado
   static const String meuUserId = 'c9ebcfc1-78dd-4583-b35a-7ed3d7578530';
 
   final List<LivroSelecionavel> _livros = [
-    LivroSelecionavel(titulo: 'O Nome do Vento', autor: 'Patrick Rothfuss', cor: Color(0xFF7B5EA7)),
-    LivroSelecionavel(titulo: 'A Roda do Tempo', autor: 'Robert Jordan', cor: Color(0xFF5E8A6E)),
-    LivroSelecionavel(titulo: 'Fundação', autor: 'Isaac Asimov', cor: Color(0xFF7A5C3A)),
-    LivroSelecionavel(titulo: 'Neuromancer', autor: 'William Gibson', cor: Color(0xFF4A7FA5)),
-    LivroSelecionavel(titulo: 'Drácula', autor: 'Bram Stoker', cor: Color(0xFF8B3A3A)),
+    LivroSelecionavel(
+      titulo: 'O Nome do Vento',
+      autor: 'Patrick Rothfuss',
+      cor: Color(0xFF7B5EA7),
+    ),
+    LivroSelecionavel(
+      titulo: 'A Roda do Tempo',
+      autor: 'Robert Jordan',
+      cor: Color(0xFF5E8A6E),
+    ),
+    LivroSelecionavel(
+      titulo: 'Fundação',
+      autor: 'Isaac Asimov',
+      cor: Color(0xFF7A5C3A),
+    ),
+    LivroSelecionavel(
+      titulo: 'Neuromancer',
+      autor: 'William Gibson',
+      cor: Color(0xFF4A7FA5),
+    ),
+    LivroSelecionavel(
+      titulo: 'Drácula',
+      autor: 'Bram Stoker',
+      cor: Color(0xFF8B3A3A),
+    ),
   ];
 
   List<LivroSelecionavel> get _livrosFiltrados {
     final query = _buscarLivroController.text.trim().toLowerCase();
     if (query.isEmpty) return _livros;
-    return _livros.where((l) =>
-      l.titulo.toLowerCase().contains(query) ||
-      l.autor.toLowerCase().contains(query)
-    ).toList();
+    return _livros
+        .where(
+          (l) =>
+              l.titulo.toLowerCase().contains(query) ||
+              l.autor.toLowerCase().contains(query),
+        )
+        .toList();
   }
 
   bool get _podeCriar =>
       _nomeController.text.trim().isNotEmpty &&
       _temaController.text.trim().isNotEmpty &&
       _livroSelecionado != null &&
+      _frequenciaSelecionada != null &&
       !_criando;
 
   @override
@@ -64,7 +88,6 @@ class _ClubeCriarState extends State<ClubeCriar> {
     _nomeController.dispose();
     _temaController.dispose();
     _descricaoController.dispose();
-    _limiteMembrosController.dispose();
     _buscarLivroController.dispose();
     super.dispose();
   }
@@ -83,12 +106,14 @@ class _ClubeCriarState extends State<ClubeCriar> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => ClubeHome(clube: clube, jaParticipante: true)),
+        MaterialPageRoute(
+          builder: (_) => ClubeHome(clube: clube, jaParticipante: true),
+        ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao criar clube')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Erro ao criar clube')));
     } finally {
       setState(() => _criando = false);
     }
@@ -154,13 +179,50 @@ class _ClubeCriarState extends State<ClubeCriar> {
                     maxLines: 3,
                     showBorder: true,
                   ),
+
                   SizedBox(height: 16),
-                  BooklyTextField(
-                    label: 'Limite de membros',
-                    hintText: '10',
-                    controller: _limiteMembrosController,
-                    keyboardType: TextInputType.number,
-                    showBorder: true,
+
+                  SectionLabel(
+                    texto: 'Frequência de discussão dos livros *',
+                    cor: AppColors.clube,
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: ['Semanal', 'Quinzenal', 'Mensal'].map((
+                      frequencia,
+                    ) {
+                      final selecionado = _frequenciaSelecionada == frequencia;
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () => setState(() {
+                            _frequenciaSelecionada = selecionado
+                                ? null
+                                : frequencia;
+                          }),
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: selecionado,
+                                onChanged: (_) => setState(() {
+                                  _frequenciaSelecionada = selecionado
+                                      ? null
+                                      : frequencia;
+                                }),
+                                activeColor: AppColors.clube,
+                              ),
+                              Text(
+                                frequencia,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
@@ -172,7 +234,10 @@ class _ClubeCriarState extends State<ClubeCriar> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SectionLabel(texto: 'Adicionar Livro *', cor: AppColors.clube),
+                  SectionLabel(
+                    texto: 'Adicionar Livro *',
+                    cor: AppColors.clube,
+                  ),
                   SizedBox(height: 12),
                   BooklyTextField(
                     hintText: 'Buscar livro…',
@@ -186,7 +251,8 @@ class _ClubeCriarState extends State<ClubeCriar> {
                         children: _livrosFiltrados.asMap().entries.map((entry) {
                           final i = entry.key;
                           final livro = entry.value;
-                          final selecionado = _livroSelecionado?.titulo == livro.titulo;
+                          final selecionado =
+                              _livroSelecionado?.titulo == livro.titulo;
                           return Column(
                             children: [
                               LivroRow(
@@ -195,12 +261,16 @@ class _ClubeCriarState extends State<ClubeCriar> {
                                 cor: livro.cor,
                                 selecionado: selecionado,
                                 onToggle: () => setState(() {
-                                  _livroSelecionado = selecionado ? null : livro;
+                                  _livroSelecionado = selecionado
+                                      ? null
+                                      : livro;
                                 }),
                               ),
                               if (i < _livrosFiltrados.length - 1)
                                 Divider(
-                                  color: Theme.of(context).colorScheme.tertiary.withOpacity(0.15),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.tertiary.withOpacity(0.15),
                                   height: 1,
                                 ),
                             ],
@@ -238,7 +308,10 @@ class _ClubeCriarState extends State<ClubeCriar> {
                         )
                       : Text(
                           'Criar Clube do Livro',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                 ),
               ),
