@@ -21,6 +21,12 @@ class _ClubeConfigState extends State<ClubeConfig> {
   final _nomeOuCargoController = TextEditingController();
   int membros = 4;
 
+
+  bool get _podeConfirmar =>
+      _nomeController.text.trim().isNotEmpty ||
+      _temaController.text.trim().isNotEmpty ||
+      _descricaoController.text.trim().isNotEmpty;
+
   @override
   void dispose() {
     _nomeController.dispose();
@@ -30,6 +36,14 @@ class _ClubeConfigState extends State<ClubeConfig> {
     _buscarLivroController.dispose();
     _nomeOuCargoController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _nomeController.addListener(() => setState(() {}));
+    _temaController.addListener(() => setState(() {}));
+    _descricaoController.addListener(() => setState(() {}));
   }
 
   @override
@@ -70,12 +84,15 @@ class _ClubeConfigState extends State<ClubeConfig> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SectionLabel(texto: 'Informações do Clube', cor: AppColors.clube),
+                  SectionLabel(
+                    texto: 'Informações do Clube',
+                    cor: AppColors.clube,
+                  ),
 
                   SizedBox(height: 16),
 
                   BooklyTextField(
-                    label: 'Nome do clube *',
+                    label: 'Nome do clube',
                     hintText: 'Ex: Leitores do Amanhã',
                     controller: _nomeController,
                     showBorder: true,
@@ -149,9 +166,9 @@ class _ClubeConfigState extends State<ClubeConfig> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: _podeConfirmar ? () {
                     //TODO: logica de config
-                  },
+                  } : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.clube,
                     foregroundColor: Colors.white,
