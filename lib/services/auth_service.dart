@@ -32,6 +32,7 @@ class AuthService {
     required String email,
     required String senha,
     required DateTime nascimento,
+    String? adminCode,
   }) async {
     final birthday =
         '${nascimento.year.toString().padLeft(4, '0')}-'
@@ -46,7 +47,8 @@ class AuthService {
         'email': email,
         'password': senha,
         'birthday': birthday,
-        'userType': 'CLIENT',
+        // O back decide o tipo: adminCode == "admin123" → ADMIN, senão CLIENT.
+        if (adminCode != null && adminCode.isNotEmpty) 'adminCode': adminCode,
       }),
     );
 

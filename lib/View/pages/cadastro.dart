@@ -20,6 +20,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
   final _senhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
   final _nascimentoController = TextEditingController();
+  final _adminCodeController = TextEditingController();
   final _authService = AuthService();
   bool _senhaVisivel = false;
   bool _confirmarSenhaVisivel = false;
@@ -35,6 +36,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
     _senhaController.dispose();
     _confirmarSenhaController.dispose();
     _nascimentoController.dispose();
+    _adminCodeController.dispose();
     super.dispose();
   }
 
@@ -84,6 +86,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
         email: email,
         senha: senha,
         nascimento: nascimento,
+        adminCode: _adminCodeController.text.trim(),
       );
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
@@ -151,7 +154,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       ),
                       const SizedBox(height: 20),
                       BooklyTextField(
-                        label: 'NOME COMPLETO',
+                        label: 'NOME COMPLETO*',
                         hintText: 'Nome completo',
                         controller: _nomeController,
                       ),
@@ -164,7 +167,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       ),
                       const SizedBox(height: 16),
                       BooklyTextField(
-                        label: 'DATA DE NASCIMENTO',
+                        label: 'DATA DE NASCIMENTO*',
                         hintText: 'dd/mm/aaaa',
                         controller: _nascimentoController,
                         keyboardType: TextInputType.number,
@@ -180,7 +183,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       ),
                       const SizedBox(height: 16),
                       BooklyTextField(
-                        label: 'SENHA',
+                        label: 'SENHA*',
                         hintText: 'Senha',
                         controller: _senhaController,
                         obscureText: !_senhaVisivel,
@@ -195,7 +198,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       ),
                       const SizedBox(height: 16),
                       BooklyTextField(
-                        label: 'CONFIRMAR SENHA',
+                        label: 'CONFIRMAR SENHA*',
                         hintText: 'Confirmar Senha',
                         controller: _confirmarSenhaController,
                         obscureText: !_confirmarSenhaVisivel,
@@ -207,6 +210,12 @@ class _CriarContaPageState extends State<CriarContaPage> {
                           ),
                           onPressed: () => setState(() => _confirmarSenhaVisivel = !_confirmarSenhaVisivel),
                         ),
+                      ),
+                      const SizedBox(height: 16),
+                      BooklyTextField(
+                        label: 'CÓDIGO DE ADM',
+                        hintText: 'Apenas para conta de administrador',
+                        controller: _adminCodeController,
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(
