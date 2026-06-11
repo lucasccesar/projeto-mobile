@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/services/auth_service.dart';
 import '../widgets/logo.dart';
 import '../widgets/text_field.dart';
 import '../widgets/primary_button.dart';
@@ -17,7 +18,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
+  final _authService = AuthService();
   bool _senhaVisivel = false;
+  bool _carregando = false;
 
   static const Color _fundo = Color(0xFFF5F0E8);
   static const Color _cardFundo = Color(0xFFF0EAD8);
@@ -27,6 +30,37 @@ class _LoginPageState extends State<LoginPage> {
     _emailController.dispose();
     _senhaController.dispose();
     super.dispose();
+  }
+
+  Future<void> _entrar() async {
+    final email = _emailController.text.trim();
+    final senha = _senhaController.text;
+
+    if (email.isEmpty || senha.isEmpty) {
+      _mostrarErro('Preencha email e senha');
+      return;
+    }
+
+    setState(() => _carregando = true);
+    try {
+      await _authService.login(email, senha);
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const CatalogoPage()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      _mostrarErro(e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _carregando = false);
+    }
+  }
+
+  void _mostrarErro(String mensagem) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(mensagem), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -49,6 +83,8 @@ class _LoginPageState extends State<LoginPage> {
                   onToggleSenha: () =>
                       setState(() => _senhaVisivel = !_senhaVisivel),
                   cardFundo: _cardFundo,
+                  carregando: _carregando,
+                  onEntrar: _entrar,
                 ),
               ],
             ),
@@ -65,6 +101,8 @@ class _LoginCard extends StatelessWidget {
   final bool senhaVisivel;
   final VoidCallback onToggleSenha;
   final Color cardFundo;
+  final bool carregando;
+  final VoidCallback onEntrar;
 
   const _LoginCard({
     required this.emailController,
@@ -72,6 +110,8 @@ class _LoginCard extends StatelessWidget {
     required this.senhaVisivel,
     required this.onToggleSenha,
     required this.cardFundo,
+    required this.carregando,
+    required this.onEntrar,
   });
 
   @override
@@ -119,11 +159,8 @@ class _LoginCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           PrimaryButton(
-            label: 'Entrar',
-            onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const CatalogoPage()),
-            ),
+            label: carregando ? 'Entrando...' : 'Entrar',
+            onPressed: carregando ? null : onEntrar,
           ),
           const SizedBox(height: 16),
           Row(

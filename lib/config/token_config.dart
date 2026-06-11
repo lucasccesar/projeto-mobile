@@ -1,5 +1,9 @@
-//ENQUANTO NAO TEM LOGIN
 class TokenConfig {
-  static const String token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJib29rbHkiLCJzdWIiOiJQZWRyb1Rlc3RlQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc5ODQxMzk0fQ.EEERRrrb4zKvJYF9FtUGm3BLDSwqZIA-jEpsYdLx384';
+  // Token da sessão. Vazio até o login; populado por AuthService.login.
+  static String token = '';
+
+  // Dados do usuário logado (preenchidos via GET /api/users/me).
+  static String? userId;
+  static String? userName;
+  static String? userEmail;
 }

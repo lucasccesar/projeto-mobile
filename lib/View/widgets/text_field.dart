@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BooklyTextField extends StatelessWidget {
   final String? label;
@@ -11,6 +12,7 @@ class BooklyTextField extends StatelessWidget {
   final int maxLines;
   final Color? fillColor;
   final bool showBorder;
+  final List<TextInputFormatter>? inputFormatters;
 
   const BooklyTextField({
     super.key,
@@ -24,6 +26,7 @@ class BooklyTextField extends StatelessWidget {
     this.maxLines = 1,
     this.fillColor,
     this.showBorder = true,
+    this.inputFormatters,
   });
 
   @override
@@ -64,6 +67,7 @@ class BooklyTextField extends StatelessWidget {
           keyboardType: keyboardType,
           obscureText: obscureText,
           onChanged: onChanged,
+          inputFormatters: inputFormatters,
           maxLines: obscureText ? 1 : maxLines,
           style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(

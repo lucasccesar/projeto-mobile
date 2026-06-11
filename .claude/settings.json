@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api *)",
+      "PowerShell($r = Invoke-RestMethod \"https://api.github.com/repos/lucasccesar/backend-projeto-mobile/git/trees/main?recursive=1\" -Headers @{\"User-Agent\"=\"claude\"}; $r.tree | Where-Object { $_.path -match \"\\\\.java$|\\\\.properties$|\\\\.yml$|\\\\.yaml$\" } | Select-Object -ExpandProperty path)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(flutter analyze *)"
+    ]
+  }
+}
