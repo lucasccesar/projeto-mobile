@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/services/book_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
@@ -13,6 +14,8 @@ class AdicionarLivroPage extends StatefulWidget {
 }
 
 class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
+  final _bookService = BookService();
+
   String _titulo = '';
   String _autores = '';
   String _isbn = '';
@@ -21,6 +24,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
   String _sinopse = '';
   String _paginas = '';
   String _ano = '';
+  bool _enviando = false;
 
   bool get _podeSubmeter =>
       _titulo.trim().isNotEmpty &&
@@ -32,19 +36,29 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
       _paginas.trim().isNotEmpty &&
       _ano.trim().isNotEmpty;
 
-  void _submeter() {
-    final preco = double.tryParse(_preco.trim().replaceAll(',', '.')) ?? 0.0;
-
-    final livro = Book(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: _titulo.trim(),
-      author: _autores.trim(),
-      genre: _genero.trim(),
-      rating: 0.0,
-      price: preco,
-    );
-
-    Navigator.pop(context, livro);
+  Future<void> _submeter() async {
+    setState(() => _enviando = true);
+    try {
+      final livro = await _bookService.criarLivro(
+        titulo: _titulo.trim(),
+        autores: _autores.trim(),
+        genero: _genero.trim(),
+        preco: double.tryParse(_preco.trim().replaceAll(',', '.')) ?? 0.0,
+        sinopse: _sinopse.trim(),
+        isbn: _isbn.trim(),
+        paginas: int.tryParse(_paginas.trim()) ?? 0,
+        ano: int.tryParse(_ano.trim()) ?? 0,
+      );
+      if (mounted) Navigator.pop(context, livro);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _enviando = false);
+    }
   }
 
   @override
@@ -66,8 +80,7 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SectionLabel(
-                      texto: 'Informações', cor: AppColors.catalogo),
+                  SectionLabel(texto: 'Informações', cor: AppColors.catalogo),
                   const SizedBox(height: 13),
                   BooklyTextField(
                     label: 'TÍTULO DO LIVRO',
@@ -143,13 +156,13 @@ class _AdicionarLivroPageState extends State<AdicionarLivroPage> {
             ),
             const SizedBox(height: 20),
             ActionButton(
-              label: 'Adicionar Livro',
+              label: _enviando ? 'Adicionando...' : 'Adicionar Livro',
               cor: AppColors.catalogo,
-              onPressed: _podeSubmeter ? _submeter : null,
+              onPressed: (_podeSubmeter && !_enviando) ? _submeter : null,
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: _enviando ? null : () => Navigator.pop(context),
               child: Text(
                 'Cancelar',
                 style: TextStyle(

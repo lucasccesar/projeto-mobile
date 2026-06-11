@@ -1,3 +1,4 @@
+import 'package:projeto_mobile/config/token_config.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
@@ -76,21 +77,21 @@ class _BookPageState extends State<BookPage> {
     );
   }
 
-  void _abrirEditar() {
-    Navigator.push(
+  Future<void> _abrirEditar() async {
+    final atualizado = await Navigator.push<Book>(
       context,
-      MaterialPageRoute(
-        builder: (_) => EditarLivroPage(livro: widget.livro),
-      ),
+      MaterialPageRoute(builder: (_) => EditarLivroPage(livro: widget.livro)),
     );
+
+    if (atualizado != null && mounted) {
+      setState(() {});
+    }
   }
 
   void _abrirAvaliar() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AvaliarLivroPage(livro: widget.livro),
-      ),
+      MaterialPageRoute(builder: (_) => AvaliarLivroPage(livro: widget.livro)),
     );
   }
 
@@ -168,8 +169,10 @@ class _BookPageState extends State<BookPage> {
               ],
             ),
           ),
-          const SizedBox(width: 4),
-          _buildBotaoEditar(),
+          if (TokenConfig.isAdmin) ...[
+            const SizedBox(width: 4),
+            _buildBotaoEditar(),
+          ],
         ],
       ),
     );
@@ -289,10 +292,7 @@ class _BookPageState extends State<BookPage> {
       decoration: BoxDecoration(
         color: _ecruWhite,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: _millbrook.withValues(alpha: 0.15),
-          width: 1,
-        ),
+        border: Border.all(color: _millbrook.withValues(alpha: 0.15), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,11 +309,7 @@ class _BookPageState extends State<BookPage> {
           const SizedBox(height: 10),
           Text(
             _sinopsePara(widget.livro.title),
-            style: const TextStyle(
-              fontSize: 13,
-              color: _shadow,
-              height: 1.7,
-            ),
+            style: const TextStyle(fontSize: 13, color: _shadow, height: 1.7),
           ),
         ],
       ),
@@ -417,8 +413,11 @@ class _BookPageState extends State<BookPage> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.shopping_cart_outlined,
-                        size: 16, color: Colors.white),
+                    Icon(
+                      Icons.shopping_cart_outlined,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                     SizedBox(width: 7),
                     Text(
                       'Adicionar ao Carrinho',
@@ -486,10 +485,7 @@ class _BookPageState extends State<BookPage> {
       decoration: BoxDecoration(
         color: _ecruWhite,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: _millbrook.withValues(alpha: 0.10),
-          width: 1,
-        ),
+        border: Border.all(color: _millbrook.withValues(alpha: 0.10), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,8 +534,7 @@ class _BookPageState extends State<BookPage> {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: _starActive.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(99),
@@ -565,11 +560,7 @@ class _BookPageState extends State<BookPage> {
           const SizedBox(height: 10),
           Text(
             comentario.texto,
-            style: const TextStyle(
-              fontSize: 13,
-              color: _shadow,
-              height: 1.6,
-            ),
+            style: const TextStyle(fontSize: 13, color: _shadow, height: 1.6),
           ),
         ],
       ),
@@ -651,7 +642,8 @@ class _ModalColecoesState extends State<_ModalColecoes> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom +
+    final bottomPadding =
+        MediaQuery.of(context).viewInsets.bottom +
         MediaQuery.of(context).padding.bottom;
 
     return SafeArea(
@@ -687,8 +679,11 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                   ),
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.close_rounded,
-                        size: 20, color: _shadow),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      size: 20,
+                      color: _shadow,
+                    ),
                   ),
                 ],
               ),
@@ -698,8 +693,7 @@ class _ModalColecoesState extends State<_ModalColecoes> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  const Icon(Icons.menu_book_rounded,
-                      size: 13, color: _shadow),
+                  const Icon(Icons.menu_book_rounded, size: 13, color: _shadow),
                   const SizedBox(width: 5),
                   Expanded(
                     child: Text(
@@ -734,7 +728,9 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                     }),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       child: Row(
                         children: [
                           Container(
@@ -768,14 +764,15 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color:
-                                        selecionado ? _highland : _millbrook,
+                                    color: selecionado ? _highland : _millbrook,
                                   ),
                                 ),
                                 Text(
                                   '${colecao.qtd} livros',
                                   style: const TextStyle(
-                                      fontSize: 12, color: _shadow),
+                                    fontSize: 12,
+                                    color: _shadow,
+                                  ),
                                 ),
                               ],
                             ),
@@ -797,8 +794,11 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                               ),
                             ),
                             child: selecionado
-                                ? const Icon(Icons.check_rounded,
-                                    size: 13, color: Colors.white)
+                                ? const Icon(
+                                    Icons.check_rounded,
+                                    size: 13,
+                                    color: Colors.white,
+                                  )
                                 : null,
                           ),
                         ],
