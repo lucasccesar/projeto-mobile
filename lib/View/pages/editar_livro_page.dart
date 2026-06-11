@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/services/book_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
@@ -15,11 +16,14 @@ class EditarLivroPage extends StatefulWidget {
 }
 
 class _EditarLivroPageState extends State<EditarLivroPage> {
+  final _bookService = BookService();
+
   late final TextEditingController _tituloController;
   late final TextEditingController _autorController;
   late final TextEditingController _sinopseController;
   late final TextEditingController _generoController;
   late final TextEditingController _precoController;
+  bool _enviando = false;
 
   static const List<String> _generosSugeridos = [
     'Fantasia',
@@ -43,7 +47,7 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
     super.initState();
     _tituloController = TextEditingController(text: widget.livro.title);
     _autorController = TextEditingController(text: widget.livro.author);
-    _sinopseController = TextEditingController();
+    _sinopseController = TextEditingController(text: widget.livro.synopsis);
     _generoController = TextEditingController(text: widget.livro.genre);
     _precoController = TextEditingController(
       text: widget.livro.price.toStringAsFixed(2).replaceAll('.', ','),
@@ -63,8 +67,31 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
     super.dispose();
   }
 
-  void _salvar() {
-    Navigator.pop(context);
+  Future<void> _salvar() async {
+    setState(() => _enviando = true);
+    try {
+      final livroAtualizado = await _bookService.editarLivro(
+        id: widget.livro.id,
+        titulo: _tituloController.text.trim(),
+        autor: _autorController.text.trim(),
+        genero: _generoController.text.trim(),
+        preco: double.tryParse(
+                _precoController.text.trim().replaceAll(',', '.')) ??
+            widget.livro.price,
+        sinopse: _sinopseController.text.trim().isEmpty
+            ? null
+            : _sinopseController.text.trim(),
+      );
+      if (mounted) Navigator.pop(context, livroAtualizado);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _enviando = false);
+    }
   }
 
   void _excluir() {
@@ -94,9 +121,23 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              Navigator.pop(context);
+              setState(() => _enviando = true);
+              try {
+                await _bookService.excluirLivro(widget.livro.id);
+                if (mounted) Navigator.pop(context, 'deleted');
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            e.toString().replaceFirst('Exception: ', ''))),
+                  );
+                }
+              } finally {
+                if (mounted) setState(() => _enviando = false);
+              }
             },
             child: Text(
               'Excluir',
@@ -179,15 +220,15 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
             ),
             const SizedBox(height: 20),
             ActionButton(
-              label: 'Salvar alterações',
-              onPressed: _podeSubmeter ? _salvar : null,
+              label: _enviando ? 'Salvando...' : 'Salvar alterações',
+              onPressed: (_podeSubmeter && !_enviando) ? _salvar : null,
             ),
             const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
               height: 43,
               child: OutlinedButton.icon(
-                onPressed: _excluir,
+                onPressed: _enviando ? null : _excluir,
                 icon: Icon(
                   Icons.delete_outline,
                   size: 16,
@@ -231,8 +272,7 @@ class _EditarLivroPageState extends State<EditarLivroPage> {
           runSpacing: 6,
           children: _generosSugeridos.map((g) {
             final selecionado =
-                _generoController.text.trim().toLowerCase() ==
-                    g.toLowerCase();
+                _generoController.text.trim().toLowerCase() == g.toLowerCase();
             return GestureDetector(
               onTap: () => setState(() => _generoController.text = g),
               child: AnimatedContainer(

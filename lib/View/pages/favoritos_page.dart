@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/services/book_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
@@ -14,32 +15,31 @@ class FavoritosPage extends StatefulWidget {
 }
 
 class _FavoritosPageState extends State<FavoritosPage> {
-  final List<Book> _favoritos = [
-    Book(
-      id: '1',
-      title: 'O Senhor dos Anéis',
-      author: 'J.R.R. Tolkien',
-      genre: 'Fantasia',
-      rating: 9.8,
-      price: 89.90,
-    ),
-    Book(
-      id: '3',
-      title: '1984',
-      author: 'George Orwell',
-      genre: 'Distopia',
-      rating: 9.3,
-      price: 59.90,
-    ),
-    Book(
-      id: '8',
-      title: 'Crime e Castigo',
-      author: 'Fiódor Dostoiévski',
-      genre: 'Romance Psicológico',
-      rating: 9.2,
-      price: 69.90,
-    ),
-  ];
+  final _bookService = BookService();
+  List<Book> _favoritos = [];
+  bool _carregando = true;
+  String? _erro;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarFavoritos();
+  }
+
+  Future<void> _carregarFavoritos() async {
+    setState(() {
+      _carregando = true;
+      _erro = null;
+    });
+    try {
+      final favoritos = await _bookService.fetchFavoritos();
+      setState(() => _favoritos = favoritos);
+    } catch (e) {
+      setState(() => _erro = e.toString());
+    } finally {
+      setState(() => _carregando = false);
+    }
+  }
 
   void _removerFavorito(String id) {
     setState(() => _favoritos.removeWhere((l) => l.id == id));
@@ -57,21 +57,62 @@ class _FavoritosPageState extends State<FavoritosPage> {
         iconeSeta: false,
         iconeCarrinho: false,
       ),
-      body: _favoritos.isEmpty
-          ? const _EmptyFavoritos()
-          : ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              itemCount: _favoritos.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 0),
-              itemBuilder: (context, index) {
-                return _FavoritoCard(
-                  livro: _favoritos[index],
-                  onRemover: () => _removerFavorito(_favoritos[index].id),
-                );
-              },
-            ),
+      body: _buildBody(),
       bottomNavigationBar: const Rodape(
         selectedTab: NavTab.favoritos,
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_carregando) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_erro != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Color(0xFF8B7355)),
+            const SizedBox(height: 12),
+            const Text(
+              'Erro ao carregar favoritos',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF5A4631),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _carregarFavoritos,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.favoritos,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: const Text('Tentar novamente'),
+            ),
+          ],
+        ),
+      );
+    }
+    if (_favoritos.isEmpty) return const _EmptyFavoritos();
+    return RefreshIndicator(
+      onRefresh: _carregarFavoritos,
+      color: AppColors.favoritos,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        itemCount: _favoritos.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 0),
+        itemBuilder: (context, index) {
+          return _FavoritoCard(
+            livro: _favoritos[index],
+            onRemover: () => _removerFavorito(_favoritos[index].id),
+          );
+        },
       ),
     );
   }
@@ -195,7 +236,6 @@ class _FavoritoCard extends StatelessWidget {
     );
   }
 }
-
 
 class _EmptyFavoritos extends StatelessWidget {
   const _EmptyFavoritos();

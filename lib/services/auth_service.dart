@@ -7,8 +7,6 @@ import 'package:projeto_mobile/config/url_config.dart';
 class AuthService {
   final url = ApiConfig.baseUrl;
 
-  /// Faz login no back (POST /api/auth/login), guarda o token da sessão
-  /// e carrega os dados do usuário logado.
   Future<void> login(String email, String senha) async {
     final response = await http.post(
       Uri.parse('$url/api/auth/login'),
@@ -22,11 +20,13 @@ class AuthService {
       );
     }
 
-    TokenConfig.token = jsonDecode(response.body)['token'] as String;
+    final json = jsonDecode(response.body);
+    TokenConfig.token = json['token']?.toString() ?? '';
+    TokenConfig.userRole = _extrairRoleDoToken(TokenConfig.token);
+
     await _carregarUsuario();
   }
 
-  /// Cria a conta (POST /api/auth/register) e já entra autenticado.
   Future<void> cadastrar({
     required String nome,
     required String email,
@@ -54,11 +54,9 @@ class AuthService {
       throw Exception(_mensagemErro(response));
     }
 
-    // Cadastro OK: faz login para já entrar autenticado.
     await login(email, senha);
   }
 
-  /// GET /api/users/me — preenche id/nome/email do usuário logado.
   Future<void> _carregarUsuario() async {
     final response = await http.get(
       Uri.parse('$url/api/users/me'),
@@ -73,10 +71,54 @@ class AuthService {
       TokenConfig.userId = json['id']?.toString();
       TokenConfig.userName = json['name'] as String?;
       TokenConfig.userEmail = json['email'] as String?;
+      TokenConfig.userRole =
+          json['type']?.toString() ??
+          json['userType']?.toString() ??
+          json['role']?.toString() ??
+          json['authorities']?.toString() ??
+          TokenConfig.userRole;
     }
   }
 
-  /// Extrai a mensagem do ExceptionResponseDTO ({message, statusCode, ...}).
+  Map<String, dynamic>? _decodeJwtPayload(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length < 2) return null;
+
+      final normalized = base64Url.normalize(parts[1]);
+      final decoded = utf8.decode(base64Url.decode(normalized));
+      return jsonDecode(decoded) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _extrairRoleDoToken(String token) {
+    final payload = _decodeJwtPayload(token);
+    if (payload == null) return null;
+
+    final userType = payload['userType']?.toString();
+    if (userType != null && userType.isNotEmpty) return userType;
+
+    final type = payload['type']?.toString();
+    if (type != null && type.isNotEmpty) return type;
+
+    final role = payload['role']?.toString();
+    if (role != null && role.isNotEmpty) return role;
+
+    final roles = payload['roles'];
+    if (roles is List && roles.isNotEmpty) {
+      return roles.first.toString();
+    }
+
+    final authorities = payload['authorities'];
+    if (authorities is List && authorities.isNotEmpty) {
+      return authorities.first.toString();
+    }
+
+    return null;
+  }
+
   String _mensagemErro(http.Response response, {String? fallbackAuth}) {
     if (fallbackAuth != null &&
         (response.statusCode == 401 || response.statusCode == 403)) {
@@ -86,9 +128,7 @@ class AuthService {
       final json = jsonDecode(response.body);
       final message = json['message'];
       if (message is String && message.isNotEmpty) return message;
-    } catch (_) {
-      // corpo não-JSON: cai no genérico
-    }
+    } catch (_) {}
     return 'Erro na requisição (${response.statusCode})';
   }
 }
