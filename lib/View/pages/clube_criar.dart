@@ -5,6 +5,7 @@ import 'package:projeto_mobile/View/widgets/livro_row_widget.dart';
 import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/models/livro_selecionavel.dart';
 import 'package:projeto_mobile/services/clube_do_livro_service.dart';
 
@@ -25,8 +26,7 @@ class _ClubeCriarState extends State<ClubeCriar> {
   bool _criando = false;
   String? _frequenciaSelecionada;
 
-  //TODO:substituir pelo id do user logado
-  static const String meuUserId = 'c9ebcfc1-78dd-4583-b35a-7ed3d7578530';
+  String get meuUserId => TokenConfig.userId!;
 
   final List<LivroSelecionavel> _livros = [
     LivroSelecionavel(

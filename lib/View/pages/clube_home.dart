@@ -9,6 +9,7 @@ import 'package:projeto_mobile/View/pages/clube_livro_proximo.dart';
 import 'package:projeto_mobile/View/pages/clube_mensagem.dart';
 import 'package:projeto_mobile/View/widgets/clube_home_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/clube_do_livro.dart';
 import 'package:projeto_mobile/services/usuario_participante_service.dart';
@@ -30,8 +31,7 @@ class _ClubeHomeState extends State<ClubeHome> {
   final ParticipantUserService _participantService = ParticipantUserService();
   late Future<bool> _ehParticipante;
 
-  // TODO: substituir pelo id do usuário logado
-  static const String meuUserId = 'c9ebcfc1-78dd-4583-b35a-7ed3d7578530';
+  String get meuUserId => TokenConfig.userId!;
 
   @override
   void initState() {

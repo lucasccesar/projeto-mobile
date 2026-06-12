@@ -3,6 +3,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/clube_mensagem.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/models/clube_mensagem.dart';
 import 'package:projeto_mobile/services/clube_mensagem_service.dart';
 
@@ -21,7 +22,7 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
   List<ClubeMensagemModel> _mensagens = [];                      
   bool _enviando = false;                                           
 
-  static const String userId = 'c9ebcfc1-78dd-4583-b35a-7ed3d7578530';
+  String get userId => TokenConfig.userId!;
 
   @override
   void initState() {
