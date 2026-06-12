@@ -24,10 +24,10 @@ class BookClubAssignmentService {
 
       // pega o primeiro assignment do clube
       final assignment = content.first;
-      final start = assignment['startDate'];   
+      final start = assignment['startDate'];
       final finish = assignment['finishDate'];
 
-      // formata para mes e dia 
+      // formata para mes e dia
       return '${_formatDate(start)} - ${_formatDate(finish)}';
     } else {
       return 'Sem data';
@@ -37,5 +37,30 @@ class BookClubAssignmentService {
   String _formatDate(String date) {
     final parts = date.split('-');
     return '${parts[2]}/${parts[1]}';
+  }
+
+  Future<Map<String, String>?> fetchAssignmentAtual(String clubId) async {
+    final response = await http.get(
+      Uri.parse('$url/api/bookclubassignment/club/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List content = json['content'];
+      if (content.isEmpty) return null;
+
+      // pega o assignment mais recente
+      final assignment = content.first;
+      return {
+        'bookId': assignment['bookId'],
+        'startDate': assignment['startDate'],
+        'finishDate': assignment['finishDate'],
+      };
+    }
+    return null;
   }
 }

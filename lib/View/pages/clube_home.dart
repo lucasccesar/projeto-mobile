@@ -12,6 +12,8 @@ import 'package:projeto_mobile/View/widgets/clube_navegacao.dart';
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/clube_do_livro.dart';
+import 'package:projeto_mobile/services/book_service.dart';
+import 'package:projeto_mobile/services/clube_assignment.dart';
 import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
 class ClubeHome extends StatefulWidget {
@@ -29,13 +31,20 @@ class ClubeHome extends StatefulWidget {
 
 class _ClubeHomeState extends State<ClubeHome> {
   final ParticipantUserService _participantService = ParticipantUserService();
+  final BookService _bookService = BookService();
+  final BookClubAssignmentService _assignmentService = BookClubAssignmentService();
+
   late Future<bool> _ehParticipante;
+  Book? _livroAtual;
+  String? _startDate;
+  String? _finishDate;
 
   String get meuUserId => TokenConfig.userId!;
 
   @override
   void initState() {
     super.initState();
+    _carregarLivroAtual();
     if (widget.jaParticipante) {
       widget.clube.participantes = 1;
       _ehParticipante = Future.value(true);
@@ -44,11 +53,19 @@ class _ClubeHomeState extends State<ClubeHome> {
     }
   }
 
+  Future<void> _carregarLivroAtual() async {
+    final assignment = await _assignmentService.fetchAssignmentAtual(widget.clube.id);
+    if (assignment == null) return;
+
+    final livro = await _bookService.fetchLivroPorId(assignment['bookId']!);
+    setState(() {
+      _livroAtual = livro;
+      _startDate = assignment['startDate'];
+      _finishDate = assignment['finishDate'];
+    });
+  }
+
   Future<bool> _verificarParticipacao() async {
-    final count = await _participantService.fetchParticipantCount(
-      widget.clube.id,
-    );
-    // busca a lista completa para verificar se o usuário está
     return await _participantService.usuarioEhParticipante(
       clubId: widget.clube.id,
       userId: meuUserId,
@@ -65,6 +82,7 @@ class _ClubeHomeState extends State<ClubeHome> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BooklyAppBar(
@@ -83,10 +101,8 @@ class _ClubeHomeState extends State<ClubeHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // linha com icone + nome e tema+ botoes
                 Row(
                   children: [
-                    //icone do clube
                     Container(
                       width: 50,
                       height: 50,
@@ -99,10 +115,7 @@ class _ClubeHomeState extends State<ClubeHome> {
                         color: Color(0xFF4A7FA5),
                       ),
                     ),
-
                     SizedBox(width: 12),
-
-                    //nome e tema do clube
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +144,6 @@ class _ClubeHomeState extends State<ClubeHome> {
 
                 SizedBox(height: 10),
 
-                // botao abrir chat e config
                 Row(
                   children: [
                     // botão entrar
@@ -139,8 +151,7 @@ class _ClubeHomeState extends State<ClubeHome> {
                       future: _ehParticipante,
                       builder: (context, snapshot) {
                         final ehParticipante = snapshot.data ?? true;
-                        if (ehParticipante)
-                          return SizedBox.shrink(); //esconde o botão
+                        if (ehParticipante) return SizedBox.shrink();
 
                         return Expanded(
                           child: Padding(
@@ -163,15 +174,14 @@ class _ClubeHomeState extends State<ClubeHome> {
                       },
                     ),
 
-                    // botão abrir chat
+                    // botão chat
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) =>
-                                  ClubeMensagem(clubeId: widget.clube.id),
+                              builder: (_) => ClubeMensagem(clubeId: widget.clube.id),
                             ),
                           );
                         },
@@ -188,38 +198,33 @@ class _ClubeHomeState extends State<ClubeHome> {
                       ),
                     ),
 
-                    SizedBox(width: 10),
-
-                    // botão config
-                    if (widget.clube.creatorId == TokenConfig.userId)
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ClubeConfig(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.settings_outlined, size: 18),
-                      label: Text('Config'),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.tertiary,
-                        side: BorderSide(
-                          color: Theme.of(
+                    // botão config — só aparece para o criador
+                    if (widget.clube.creatorId == TokenConfig.userId) ...[
+                      SizedBox(width: 10),
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
                             context,
-                          ).colorScheme.tertiary.withOpacity(0.25),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 16,
+                            MaterialPageRoute(
+                              builder: (_) => const ClubeConfig(),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.settings_outlined, size: 18),
+                        label: Text('Config'),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor: Theme.of(context).colorScheme.tertiary,
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.25),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
 
@@ -246,20 +251,22 @@ class _ClubeHomeState extends State<ClubeHome> {
             height: 1,
           ),
 
-          //SizedBox(height: 15),
-
-          // resto da tela
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClubeHomeWidget(),
+                  // widget do livro atual
+                  ClubeHomeWidget(
+                    livro: _livroAtual,
+                    startDate: _startDate,
+                    finishDate: _finishDate,
+                  ),
 
                   SizedBox(height: 5),
 
-                  //descricao do clube
+                  // descrição do clube
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0),
                     child: Text(
@@ -274,29 +281,22 @@ class _ClubeHomeState extends State<ClubeHome> {
 
                   SizedBox(height: 15),
 
-                  //botao
+                  // botão ver detalhes do livro
                   Padding(
                     padding: EdgeInsets.fromLTRB(18.0, 0, 18.0, 0),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          final livro = Book(
-                            id: '1',
-                            title: 'O Senhor dos Anéis',
-                            author: 'J.R.R. Tolkien',
-                            genre: 'Fantasia',
-                            price: 59.90,
-                            rating: 9.8,
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BookPage(livro: livro),
-                            ),
-                          );
-                        },
+                        onPressed: _livroAtual == null
+                            ? null // desabilita se não tiver livro
+                            : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BookPage(livro: _livroAtual!),
+                                  ),
+                                );
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.clube,
                           foregroundColor: Colors.white,
@@ -306,7 +306,9 @@ class _ClubeHomeState extends State<ClubeHome> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         child: Text(
-                          'Ver Detalhes do Livro',
+                          _livroAtual == null
+                              ? 'Nenhum livro no momento'
+                              : 'Ver Detalhes do Livro',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -315,6 +317,8 @@ class _ClubeHomeState extends State<ClubeHome> {
                       ),
                     ),
                   ),
+
+                  SizedBox(height: 20),
                 ],
               ),
             ),
