@@ -191,6 +191,7 @@ class _ClubeHomeState extends State<ClubeHome> {
                     SizedBox(width: 10),
 
                     // botão config
+                    if (widget.clube.creatorId == TokenConfig.userId)
                     OutlinedButton.icon(
                       onPressed: () {
                         Navigator.push(

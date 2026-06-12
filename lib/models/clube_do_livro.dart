@@ -3,6 +3,7 @@ class ClubeDoLivro {
   final String nome;
   final String descricao;
   final String tema;
+  final String? creatorId;
   int participantes;
   String datas;
 
@@ -11,6 +12,7 @@ class ClubeDoLivro {
     required this.nome,
     required this.descricao,
     required this.tema,
+    this.creatorId,
     this.participantes = 0,
     this.datas = 'Sem datas definidas',
   });
@@ -24,6 +26,7 @@ class ClubeDoLivro {
         : json['description'], //pode ser null
 
       tema: json['theme'],
+      creatorId: json['creatorId']?.toString(),
     );
   }
 }

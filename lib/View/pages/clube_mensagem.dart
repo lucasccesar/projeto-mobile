@@ -6,6 +6,7 @@ import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/models/clube_mensagem.dart';
 import 'package:projeto_mobile/services/clube_mensagem_service.dart';
+import 'package:projeto_mobile/services/usuario_service.dart';
 
 class ClubeMensagem extends StatefulWidget {
   final String clubeId;
@@ -18,9 +19,11 @@ class ClubeMensagem extends StatefulWidget {
 class _ClubeMensagemState extends State<ClubeMensagem> {
   final ClubeMensagemService _service = ClubeMensagemService();
   final TextEditingController _controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController();   
-  List<ClubeMensagemModel> _mensagens = [];                      
-  bool _enviando = false;                                           
+  final ScrollController _scrollController = ScrollController();
+  final UsuarioService _usuarioService = UsuarioService();
+  final Map<String, String> _cacheNomes = {};
+  List<ClubeMensagemModel> _mensagens = [];
+  bool _enviando = false;
 
   String get userId => TokenConfig.userId!;
 
@@ -32,6 +35,19 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
 
   Future<void> _carregarMensagens() async {
     final mensagens = await _service.fetchMensagens(widget.clubeId);
+
+    //busca nomes de todos os usuários únicos em paralelo
+    final idsUnicos = mensagens.map((m) => m.userId).toSet();
+    await Future.wait(
+      idsUnicos.map((id) async {
+        if (id == TokenConfig.userId) {
+          _cacheNomes[id] = TokenConfig.userName ?? 'Eu';
+        } else {
+          _cacheNomes[id] = await _usuarioService.fetchNome(id);
+        }
+      }),
+    );
+
     setState(() => _mensagens = mensagens);
     _scrollParaBaixo();
   }
@@ -50,13 +66,14 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
       );
 
       _controller.clear();
+      _cacheNomes[userId] = TokenConfig.userName ?? 'Eu';
       setState(() => _mensagens.add(novaMensagem));
       _scrollParaBaixo();
     } catch (e) {
       print('Erro ao enviar mensagem: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao enviar mensagem')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Erro ao enviar mensagem')));
     } finally {
       setState(() => _enviando = false);
     }
@@ -101,7 +118,9 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
         children: [
           Expanded(
             child: _mensagens.isEmpty
-                ? const Center(child: Text('Nenhuma mensagem ainda. Seja o primeiro!'))
+                ? const Center(
+                    child: Text('Nenhuma mensagem ainda. Seja o primeiro!'),
+                  )
                 : ListView.builder(
                     controller: _scrollController,
                     padding: const EdgeInsets.all(8),
@@ -110,7 +129,7 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
                       final mensagem = _mensagens[index];
                       final bool isMe = mensagem.userId == userId;
                       return ClubeMensagemWidget(
-                        autor: isMe ? 'Eu' : mensagem.userId,
+                        autor: isMe ? (TokenConfig.userName ?? 'Eu') : (_cacheNomes[mensagem.userId] ?? 'Usuário'),
                         texto: mensagem.message,
                         hora: _formatarHora(mensagem.messageDate),
                         isMe: isMe,
@@ -121,7 +140,11 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
 
           Divider(
             height: 1,
-            color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8),
+            color: Color.lerp(
+              Theme.of(context).colorScheme.tertiary,
+              Colors.white,
+              0.8,
+            ),
           ),
 
           Container(
@@ -132,29 +155,44 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
                 SizedBox(width: 14),
                 Expanded(
                   child: TextField(
-                    controller: _controller,        
-                    onSubmitted: (_) => _enviarMensagem(), 
+                    controller: _controller,
+                    onSubmitted: (_) => _enviarMensagem(),
                     decoration: InputDecoration(
                       hintText: 'Escrever mensagem...',
-                      hintStyle: TextStyle(color: AppColors.clube, fontSize: 17),
+                      hintStyle: TextStyle(
+                        color: AppColors.clube,
+                        fontSize: 17,
+                      ),
                       fillColor: Theme.of(context).colorScheme.secondary,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
-                          color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8)!,
+                          color: Color.lerp(
+                            Theme.of(context).colorScheme.tertiary,
+                            Colors.white,
+                            0.8,
+                          )!,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
-                          color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8)!,
+                          color: Color.lerp(
+                            Theme.of(context).colorScheme.tertiary,
+                            Colors.white,
+                            0.8,
+                          )!,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(99),
                         borderSide: BorderSide(
-                          color: Color.lerp(Theme.of(context).colorScheme.tertiary, Colors.white, 0.8)!,
+                          color: Color.lerp(
+                            Theme.of(context).colorScheme.tertiary,
+                            Colors.white,
+                            0.8,
+                          )!,
                         ),
                       ),
                     ),
@@ -171,7 +209,10 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
                   child: _enviando
                       ? const Padding(
                           padding: EdgeInsets.all(10),
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         )
                       : IconButton(
                           onPressed: _enviarMensagem,
