@@ -4,6 +4,7 @@ import 'package:projeto_mobile/View/widgets/primary_button.dart';
 import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 
 class PerfilEditar extends StatefulWidget {
   const PerfilEditar({super.key});
@@ -18,6 +19,14 @@ class _PerfilEditarState extends State<PerfilEditar> {
   final _senhaAtualController = TextEditingController();
   final _novaSenhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final usuario = TokenConfig.usuario;
+    _nomeController.text = usuario?.nome ?? '';
+    _emailController.text = usuario?.email ?? '';
+  }
 
   @override
   void dispose() {

@@ -10,24 +10,24 @@ import 'package:projeto_mobile/View/widgets/perfil_card.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 
 class PerfilHome extends StatelessWidget {
-  final String nome;
-  final String email;
   final String livros;
   final String clubes;
 
   const PerfilHome({
-    //TODO: linkar com back
     super.key,
-    this.nome = 'nome do user',
-    this.email = 'email do user',
     this.livros = '42',
     this.clubes = '2',
   });
 
   @override
   Widget build(BuildContext context) {
+    final usuario = TokenConfig.usuario;
+    final nome = usuario?.nome.isNotEmpty == true ? usuario!.nome : 'Usuário';
+    final email = usuario?.email ?? '';
+
     return Scaffold(
       drawer: SidebarWidget(),
       appBar: BooklyAppBar(
@@ -91,9 +91,11 @@ class PerfilHome extends StatelessWidget {
 
               sair: true,
               onTap: () {
-                Navigator.push(
+                TokenConfig.limpar();
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (_) => const LoginPage()),
+                  (route) => false,
                 );
               },
             ),

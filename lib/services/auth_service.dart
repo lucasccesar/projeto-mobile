@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/config/url_config.dart';
+import 'package:projeto_mobile/models/usuario.dart';
 
 class AuthService {
   final url = ApiConfig.baseUrl;
@@ -70,13 +71,11 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      TokenConfig.userId = json['id']?.toString();
-      TokenConfig.userName = json['name'] as String?;
-      TokenConfig.userEmail = json['email'] as String?;
+      TokenConfig.usuario = Usuario.fromJson(json);
+      // Mantém o fallback de `authorities` (não coberto por Usuario.fromJson) e
+      // a role do JWT caso o back não envie o tipo em /me.
       TokenConfig.userRole =
-          json['type']?.toString() ??
-          json['userType']?.toString() ??
-          json['role']?.toString() ??
+          TokenConfig.usuario?.tipo ??
           json['authorities']?.toString() ??
           TokenConfig.userRole;
     }
