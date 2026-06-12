@@ -16,7 +16,9 @@ class ClubeDoLivro {
     this.participantes = 0,
     this.datas = 'Sem datas definidas',
   });
+
   factory ClubeDoLivro.fromJson(Map<String, dynamic> json) {
+    //print('JSON do clube: $json');
     return ClubeDoLivro(
       id: json['id'],
       nome: json['name'],

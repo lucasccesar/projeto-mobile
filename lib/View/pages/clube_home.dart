@@ -32,7 +32,8 @@ class ClubeHome extends StatefulWidget {
 class _ClubeHomeState extends State<ClubeHome> {
   final ParticipantUserService _participantService = ParticipantUserService();
   final BookService _bookService = BookService();
-  final BookClubAssignmentService _assignmentService = BookClubAssignmentService();
+  final BookClubAssignmentService _assignmentService =
+      BookClubAssignmentService();
 
   late Future<bool> _ehParticipante;
   Book? _livroAtual;
@@ -44,6 +45,8 @@ class _ClubeHomeState extends State<ClubeHome> {
   @override
   void initState() {
     super.initState();
+    // print('creatorId do clube: ${widget.clube.creatorId}');
+    // print('meuUserId: ${TokenConfig.userId}');
     _carregarLivroAtual();
     if (widget.jaParticipante) {
       widget.clube.participantes = 1;
@@ -54,7 +57,9 @@ class _ClubeHomeState extends State<ClubeHome> {
   }
 
   Future<void> _carregarLivroAtual() async {
-    final assignment = await _assignmentService.fetchAssignmentAtual(widget.clube.id);
+    final assignment = await _assignmentService.fetchAssignmentAtual(
+      widget.clube.id,
+    );
     if (assignment == null) return;
 
     final livro = await _bookService.fetchLivroPorId(assignment['bookId']!);
@@ -177,11 +182,17 @@ class _ClubeHomeState extends State<ClubeHome> {
                     // botão chat
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {
+                        onPressed: () async {
+                          final participante =
+                              await _ehParticipante; // ⬅️ await no future
+                          if (!mounted) return;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => ClubeMensagem(clubeId: widget.clube.id),
+                              builder: (_) => ClubeMensagem(
+                                clubeId: widget.clube.id,
+                                ehParticipante: participante,
+                              ),
                             ),
                           );
                         },
@@ -213,15 +224,24 @@ class _ClubeHomeState extends State<ClubeHome> {
                         icon: Icon(Icons.settings_outlined, size: 18),
                         label: Text('Config'),
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          foregroundColor: Theme.of(context).colorScheme.tertiary,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.tertiary,
                           side: BorderSide(
-                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.25),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.tertiary.withOpacity(0.25),
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
                         ),
                       ),
                     ],
@@ -293,7 +313,8 @@ class _ClubeHomeState extends State<ClubeHome> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => BookPage(livro: _livroAtual!),
+                                    builder: (_) =>
+                                        BookPage(livro: _livroAtual!),
                                   ),
                                 );
                               },

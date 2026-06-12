@@ -10,7 +10,12 @@ import 'package:projeto_mobile/services/usuario_service.dart';
 
 class ClubeMensagem extends StatefulWidget {
   final String clubeId;
-  const ClubeMensagem({super.key, required this.clubeId});
+  final bool ehParticipante;
+  const ClubeMensagem({
+    super.key,
+    required this.clubeId,
+    required this.ehParticipante,
+  });
 
   @override
   State<ClubeMensagem> createState() => _ClubeMensagemState();
@@ -129,7 +134,9 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
                       final mensagem = _mensagens[index];
                       final bool isMe = mensagem.userId == userId;
                       return ClubeMensagemWidget(
-                        autor: isMe ? (TokenConfig.userName ?? 'Eu') : (_cacheNomes[mensagem.userId] ?? 'Usuário'),
+                        autor: isMe
+                            ? (TokenConfig.userName ?? 'Eu')
+                            : (_cacheNomes[mensagem.userId] ?? 'Usuário'),
                         texto: mensagem.message,
                         hora: _formatarHora(mensagem.messageDate),
                         isMe: isMe,
@@ -147,83 +154,98 @@ class _ClubeMensagemState extends State<ClubeMensagem> {
             ),
           ),
 
-          Container(
-            width: double.infinity,
-            height: 80,
-            child: Row(
-              children: [
-                SizedBox(width: 14),
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    onSubmitted: (_) => _enviarMensagem(),
-                    decoration: InputDecoration(
-                      hintText: 'Escrever mensagem...',
-                      hintStyle: TextStyle(
-                        color: AppColors.clube,
-                        fontSize: 17,
-                      ),
-                      fillColor: Theme.of(context).colorScheme.secondary,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(99),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Colors.white,
-                            0.8,
-                          )!,
+          // substitui o Container com height: 80 por:
+          if (widget.ehParticipante)
+            Container(
+              width: double.infinity,
+              height: 80,
+              child: Row(
+                children: [
+                  SizedBox(width: 14),
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      onSubmitted: (_) => _enviarMensagem(),
+                      decoration: InputDecoration(
+                        hintText: 'Escrever mensagem...',
+                        hintStyle: TextStyle(
+                          color: AppColors.clube,
+                          fontSize: 17,
                         ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(99),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Colors.white,
-                            0.8,
-                          )!,
+                        fillColor: Theme.of(context).colorScheme.secondary,
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(99),
+                          borderSide: BorderSide(
+                            color: Color.lerp(
+                              Theme.of(context).colorScheme.tertiary,
+                              Colors.white,
+                              0.8,
+                            )!,
+                          ),
                         ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(99),
-                        borderSide: BorderSide(
-                          color: Color.lerp(
-                            Theme.of(context).colorScheme.tertiary,
-                            Colors.white,
-                            0.8,
-                          )!,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(99),
+                          borderSide: BorderSide(
+                            color: Color.lerp(
+                              Theme.of(context).colorScheme.tertiary,
+                              Colors.white,
+                              0.8,
+                            )!,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(99),
+                          borderSide: BorderSide(
+                            color: Color.lerp(
+                              Theme.of(context).colorScheme.tertiary,
+                              Colors.white,
+                              0.8,
+                            )!,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.clube,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: _enviando
-                      ? const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
+                  SizedBox(width: 10),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.clube,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: _enviando
+                        ? const Padding(
+                            padding: EdgeInsets.all(10),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: _enviarMensagem,
+                            icon: Icon(Icons.send),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
-                        )
-                      : IconButton(
-                          onPressed: _enviarMensagem,
-                          icon: Icon(Icons.send),
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                  ),
+                  SizedBox(width: 14),
+                ],
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Entre no clube para participar do chat!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.clube,
+                  fontSize: 14, fontWeight: FontWeight.bold,
                 ),
-                SizedBox(width: 14),
-              ],
+              ),
             ),
-          ),
         ],
       ),
     );

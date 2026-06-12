@@ -63,4 +63,21 @@ class BookClubAssignmentService {
     }
     return null;
   }
+
+  Future<void> addBookToClub({
+    required String clubId,
+    required String bookId,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$url/api/bookclubassignment/club/$clubId/book/$bookId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Erro ao adicionar livro ao clube');
+    }
+  }
 }
