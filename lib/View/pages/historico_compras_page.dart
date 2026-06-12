@@ -2,80 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/pedido.dart';
+import 'package:projeto_mobile/services/compra_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 
-class HistoricoComprasPage extends StatelessWidget {
+class HistoricoComprasPage extends StatefulWidget {
   const HistoricoComprasPage({super.key});
 
-  static final List<Pedido> _pedidos = [
-    Pedido(
-      id: '2041',
-      data: DateTime(2026, 4, 20),
-      status: 'Entregue',
-      livros: [
-        const Book(
-          id: 'b1',
-          title: 'O Senhor dos Anéis',
-          author: 'J.R.R. Tolkien',
-          genre: 'Fantasia',
-          rating: 4.9,
-          price: 89.90,
-        ),
-        const Book(
-          id: 'b2',
-          title: 'Duna',
-          author: 'Frank Herbert',
-          genre: 'Ficção Científica',
-          rating: 4.8,
-          price: 99.90,
-        ),
-      ],
-    ),
-    Pedido(
-      id: '1988',
-      data: DateTime(2026, 4, 5),
-      status: 'Entregue',
-      livros: [
-        const Book(
-          id: 'b3',
-          title: '1984',
-          author: 'George Orwell',
-          genre: 'Distopia',
-          rating: 4.7,
-          price: 59.90,
-        ),
-      ],
-    ),
-    Pedido(
-      id: '1754',
-      data: DateTime(2026, 3, 12),
-      status: 'Entregue',
-      livros: [
-        const Book(
-          id: 'b4',
-          title: 'Fundação',
-          author: 'Isaac Asimov',
-          genre: 'Ficção Científica',
-          rating: 4.8,
-          price: 74.90,
-        ),
-        const Book(
-          id: 'b5',
-          title: 'Dom Quixote',
-          author: 'Cervantes',
-          genre: 'Clássico',
-          rating: 4.6,
-          price: 59.90,
-        ),
-      ],
-    ),
-  ];
+  @override
+  State<HistoricoComprasPage> createState() => _HistoricoComprasPageState();
+}
+
+class _HistoricoComprasPageState extends State<HistoricoComprasPage> {
+  final _compraService = CompraService();
+  late Future<List<Pedido>> _futuro;
+
+  @override
+  void initState() {
+    super.initState();
+    _futuro = _compraService.buscarHistorico();
+  }
+
+  void _recarregar() {
+    setState(() {
+      _futuro = _compraService.buscarHistorico();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final totalLivros = _pedidos.fold(0, (s, p) => s + p.totalLivros);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F0E8),
       appBar: BooklyAppBar(
@@ -85,24 +40,121 @@ class HistoricoComprasPage extends StatelessWidget {
         iconeSeta: true,
         iconeCarrinho: false,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: FutureBuilder<List<Pedido>>(
+        future: _futuro,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.compra),
+            );
+          }
+          if (snapshot.hasError) {
+            return _Erro(
+              mensagem:
+                  snapshot.error.toString().replaceFirst('Exception: ', ''),
+              onTentarNovamente: _recarregar,
+            );
+          }
+
+          final pedidos = snapshot.data ?? [];
+          if (pedidos.isEmpty) {
+            return const _Vazio();
+          }
+
+          final totalLivros = pedidos.fold(0, (s, p) => s + p.totalLivros);
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                child: Text(
+                  '$totalLivros livros comprados',
+                  style:
+                      const TextStyle(fontSize: 13, color: Color(0xFF888888)),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  itemCount: pedidos.length,
+                  itemBuilder: (_, i) => _PedidoCard(pedido: pedidos[i]),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _Vazio extends StatelessWidget {
+  const _Vazio();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
-            child: Text(
-              '$totalLivros livros comprados',
-              style: const TextStyle(fontSize: 13, color: Color(0xFF888888)),
+          Icon(
+            Icons.receipt_long_outlined,
+            size: 72,
+            color: AppColors.compra.withValues(alpha: 0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Nenhuma compra ainda',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppColors.compra.withValues(alpha: 0.6),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 20),
-              itemCount: _pedidos.length,
-              itemBuilder: (_, i) => _PedidoCard(pedido: _pedidos[i]),
-            ),
+          const SizedBox(height: 8),
+          const Text(
+            'Suas compras aparecerão aqui',
+            style: TextStyle(fontSize: 13, color: Color(0xFF999999)),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Erro extends StatelessWidget {
+  final String mensagem;
+  final VoidCallback onTentarNovamente;
+
+  const _Erro({required this.mensagem, required this.onTentarNovamente});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Color(0xFFBBBBBB)),
+            const SizedBox(height: 16),
+            Text(
+              mensagem,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14, color: Color(0xFF888888)),
+            ),
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: onTentarNovamente,
+              icon: const Icon(Icons.refresh, color: AppColors.compra),
+              label: const Text(
+                'Tentar novamente',
+                style: TextStyle(color: AppColors.compra),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -130,12 +182,15 @@ class _PedidoCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
             child: Row(
               children: [
-                Text(
-                  '#${pedido.id}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF2D2D2D),
+                Flexible(
+                  child: Text(
+                    '#${pedido.id}',
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF2D2D2D),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -258,4 +313,3 @@ class _LivroItem extends StatelessWidget {
     );
   }
 }
-

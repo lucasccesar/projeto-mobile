@@ -64,7 +64,17 @@ class _CarrinhoPageState extends State<CarrinhoPage> {
         totalPreco: _totalPreco,
         onFinalizar: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const FinalizarCompraPage()),
+          MaterialPageRoute(
+            builder: (_) => FinalizarCompraPage(
+              itens: _itens,
+              onCompraConcluida: () {
+                setState(() {
+                  _itens.clear();
+                  widget.itens.clear();
+                });
+              },
+            ),
+          ),
         ),
       ),
     );

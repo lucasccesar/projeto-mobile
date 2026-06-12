@@ -160,7 +160,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
                       ),
                       const SizedBox(height: 16),
                       BooklyTextField(
-                        label: 'EMAIL',
+                        label: 'EMAIL*',
                         hintText: 'seu@email.com',
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
