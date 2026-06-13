@@ -97,4 +97,88 @@ class BookClubAssignmentService {
     }
     return {};
   }
+
+  Future<List<Map<String, String>>> fetchAssignmentsFuturos(
+    String clubId,
+  ) async {
+    final response = await http.get(
+      Uri.parse('$url/api/bookclubassignment/club/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List content = json['content'];
+      final hoje = DateTime.now();
+
+      // filtra apenas os que ainda não começaram
+      final futuros = content.where((a) {
+        final start = DateTime.parse(a['startDate']);
+        return start.isAfter(hoje);
+      }).toList();
+
+      //ordem
+      futuros.sort(
+        (a, b) => DateTime.parse(
+          a['startDate'],
+        ).compareTo(DateTime.parse(b['startDate'])),
+      );
+
+      return futuros
+          .map<Map<String, String>>(
+            (a) => {
+              'bookId': a['bookId'].toString(),
+              'startDate': a['startDate'].toString(),
+              'finishDate': a['finishDate'].toString(),
+            },
+          )
+          .toList();
+    }
+    return [];
+  }
+
+  Future<List<Map<String, String>>> fetchAssignmentsAnteriores(
+    String clubId,
+  ) async {
+    final response = await http.get(
+      Uri.parse('$url/api/bookclubassignment/club/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List content = json['content'];
+      final hoje = DateTime.now();
+
+      // filtra apenas os que já terminaram
+      final anteriores = content.where((a) {
+        final finish = DateTime.parse(a['finishDate']);
+        return finish.isBefore(hoje);
+      }).toList();
+
+      //ordem
+      anteriores.sort(
+        (a, b) => DateTime.parse(
+          b['finishDate'],
+        ).compareTo(DateTime.parse(a['finishDate'])),
+      );
+
+      return anteriores
+          .map<Map<String, String>>(
+            (a) => {
+              'bookId': a['bookId'].toString(),
+              'startDate': a['startDate'].toString(),
+              'finishDate': a['finishDate'].toString(),
+            },
+          )
+          .toList();
+    }
+    return [];
+  }
 }

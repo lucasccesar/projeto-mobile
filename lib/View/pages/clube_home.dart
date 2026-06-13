@@ -270,11 +270,11 @@ class _ClubeHomeState extends State<ClubeHome> {
             abaSelecionada: 0,
             onAnteriorTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const ClubeLivroAnterior()),
+              MaterialPageRoute(builder: (_) =>  ClubeLivroAnterior(clubeId: widget.clube.id)),
             ),
             onProximoTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const ClubeLivroProximo()),
+              MaterialPageRoute(builder: (_) =>  ClubeLivroProximo(clubeId: widget.clube.id),),
             ),
           ),
 
