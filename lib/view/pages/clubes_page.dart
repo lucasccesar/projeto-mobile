@@ -61,7 +61,11 @@ class _ClubesPageState extends State<ClubesPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const ClubeCriar()),
-                    );
+                    ).then((_) {
+                      setState(() {
+                        _future = clubeService.fetchClubesDoLivro();
+                      });
+                    });
                   },
                   icon: Icon(Icons.add),
                   label: Text('Criar Clube'),
