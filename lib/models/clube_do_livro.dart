@@ -1,8 +1,8 @@
 class ClubeDoLivro {
   final String id;
-  final String nome;
-  final String descricao;
-  final String tema;
+  String nome;
+  String descricao;
+  String tema;
   final String? creatorId;
   int participantes;
   String datas;
@@ -22,10 +22,11 @@ class ClubeDoLivro {
     return ClubeDoLivro(
       id: json['id'],
       nome: json['name'],
-      
-      descricao: json['description']?.isEmpty == true || json['description'] == null
-        ? 'Clube sem descrição'
-        : json['description'], //pode ser null
+
+      descricao:
+          json['description']?.isEmpty == true || json['description'] == null
+          ? 'Clube sem descrição'
+          : json['description'], //pode ser null
 
       tema: json['theme'],
       creatorId: json['creatorId']?.toString(),

@@ -80,4 +80,21 @@ class BookClubAssignmentService {
       throw Exception('Erro ao adicionar livro ao clube');
     }
   }
+
+  Future<Set<String>> fetchBookIdsDoClube(String clubId) async {
+    final response = await http.get(
+      Uri.parse('$url/api/bookclubassignment/club/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List content = json['content'];
+      return content.map<String>((a) => a['bookId'].toString()).toSet();
+    }
+    return {};
+  }
 }

@@ -64,4 +64,42 @@ class ParticipantUserService {
     }
     return false;
   }
+
+  Future<List<Map<String, String>>> fetchParticipantes(String clubId) async {
+    final response = await http.get(
+      Uri.parse('$url/api/participantuser/byclub/$clubId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List content = json['content'];
+      return content
+          .map<Map<String, String>>(
+            (p) => {
+              'idParticipantUser': p['idParticipantUser'].toString(),
+              'userId': p['userId'].toString(),
+            },
+          )
+          .toList();
+    }
+    return [];
+  }
+
+  Future<void> removerParticipante(String idParticipantUser) async {
+    final response = await http.delete(
+      Uri.parse('$url/api/participantuser/$idParticipantUser'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Erro ao remover participante');
+    }
+  }
 }

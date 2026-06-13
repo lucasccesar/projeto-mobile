@@ -183,8 +183,7 @@ class _ClubeHomeState extends State<ClubeHome> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          final participante =
-                              await _ehParticipante; // ⬅️ await no future
+                          final participante = await _ehParticipante;
                           if (!mounted) return;
                           Navigator.push(
                             context,
@@ -213,13 +212,26 @@ class _ClubeHomeState extends State<ClubeHome> {
                     if (widget.clube.creatorId == TokenConfig.userId) ...[
                       SizedBox(width: 10),
                       OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          final resultado = await Navigator.push<dynamic>(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const ClubeConfig(),
+                              builder: (_) => ClubeConfig(clube: widget.clube),
                             ),
                           );
+
+                          if (resultado == 'deletado') {
+                            Navigator.pop(
+                              context,
+                              true,
+                            );
+                          } else if (resultado is ClubeDoLivro) {
+                            setState(() {
+                              widget.clube.nome = resultado.nome;
+                              widget.clube.tema = resultado.tema;
+                              widget.clube.descricao = resultado.descricao;
+                            });
+                          }
                         },
                         icon: Icon(Icons.settings_outlined, size: 18),
                         label: Text('Config'),

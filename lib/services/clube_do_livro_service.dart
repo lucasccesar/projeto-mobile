@@ -50,35 +50,73 @@ class ClubeDoLivroService {
     }
   }
 
-  
   Future<ClubeDoLivro> criarClube({
-  required String nome,
-  required String tema,
-  required String descricao,
-  required String creatorId,
-  required String frequency,
-}) async {
-  final response = await http.post(
-    Uri.parse('$url/api/bookclub'),
-    headers: {
-      'Authorization': 'Bearer ${TokenConfig.token}',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
-      'name': nome,
-      'theme': tema,
-      'description': descricao,
-      'frequency': frequency,
-      'creator': {'id': creatorId},
-    }),
-  );
+    required String nome,
+    required String tema,
+    required String descricao,
+    required String creatorId,
+    required String frequency,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$url/api/bookclub'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'name': nome,
+        'theme': tema,
+        'description': descricao,
+        'frequency': frequency,
+        'creator': {'id': creatorId},
+      }),
+    );
 
-  if (response.statusCode == 201) {
-    final json = jsonDecode(response.body);
-    //print('RETORNO CRIAR CLUBE: $json'); 
-    return ClubeDoLivro.fromJson(json);  
-  } else {
-    throw Exception('Erro ao criar clube — status: ${response.statusCode}');
+    if (response.statusCode == 201) {
+      final json = jsonDecode(response.body);
+      //print('RETORNO CRIAR CLUBE: $json');
+      return ClubeDoLivro.fromJson(json);
+    } else {
+      throw Exception('Erro ao criar clube — status: ${response.statusCode}');
+    }
   }
-}
+
+  Future<ClubeDoLivro> atualizarClube({
+    required String id,
+    required String nome,
+    required String tema,
+    required String descricao,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$url/api/bookclub/$id'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'name': nome, 'theme': tema, 'description': descricao}),
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return ClubeDoLivro.fromJson(json);
+    } else {
+      throw Exception(
+        'Erro ao atualizar clube — status: ${response.statusCode}',
+      );
+    }
+  }
+
+  Future<void> deletarClube(String id) async {
+    final response = await http.delete(
+      Uri.parse('$url/api/bookclub/$id'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Erro ao deletar clube — status: ${response.statusCode}');
+    }
+  }
 }

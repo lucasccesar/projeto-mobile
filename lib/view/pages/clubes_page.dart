@@ -116,7 +116,12 @@ class _ClubesPageState extends State<ClubesPage> {
 
                   if (clubesFiltrados.isEmpty) {
                     return Center(
-                      child: Text('Nenhum clube encontrado para essa busca', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      child: Text(
+                        'Nenhum clube encontrado para essa busca',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
                     );
                   }
 
@@ -129,10 +134,19 @@ class _ClubesPageState extends State<ClubesPage> {
                         category: clube.tema,
                         participants: clube.participantes,
                         date: clube.datas,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) =>  ClubeHome(clube: clube)),
-                        ),
+                        onTap: () =>
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ClubeHome(clube: clube),
+                              ),
+                            ).then((deletado) {
+                              if (deletado == true) {
+                                setState(() {
+                                  _future = clubeService.fetchClubesDoLivro();
+                                });
+                              }
+                            }),
                       );
                     },
                   );
