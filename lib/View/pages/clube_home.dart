@@ -14,6 +14,7 @@ import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/models/clube_do_livro.dart';
 import 'package:projeto_mobile/services/book_service.dart';
 import 'package:projeto_mobile/services/clube_assignment.dart';
+import 'package:projeto_mobile/services/rating_service.dart';
 import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
 class ClubeHome extends StatefulWidget {
@@ -34,6 +35,9 @@ class _ClubeHomeState extends State<ClubeHome> {
   final BookService _bookService = BookService();
   final BookClubAssignmentService _assignmentService =
       BookClubAssignmentService();
+  final RatingService _ratingService = RatingService();
+  double _avaliacaoMedia = 0;
+  int _totalAvaliacoes = 0;
 
   late Future<bool> _ehParticipante;
   Book? _livroAtual;
@@ -63,10 +67,18 @@ class _ClubeHomeState extends State<ClubeHome> {
     if (assignment == null) return;
 
     final livro = await _bookService.fetchLivroPorId(assignment['bookId']!);
+
+    final resultados = await Future.wait([
+      _ratingService.fetchAverage(livro.id),
+      _ratingService.fetchCount(livro.id),
+    ]);
+
     setState(() {
       _livroAtual = livro;
       _startDate = assignment['startDate'];
       _finishDate = assignment['finishDate'];
+      _avaliacaoMedia = resultados[0] as double;
+      _totalAvaliacoes = resultados[1] as int;
     });
   }
 
@@ -221,10 +233,7 @@ class _ClubeHomeState extends State<ClubeHome> {
                           );
 
                           if (resultado == 'deletado') {
-                            Navigator.pop(
-                              context,
-                              true,
-                            );
+                            Navigator.pop(context, true);
                           } else if (resultado is ClubeDoLivro) {
                             setState(() {
                               widget.clube.nome = resultado.nome;
@@ -270,11 +279,15 @@ class _ClubeHomeState extends State<ClubeHome> {
             abaSelecionada: 0,
             onAnteriorTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) =>  ClubeLivroAnterior(clubeId: widget.clube.id)),
+              MaterialPageRoute(
+                builder: (_) => ClubeLivroAnterior(clubeId: widget.clube.id),
+              ),
             ),
             onProximoTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) =>  ClubeLivroProximo(clubeId: widget.clube.id),),
+              MaterialPageRoute(
+                builder: (_) => ClubeLivroProximo(clubeId: widget.clube.id),
+              ),
             ),
           ),
 
@@ -294,6 +307,8 @@ class _ClubeHomeState extends State<ClubeHome> {
                     livro: _livroAtual,
                     startDate: _startDate,
                     finishDate: _finishDate,
+                    avaliacaoMedia: _avaliacaoMedia, 
+                    totalAvaliacoes: _totalAvaliacoes,
                   ),
 
                   SizedBox(height: 5),

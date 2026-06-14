@@ -132,7 +132,7 @@ class ClubeLivroAnteriorProximo extends StatelessWidget {
                         Icon(Icons.star, color: Color(0xFFF59E0B), size: 13),
                         SizedBox(width: 2),
                         Text(
-                          '${nota ?? ''}',
+                          nota != null ? nota!.toStringAsFixed(1) : '',
                           style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary),
                         ),
                       ],

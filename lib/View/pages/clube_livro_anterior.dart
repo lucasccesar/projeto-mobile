@@ -9,6 +9,7 @@ import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/models/book.dart';
 import 'package:projeto_mobile/services/book_service.dart';
 import 'package:projeto_mobile/services/clube_assignment.dart';
+import 'package:projeto_mobile/services/rating_service.dart';
 
 class ClubeLivroAnterior extends StatefulWidget {
   final String clubeId;
@@ -21,6 +22,7 @@ class ClubeLivroAnterior extends StatefulWidget {
 class _ClubeLivroAnteriorState extends State<ClubeLivroAnterior> {
   final BookClubAssignmentService _assignmentService = BookClubAssignmentService();
   final BookService _bookService = BookService();
+  final RatingService _ratingService = RatingService();
 
   List<Map<String, dynamic>> _livrosAnteriores = []; // {book: Book, finishDate: String}
   bool _carregando = true;
@@ -37,9 +39,11 @@ class _ClubeLivroAnteriorState extends State<ClubeLivroAnterior> {
 
       final livros = await Future.wait(assignments.map((a) async {
         final book = await _bookService.fetchLivroPorId(a['bookId']!);
+        final avaliacao = await _ratingService.fetchAverage(book.id);
         return {
           'book': book,
           'finishDate': a['finishDate']!,
+          'avaliacao': avaliacao,
         };
       }));
 
@@ -114,12 +118,13 @@ class _ClubeLivroAnteriorState extends State<ClubeLivroAnterior> {
                           ..._livrosAnteriores.map((item) {
                             final book = item['book'] as Book;
                             final finishDate = item['finishDate'] as String;
+                            final avaliacao = item['avaliacao'] as double;
                             return ClubeLivroAnteriorProximo(
                               anterior: true,
                               titulo: book.title,
                               autor: book.author,
                               data: _formatarData(finishDate),
-                              nota: book.rating,
+                              nota: avaliacao,
                             );
                           }),
                         ],

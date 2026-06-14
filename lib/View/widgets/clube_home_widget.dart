@@ -3,16 +3,19 @@ import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
 
 class ClubeHomeWidget extends StatelessWidget {
-  
   final Book? livro;
   final String? startDate;
   final String? finishDate;
+  final double? avaliacaoMedia;
+  final int? totalAvaliacoes;
 
   const ClubeHomeWidget({
     super.key,
     this.livro,
     this.startDate,
     this.finishDate,
+    this.avaliacaoMedia,
+    this.totalAvaliacoes,
   });
 
   @override
@@ -133,13 +136,14 @@ class ClubeHomeWidget extends StatelessWidget {
                       SizedBox(height: 4),
 
                       // Avaliação
+                      // Avaliação
                       Row(
                         children: [
                           Icon(Icons.star, color: AppColors.clube, size: 15),
                           SizedBox(width: 4),
                           Text(
                             livro != null
-                                ? '${livro!.rating} (avaliações)'
+                                ? '${(avaliacaoMedia ?? 0).toStringAsFixed(1)} (${totalAvaliacoes ?? 0} avaliações)'
                                 : 'Sem avaliações',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.tertiary,
