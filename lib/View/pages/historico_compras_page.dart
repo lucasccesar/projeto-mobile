@@ -32,7 +32,7 @@ class _HistoricoComprasPageState extends State<HistoricoComprasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: BooklyAppBar(
         title: 'Histórico de Compras',
         corDoTexto: AppColors.compra,
@@ -169,7 +169,7 @@ class _PedidoCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
@@ -186,10 +186,10 @@ class _PedidoCard extends StatelessWidget {
                   child: Text(
                     '#${pedido.id}',
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF2D2D2D),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -203,9 +203,19 @@ class _PedidoCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF0EBE3)),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.onSurface.withValues(
+              alpha: 0.08,
+            ),
+          ),
           ...pedido.livros.map((livro) => _LivroItem(livro: livro)),
-          const Divider(height: 1, color: Color(0xFFF0EBE3)),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.onSurface.withValues(
+              alpha: 0.08,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
@@ -284,10 +294,10 @@ class _LivroItem extends StatelessWidget {
                   livro.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF2D2D2D),
+                    color: Theme.of(context).colorScheme.onSurface,
                     height: 1.3,
                   ),
                 ),
@@ -302,10 +312,10 @@ class _LivroItem extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             'R\$${livro.price.toStringAsFixed(2).replaceAll('.', ',')}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF2D2D2D),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],

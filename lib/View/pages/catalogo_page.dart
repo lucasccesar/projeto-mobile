@@ -12,6 +12,7 @@ import 'package:projeto_mobile/View/pages/adicionar_livro_page.dart';
 import 'package:projeto_mobile/View/pages/carrinho_page.dart';
 import 'package:projeto_mobile/View/pages/book_page.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
+import 'package:projeto_mobile/View/widgets/theme_toggle_button.dart';
 
 class CatalogoPage extends StatefulWidget {
   const CatalogoPage({super.key});
@@ -90,7 +91,7 @@ class _CatalogoPageState extends State<CatalogoPage> {
     print('userRole: ${TokenConfig.userRole}');
     print('isAdmin: ${TokenConfig.isAdmin}');
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: SidebarWidget(carrinho: _carrinho),
       appBar: BooklyAppBar(
         title: 'Catálogo',
@@ -102,6 +103,7 @@ class _CatalogoPageState extends State<CatalogoPage> {
           context,
           MaterialPageRoute(builder: (_) => CarrinhoPage(itens: _carrinho)),
         ),
+        extraActions: const [ThemeToggleButton()],
       ),
       body: Column(
         children: [

@@ -10,6 +10,7 @@ import 'package:projeto_mobile/View/widgets/perfil_card.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/theme_controller.dart';
 import 'package:projeto_mobile/config/token_config.dart';
 
 class PerfilHome extends StatelessWidget {
@@ -79,10 +80,7 @@ class PerfilHome extends StatelessWidget {
             PerfilButtonWidget(
               titulo: 'Modo Escuro',
               icone: Icon(Icons.nightlight_round, color: Colors.orange),
-
-              onTap: () {
-                //TODO:
-              },
+              onTap: toggleTheme,
             ),
 
             PerfilButtonWidget(

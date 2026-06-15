@@ -41,7 +41,7 @@ class ClubeMensagemWidget extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: isMe ? AppColors.clube : Theme.of(context).colorScheme.onPrimary,
+              color: isMe ? AppColors.clube : Theme.of(context).colorScheme.surface,
               border: Border.all(color: isMe ? AppColors.clube : Color.lerp(
                 Theme.of(context).colorScheme.tertiary,
                 Colors.white,

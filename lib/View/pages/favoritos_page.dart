@@ -48,7 +48,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: const SidebarWidget(),
       appBar: BooklyAppBar(
         title: 'Favoritos',
@@ -75,12 +75,12 @@ class _FavoritosPageState extends State<FavoritosPage> {
           children: [
             const Icon(Icons.error_outline, size: 48, color: Color(0xFF8B7355)),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Erro ao carregar favoritos',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF5A4631),
+                color: Theme.of(context).colorScheme.tertiary,
               ),
             ),
             const SizedBox(height: 16),
@@ -130,7 +130,7 @@ class _FavoritoCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(
@@ -151,10 +151,10 @@ class _FavoritoCard extends StatelessWidget {
               children: [
                 Text(
                   livro.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF2D2D2D),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -252,12 +252,12 @@ class _EmptyFavoritos extends StatelessWidget {
             color: AppColors.favoritos.withValues(alpha: 0.35),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Nenhum favorito ainda',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF5A4631),
+              color: Theme.of(context).colorScheme.tertiary,
             ),
           ),
           const SizedBox(height: 6),

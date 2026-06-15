@@ -68,7 +68,7 @@ class StatusLeituraPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: const SidebarWidget(),
       appBar: BooklyAppBar(
         title: 'Leitura',

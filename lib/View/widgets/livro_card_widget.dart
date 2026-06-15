@@ -29,7 +29,7 @@ class LivroCardWidget extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           boxShadow: const [
             BoxShadow(
@@ -62,10 +62,10 @@ class LivroCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     livro.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF2D2D2D),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -114,10 +114,10 @@ class LivroCardWidget extends StatelessWidget {
                       const Spacer(),
                       Text(
                         'R\$${livro.price.toStringAsFixed(2).replaceAll('.', ',')}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D2D2D),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],

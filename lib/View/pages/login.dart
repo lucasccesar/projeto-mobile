@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/services/auth_service.dart';
+import 'package:projeto_mobile/View/widgets/theme_toggle_button.dart';
 import '../widgets/logo.dart';
 import '../widgets/text_field.dart';
 import '../widgets/primary_button.dart';
@@ -21,9 +22,6 @@ class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
   bool _senhaVisivel = false;
   bool _carregando = false;
-
-  static const Color _fundo = Color(0xFFF5F0E8);
-  static const Color _cardFundo = Color(0xFFF0EAD8);
 
   @override
   void dispose() {
@@ -65,30 +63,39 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cardFundo = Theme.of(context).colorScheme.secondary;
     return Scaffold(
-      backgroundColor: _fundo,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Logo(subtitle: 'Sua biblioteca digital favorita'),
-                const SizedBox(height: 32),
-                _LoginCard(
-                  emailController: _emailController,
-                  senhaController: _senhaController,
-                  senhaVisivel: _senhaVisivel,
-                  onToggleSenha: () =>
-                      setState(() => _senhaVisivel = !_senhaVisivel),
-                  cardFundo: _cardFundo,
-                  carregando: _carregando,
-                  onEntrar: _entrar,
+        child: Stack(
+          children: [
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 24,
                 ),
-              ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Logo(subtitle: 'Sua biblioteca digital favorita'),
+                    const SizedBox(height: 32),
+                    _LoginCard(
+                      emailController: _emailController,
+                      senhaController: _senhaController,
+                      senhaVisivel: _senhaVisivel,
+                      onToggleSenha: () =>
+                          setState(() => _senhaVisivel = !_senhaVisivel),
+                      cardFundo: cardFundo,
+                      carregando: _carregando,
+                      onEntrar: _entrar,
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+            const Positioned(top: 4, right: 4, child: ThemeToggleButton()),
+          ],
         ),
       ),
     );
@@ -125,10 +132,15 @@ class _LoginCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Center(
+          Center(
             child: Text(
               'Entre com sua conta para continuar',
-              style: TextStyle(fontSize: 13, color: Color(0xFF5A5A50)),
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.onSurface.withValues(
+                  alpha: 0.7,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -137,7 +149,7 @@ class _LoginCard extends StatelessWidget {
             hintText: 'seu@email.com',
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             showBorder: false,
           ),
           const SizedBox(height: 16),
@@ -146,7 +158,7 @@ class _LoginCard extends StatelessWidget {
             hintText: 'Senha',
             controller: senhaController,
             obscureText: !senhaVisivel,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             showBorder: false,
             suffixIcon: IconButton(
               icon: Icon(

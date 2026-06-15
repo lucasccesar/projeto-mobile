@@ -21,9 +21,6 @@ class _RedefinirSenhaPageState extends State<RedefinirSenhaPage> {
   final _authService = AuthService();
   bool _carregando = false;
 
-  static const Color _fundo = Color(0xFFF5F0E8);
-  static const Color _cardFundo = Color(0xFFF0EAD8);
-
   @override
   void dispose() {
     _codigoController.dispose();
@@ -82,7 +79,7 @@ class _RedefinirSenhaPageState extends State<RedefinirSenhaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _fundo,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -102,28 +99,30 @@ class _RedefinirSenhaPageState extends State<RedefinirSenhaPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Redefinir Senha',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF4A4A40),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Enviamos um código para\n${widget.email}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF7A7A6E),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(
+                      alpha: 0.7,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 32),
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: _cardFundo,
+                    color: Theme.of(context).colorScheme.secondary,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(

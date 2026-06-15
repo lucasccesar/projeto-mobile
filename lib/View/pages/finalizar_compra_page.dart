@@ -61,7 +61,7 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: BooklyAppBar(
         title: 'Finalizar Compra',
         corDoTexto: AppColors.compra,
@@ -72,14 +72,14 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
             child: Text(
               'Resumo do pedido',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF2D2D2D),
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -97,9 +97,9 @@ class _FinalizarCompraPageState extends State<FinalizarCompraPage> {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 8,
@@ -163,10 +163,10 @@ class _ResumoItem extends StatelessWidget {
                   item.livro.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2D2D2D),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -180,10 +180,10 @@ class _ResumoItem extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             formatarPreco(item.subtotal),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF2D2D2D),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],

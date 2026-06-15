@@ -26,9 +26,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
   bool _confirmarSenhaVisivel = false;
   bool _carregando = false;
 
-  static const Color _fundo = Color(0xFFF5F0E8);
-  static const Color _cardFundo = Color(0xFFF0EAD8);
-
   @override
   void dispose() {
     _nomeController.dispose();
@@ -126,7 +123,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _fundo,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -139,17 +136,21 @@ class _CriarContaPageState extends State<CriarContaPage> {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: _cardFundo,
+                    color: Theme.of(context).colorScheme.secondary,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Center(
+                      Center(
                         child: Text(
                           'Junte-se à nossa comunidade de leitores!',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 13, color: Color(0xFF5A5A50)),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Theme.of(context).colorScheme.onSurface
+                                .withValues(alpha: 0.7),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
