@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/services/auth_service.dart';
 import '../widgets/text_field.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/link_button.dart';
-import 'email_enviado.dart';
+import 'redefinir_senha.dart';
 
 class RecuperarSenhaPage extends StatefulWidget {
   const RecuperarSenhaPage({super.key});
@@ -13,6 +14,8 @@ class RecuperarSenhaPage extends StatefulWidget {
 
 class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
   final _emailController = TextEditingController();
+  final _authService = AuthService();
+  bool _carregando = false;
 
   static const Color _fundo = Color(0xFFF5F0E8);
   static const Color _cardFundo = Color(0xFFF0EAD8);
@@ -21,6 +24,38 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
   void dispose() {
     _emailController.dispose();
     super.dispose();
+  }
+
+  Future<void> _enviarCodigo() async {
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      _mostrarErro('Informe seu e-mail');
+      return;
+    }
+
+    setState(() => _carregando = true);
+    try {
+      await _authService.esqueciSenha(email);
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => RedefinirSenhaPage(email: email),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      _mostrarErro(e.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _carregando = false);
+    }
+  }
+
+  void _mostrarErro(String mensagem) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(mensagem), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -56,7 +91,7 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Insira seu e-mail e enviaremos um link\npara redefinir sua senha.',
+                  'Insira seu e-mail e enviaremos um código\npara redefinir sua senha.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Color(0xFF7A7A6E)),
                 ),
@@ -78,11 +113,8 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(
-                        label: 'Enviar Link',
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const EmailEnviadoPage()),
-                        ),
+                        label: _carregando ? 'Enviando...' : 'Enviar Código',
+                        onPressed: _carregando ? null : _enviarCodigo,
                       ),
                       const SizedBox(height: 16),
                       Center(

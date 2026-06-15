@@ -60,6 +60,40 @@ class AuthService {
     await login(email, senha);
   }
 
+  Future<void> esqueciSenha(String email) async {
+    final response = await http.post(
+      Uri.parse('$url/api/auth/forgot-password'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(_mensagemErro(response));
+    }
+  }
+
+  Future<void> redefinirSenha({
+    required String email,
+    required String codigo,
+    required String novaSenha,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$url/api/auth/reset-password'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'code': codigo,
+        'newPassword': novaSenha,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        _mensagemErro(response, fallbackAuth: 'Código inválido ou expirado'),
+      );
+    }
+  }
+
   Future<void> _carregarUsuario() async {
     final response = await http.get(
       Uri.parse('$url/api/users/me'),
