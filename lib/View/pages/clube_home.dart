@@ -349,7 +349,7 @@ class _ClubeHomeState extends State<ClubeHome> {
                               color: Theme.of(context).colorScheme.tertiary,
                               fontSize: 14,
                               height:
-                                  1.4, // ⬅️ espaçamento entre linhas, melhora a leitura
+                                  1.4,
                             ),
                           ),
                         ],

@@ -10,6 +10,7 @@ import 'package:projeto_mobile/View/pages/perfil_editar.dart';
 import 'package:projeto_mobile/View/pages/perfil_home.dart';
 import 'package:projeto_mobile/View/pages/status_leitura_page.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/models/book.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -23,7 +24,6 @@ class SidebarWidget extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.secondary,
       child: Column(
         children: [
-          //TODO: AJEITAR TAMANHO DO DRAWERHEADER
           SizedBox(
             height: 140,
             child: DrawerHeader(
@@ -265,9 +265,11 @@ class SidebarWidget extends StatelessWidget {
               color: Theme.of(context).colorScheme.tertiary,
             ),
             onTap: () {
-              Navigator.pushReplacement(
+              TokenConfig.limpar();
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
+                (route) => false,
               );
             },
           ),
