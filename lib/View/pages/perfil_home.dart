@@ -14,10 +14,7 @@ import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
 class PerfilHome extends StatefulWidget {
   final String livros;
-  const PerfilHome({
-    super.key,
-    this.livros = '42',
-  });
+  const PerfilHome({super.key, this.livros = '42'});
 
   @override
   State<PerfilHome> createState() => _PerfilHomeState();
@@ -72,7 +69,8 @@ class _PerfilHomeState extends State<PerfilHome> {
               nome: nome,
               email: email,
               livros: widget.livros,
-              clubes: _carregando ? '...' : _totalClubes.toString(), 
+              clubes: _carregando ? '...' : _totalClubes.toString(),
+              onEditarVoltar: () => setState(() {}),
             ),
             PerfilButtonWidget(
               titulo: 'Histórico de Compras',

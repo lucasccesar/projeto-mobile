@@ -7,6 +7,7 @@ class PerfilCardWidget extends StatelessWidget {
   final String email;
   final String livros;
   final String clubes;
+  final VoidCallback? onEditarVoltar;
 
   const PerfilCardWidget({
     super.key,
@@ -14,6 +15,7 @@ class PerfilCardWidget extends StatelessWidget {
     required this.email,
     required this.livros,
     required this.clubes,
+    this.onEditarVoltar,
   });
 
   @override
@@ -109,7 +111,9 @@ class PerfilCardWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const PerfilEditar()),
-              );
+              ).then((_) {
+                onEditarVoltar?.call();
+              });
             },
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.primary,
