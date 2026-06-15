@@ -302,31 +302,71 @@ class _ClubeHomeState extends State<ClubeHome> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // widget do livro atual
-                  ClubeHomeWidget(
-                    livro: _livroAtual,
-                    startDate: _startDate,
-                    finishDate: _finishDate,
-                    avaliacaoMedia: _avaliacaoMedia, 
-                    totalAvaliacoes: _totalAvaliacoes,
-                  ),
 
                   SizedBox(height: 5),
 
                   // descrição do clube
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18.0),
-                    child: Text(
-                      widget.clube.descricao,
-                      textAlign: TextAlign.justify,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.tertiary,
-                        fontSize: 14,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.tertiary.withOpacity(0.208),
+                        ),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 16,
+                                color: AppColors.clube,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                'Sobre o clube',
+                                style: TextStyle(
+                                  color: AppColors.clube,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            widget.clube.descricao,
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              fontSize: 14,
+                              height:
+                                  1.4, // ⬅️ espaçamento entre linhas, melhora a leitura
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
 
-                  SizedBox(height: 15),
+                  // widget do livro atual
+                  ClubeHomeWidget(
+                    livro: _livroAtual,
+                    startDate: _startDate,
+                    finishDate: _finishDate,
+                    avaliacaoMedia: _avaliacaoMedia,
+                    totalAvaliacoes: _totalAvaliacoes,
+                  ),
+
+                  SizedBox(height: 5),
 
                   // botão ver detalhes do livro
                   Padding(

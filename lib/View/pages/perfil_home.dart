@@ -1,5 +1,3 @@
-// perfil_home.dart
-
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/historico_compras_page.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
@@ -12,16 +10,43 @@ import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/config/theme_controller.dart';
 import 'package:projeto_mobile/config/token_config.dart';
+import 'package:projeto_mobile/services/usuario_participante_service.dart';
 
-class PerfilHome extends StatelessWidget {
+class PerfilHome extends StatefulWidget {
   final String livros;
-  final String clubes;
-
   const PerfilHome({
     super.key,
     this.livros = '42',
-    this.clubes = '2',
   });
+
+  @override
+  State<PerfilHome> createState() => _PerfilHomeState();
+}
+
+class _PerfilHomeState extends State<PerfilHome> {
+  final ParticipantUserService _participantService = ParticipantUserService();
+  int _totalClubes = 0;
+  bool _carregando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarClubes();
+  }
+
+  Future<void> _carregarClubes() async {
+    final userId = TokenConfig.userId;
+    if (userId == null) {
+      setState(() => _carregando = false);
+      return;
+    }
+
+    final total = await _participantService.fetchClubCountByUser(userId);
+    setState(() {
+      _totalClubes = total;
+      _carregando = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +63,6 @@ class PerfilHome extends StatelessWidget {
         iconeSeta: false,
         corDoTexto: AppColors.perfil,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -47,14 +71,12 @@ class PerfilHome extends StatelessWidget {
             PerfilCardWidget(
               nome: nome,
               email: email,
-              livros: livros,
-              clubes: clubes,
+              livros: widget.livros,
+              clubes: _carregando ? '...' : _totalClubes.toString(), 
             ),
-
             PerfilButtonWidget(
               titulo: 'Histórico de Compras',
               icone: Icon(Icons.receipt_long, color: AppColors.perfil),
-
               onTap: () {
                 Navigator.push(
                   context,
@@ -64,11 +86,9 @@ class PerfilHome extends StatelessWidget {
                 );
               },
             ),
-
             PerfilButtonWidget(
               titulo: 'Minha Leitura',
               icone: Icon(Icons.bar_chart, color: Colors.green),
-
               onTap: () {
                 Navigator.push(
                   context,
@@ -76,17 +96,14 @@ class PerfilHome extends StatelessWidget {
                 );
               },
             ),
-
             PerfilButtonWidget(
               titulo: 'Modo Escuro',
               icone: Icon(Icons.nightlight_round, color: Colors.orange),
               onTap: toggleTheme,
             ),
-
             PerfilButtonWidget(
               titulo: 'Sair da Conta',
               icone: Icon(Icons.logout, color: Colors.red),
-
               sair: true,
               onTap: () {
                 TokenConfig.limpar();
@@ -100,7 +117,7 @@ class PerfilHome extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Rodape( selectedTab: NavTab.conta,),
+      bottomNavigationBar: Rodape(selectedTab: NavTab.conta),
     );
   }
 }

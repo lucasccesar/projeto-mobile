@@ -102,4 +102,20 @@ class ParticipantUserService {
       throw Exception('Erro ao remover participante');
     }
   }
+
+  Future<int> fetchClubCountByUser(String userId) async {
+    final response = await http.get(
+      Uri.parse('$url/api/participantuser/byuser/$userId'),
+      headers: {
+        'Authorization': 'Bearer ${TokenConfig.token}',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return json['totalElements'] ?? 0;
+    }
+    return 0;
+  }
 }
