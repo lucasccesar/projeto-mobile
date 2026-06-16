@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/colecao.dart';
 import 'package:projeto_mobile/services/colecao_service.dart';
+import 'package:projeto_mobile/View/pages/book_page.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/search_bar.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
@@ -233,7 +234,14 @@ class _ColecaoHomePageState extends State<ColecaoHomePage> {
                           avaliacao: livro.rating,
                           preco:
                               'R\$${livro.price.toStringAsFixed(2).replaceAll('.', ',')}',
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BookPage(livro: livro),
+                              ),
+                            );
+                          },
                           onRemover: () => _removerLivro(livro.id, livro.title),
                         );
                       }).toList(),
