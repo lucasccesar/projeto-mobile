@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/View/widgets/botao_remover_widget.dart';
 import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 
 class ColecaoItemWidget extends StatelessWidget {
@@ -9,6 +10,7 @@ class ColecaoItemWidget extends StatelessWidget {
   final double avaliacao;
   final String preco;
   final VoidCallback? onTap;
+  final VoidCallback? onRemover;
 
   const ColecaoItemWidget({
     super.key,
@@ -18,6 +20,7 @@ class ColecaoItemWidget extends StatelessWidget {
     required this.avaliacao,
     required this.preco,
     this.onTap,
+    this.onRemover,
   });
 
   @override
@@ -43,11 +46,10 @@ class ColecaoItemWidget extends StatelessWidget {
           ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const CapaWidget(cor: AppColors.colecao, largura: 52, altura: 76),
-
             const SizedBox(width: 16),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,9 +64,7 @@ class ColecaoItemWidget extends StatelessWidget {
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
                   ),
-
                   const SizedBox(height: 3),
-
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -74,18 +74,19 @@ class ColecaoItemWidget extends StatelessWidget {
                         size: 16,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        autor,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Theme.of(context).colorScheme.onSurface,
+                      Expanded(
+                        child: Text(
+                          autor,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 4),
-
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -95,19 +96,20 @@ class ColecaoItemWidget extends StatelessWidget {
                         size: 16,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        genero,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.colecao,
+                      Expanded(
+                        child: Text(
+                          genero,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.colecao,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 6),
-
                   Row(
                     children: [
                       const Icon(
@@ -123,9 +125,7 @@ class ColecaoItemWidget extends StatelessWidget {
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
                       Text(
                         preco,
                         style: const TextStyle(
@@ -139,6 +139,13 @@ class ColecaoItemWidget extends StatelessWidget {
                 ],
               ),
             ),
+            if (onRemover != null) ...[
+              const SizedBox(width: 12),
+              BotaoRemover(
+                onRemover: onRemover!,
+                cor: const Color(0xFFE57373),
+              ),
+            ],
           ],
         ),
       ),

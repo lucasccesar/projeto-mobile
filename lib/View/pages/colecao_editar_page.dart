@@ -1,44 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/config/app_colors.dart';
-import 'package:projeto_mobile/models/livro_selecionavel.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
-import 'package:projeto_mobile/View/widgets/text_field.dart';
-import 'package:projeto_mobile/View/widgets/livro_row_widget.dart';
-import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
-import 'package:projeto_mobile/View/pages/colecoes_lista.dart';
+import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/models/colecao.dart';
+import 'package:projeto_mobile/services/colecao_service.dart';
 
 class ColecaoEditarPage extends StatefulWidget {
-  final String nomeInicial;
-  final String descricaoInicial;
+  final Colecao colecao;
 
-  const ColecaoEditarPage({
-    super.key,
-    this.nomeInicial = '',
-    this.descricaoInicial = '',
-  });
+  const ColecaoEditarPage({super.key, required this.colecao});
 
   @override
   State<ColecaoEditarPage> createState() => _ColecaoEditarPageState();
 }
 
 class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
+  final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nomeController;
   late final TextEditingController _descricaoController;
-
-  final List<LivroSelecionavel> _livros = [
-    LivroSelecionavel(titulo: 'O Senhor dos Anéis', autor: 'J.R.R. Tolkien', cor: Color(0xFF7A5C3A)),
-    LivroSelecionavel(titulo: 'Cem Anos de Solidão', autor: 'Gabriel García Márquez', cor: Color(0xFF4A7FA5)),
-    LivroSelecionavel(titulo: '1984', autor: 'George Orwell', cor: Color(0xFF7A8C63)),
-  ];
-
-  bool get _podeSubmeter => _nomeController.text.trim().isNotEmpty;
+  final _service = ColecaoService();
+  bool _carregando = false;
 
   @override
   void initState() {
     super.initState();
-    _nomeController = TextEditingController(text: widget.nomeInicial);
-    _descricaoController = TextEditingController(text: widget.descricaoInicial);
-    _nomeController.addListener(() => setState(() {}));
+    _nomeController = TextEditingController(text: widget.colecao.name);
+    _descricaoController = TextEditingController(text: widget.colecao.description);
   }
 
   @override
@@ -48,17 +34,36 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
     super.dispose();
   }
 
-  void _salvar() {
-    Navigator.pop(context);
+  Future<void> _salvar() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _carregando = true);
+    try {
+      final atualizada = await _service.atualizar(
+        id: widget.colecao.id,
+        nome: _nomeController.text.trim(),
+        descricao: _descricaoController.text.trim(),
+      );
+      if (mounted) Navigator.pop(context, atualizada);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst('Exception: ', '')),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _carregando = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final borderColor =
-        Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.15);
-    final labelColor = Theme.of(context).colorScheme.tertiary;
-
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: BooklyAppBar(
         title: 'Editar Coleção',
         corDoTexto: AppColors.colecao,
@@ -66,107 +71,73 @@ class _ColecaoEditarPageState extends State<ColecaoEditarPage> {
         iconeSeta: true,
         iconeCarrinho: false,
       ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            CardSection(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SectionLabel(
-                      texto: 'Detalhes da Coleção', cor: AppColors.colecao),
-                  const SizedBox(height: 13),
-                  BooklyTextField(
-                    label: 'Nome da coleção *',
-                    hintText: 'Ex: Minha estante de fantasia',
-                    controller: _nomeController,
-                  ),
-                  const SizedBox(height: 13),
-                  BooklyTextField(
-                    label: 'Descrição (opcional)',
-                    hintText: 'Fale um pouco sobre essa coleção…',
-                    controller: _descricaoController,
-                    maxLines: 3,
-                  ),
-                ],
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Nome',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
               ),
-            ),
-            const SizedBox(height: 12),
-            CardSection(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SectionLabel(
-                      texto: 'Livros da Coleção', cor: AppColors.colecao),
-                  const SizedBox(height: 12),
-                  if (_livros.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Center(
-                        child: Text(
-                          'Nenhum livro nesta coleção',
-                          style: TextStyle(fontSize: 13, color: labelColor),
-                        ),
-                      ),
-                    )
-                  else
-                    ..._livros.asMap().entries.map((entry) {
-                      final i = entry.key;
-                      final livro = entry.value;
-                      return Column(
-                        children: [
-                          LivroRow(
-                            titulo: livro.titulo,
-                            autor: livro.autor,
-                            cor: livro.cor,
-                            onRemover: () =>
-                                setState(() => _livros.removeAt(i)),
+              const SizedBox(height: 6),
+              TextFormField(
+                controller: _nomeController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                ),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Descrição',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 6),
+              TextFormField(
+                controller: _descricaoController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                ),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Informe a descrição' : null,
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: _carregando ? null : _salvar,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.colecao,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                  ),
+                  child: _carregando
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
                           ),
-                          if (i < _livros.length - 1)
-                            Divider(color: borderColor, height: 1),
-                        ],
-                      );
-                    }),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            ActionButton(
-              label: 'Salvar alterações',
-              onPressed: _podeSubmeter ? _salvar : null,
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              height: 43,
-              child: OutlinedButton.icon(
-                onPressed: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ColecoesListaPage()),
-                  (route) => false,
-                ),
-                icon: const Icon(Icons.delete_outline,
-                    size: 16, color: AppColors.danger),
-                label: const Text(
-                  'Excluir coleção',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.danger,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.danger, width: 1.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(99),
-                  ),
+                        )
+                      : const Text(
+                          'Salvar',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-          ],
+            ],
+          ),
         ),
       ),
     );
