@@ -9,9 +9,9 @@ class ReadingStatusService {
   final _url = ApiConfig.baseUrl;
 
   Map<String, String> get _headers => {
-        'Authorization': 'Bearer ${TokenConfig.token}',
-        'Content-Type': 'application/json',
-      };
+    'Authorization': 'Bearer ${TokenConfig.token}',
+    'Content-Type': 'application/json',
+  };
 
   Future<List<ReadingStatus>> fetchStatusesByUser(String userId) async {
     final response = await http.get(
@@ -105,5 +105,16 @@ class ReadingStatusService {
       if (message is String && message.isNotEmpty) return message;
     } catch (_) {}
     return 'Erro na requisição (${response.statusCode})';
+  }
+
+  Future<void> deleteStatus(String statusId) async {
+    final response = await http.delete(
+      Uri.parse('$_url/api/readingstatus/$statusId'),
+      headers: _headers,
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception(_mensagemErro(response));
+    }
   }
 }

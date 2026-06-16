@@ -173,11 +173,15 @@ class _BookPageState extends State<BookPage> {
     final userId = TokenConfig.userId;
     if (userId == null || userId.isEmpty) return;
 
-    final statusApi = _statusApiFromLabel(opcao);
+    final statusJaSelecionado = _statusLeitura == opcao;
 
     setState(() {
-      _statusLeitura = opcao;
       _salvandoStatus = true;
+      if (statusJaSelecionado) {
+        _statusLeitura = null;
+      } else {
+        _statusLeitura = opcao;
+      }
     });
 
     try {
@@ -187,6 +191,37 @@ class _BookPageState extends State<BookPage> {
         widget.livro.id,
         userId,
       );
+
+      if (statusJaSelecionado) {
+        if (statusAtual != null) {
+          await _readingStatusService.deleteStatus(statusAtual.id);
+        }
+
+        if (!mounted) return;
+
+        setState(() {
+          _readingStatusAtual = null;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Status de leitura removido',
+              style: TextStyle(fontSize: 13),
+            ),
+            backgroundColor: _highland,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+
+        return;
+      }
+
+      final statusApi = _statusApiFromLabel(opcao);
 
       final ReadingStatus statusSalvo;
       if (statusAtual == null) {
@@ -226,6 +261,12 @@ class _BookPageState extends State<BookPage> {
       );
     } catch (e) {
       if (!mounted) return;
+
+      setState(() {
+        _statusLeitura = _readingStatusAtual != null
+            ? _statusLabelFromApi(_readingStatusAtual!.status)
+            : null;
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
