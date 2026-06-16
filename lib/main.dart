@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:projeto_mobile/View/pages/login.dart';
 import 'package:projeto_mobile/View/pages/splash_page.dart';
 import 'package:projeto_mobile/config/light_theme.dart';
 import 'package:projeto_mobile/config/dark_theme.dart';
 import 'package:projeto_mobile/config/theme_controller.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

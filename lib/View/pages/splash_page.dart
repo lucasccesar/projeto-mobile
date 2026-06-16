@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/catalogo_page.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/services/auth_service.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -34,13 +36,15 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.forward();
 
-    // navega para o login após 2.5 segundos
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 2500), () async {
+      if (!mounted) return;
+      final autenticado = await AuthService().tentarReautenticar();
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const LoginPage(),
+          pageBuilder: (_, __, ___) =>
+              autenticado ? const CatalogoPage() : const LoginPage(),
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -75,7 +79,6 @@ class _SplashPageState extends State<SplashPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ícone do app
               Container(
                 width: 100,
                 height: 100,
@@ -90,7 +93,6 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
               const SizedBox(height: 24),
-              // nome do app
               const Text(
                 'BookLy',
                 style: TextStyle(

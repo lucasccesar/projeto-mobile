@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/config/url_config.dart';
 import 'package:projeto_mobile/models/usuario.dart';
+import 'package:projeto_mobile/services/storage_service.dart';
 
 class AuthService {
   final url = ApiConfig.baseUrl;
@@ -22,10 +23,33 @@ class AuthService {
     }
 
     final json = jsonDecode(response.body);
-    TokenConfig.token = json['token']?.toString() ?? '';
+    final token = json['token']?.toString() ?? '';
+    TokenConfig.token = token;
     TokenConfig.userRole = _extrairRoleDoToken(TokenConfig.token);
 
+    await StorageService.salvarToken(token);
     await _carregarUsuario();
+  }
+
+  Future<bool> tentarReautenticar() async {
+    final token = await StorageService.carregarToken();
+    if (token == null || token.isEmpty) return false;
+
+    TokenConfig.token = token;
+    TokenConfig.userRole = _extrairRoleDoToken(token);
+
+    try {
+      await _carregarUsuario();
+      return true;
+    } catch (_) {
+      await logout();
+      return false;
+    }
+  }
+
+  Future<void> logout() async {
+    TokenConfig.limpar();
+    await StorageService.limparToken();
   }
 
   Future<void> cadastrar({
@@ -48,7 +72,6 @@ class AuthService {
         'email': email,
         'password': senha,
         'birthday': birthday,
-        // O back decide o tipo: adminCode == "admin123" → ADMIN, senão CLIENT.
         if (adminCode != null && adminCode.isNotEmpty) 'adminCode': adminCode,
       }),
     );
@@ -106,12 +129,12 @@ class AuthService {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       TokenConfig.usuario = Usuario.fromJson(json);
-      // Mantém o fallback de `authorities` (não coberto por Usuario.fromJson) e
-      // a role do JWT caso o back não envie o tipo em /me.
       TokenConfig.userRole =
           TokenConfig.usuario?.tipo ??
           json['authorities']?.toString() ??
           TokenConfig.userRole;
+    } else {
+      throw Exception('Sessão inválida');
     }
   }
 
