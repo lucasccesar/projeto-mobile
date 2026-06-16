@@ -24,9 +24,9 @@ class _PerfilEditarState extends State<PerfilEditar> {
   bool _salvando = false;
 
   bool get _senhasValidas {
-    if (_novaSenhaController.text.isEmpty) return true; 
+    if (_novaSenhaController.text.isEmpty) return true;
     return _novaSenhaController.text == _confirmarSenhaController.text;
-        //_novaSenhaController.text.length >= 4;
+    //_novaSenhaController.text.length >= 4;
   }
 
   bool get _podeSalvar =>
@@ -60,46 +60,50 @@ class _PerfilEditarState extends State<PerfilEditar> {
     super.dispose();
   }
 
- Future<void> _salvarAlteracoes() async {
-  if (!_podeSalvar) return;
+  Future<void> _salvarAlteracoes() async {
+    if (!_podeSalvar) return;
 
-  if (_novaSenhaController.text.isNotEmpty &&
-      _novaSenhaController.text != _confirmarSenhaController.text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('As senhas não coincidem')),
-    );
-    return;
+    if (_novaSenhaController.text.isNotEmpty &&
+        _novaSenhaController.text != _confirmarSenhaController.text) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('As senhas não coincidem')));
+      return;
+    }
+
+    setState(() => _salvando = true);
+
+    try {
+      final usuarioAtualizado = await _usuarioService.atualizarUsuario(
+        id: TokenConfig.userId!,
+        nome: _nomeController.text.trim(),
+        email: _emailController.text.trim(),
+        currentPassword: _senhaAtualController.text,
+        newPassword: _novaSenhaController.text.isNotEmpty
+            ? _novaSenhaController.text
+            : null,
+      );
+
+      TokenConfig.usuario = usuarioAtualizado;
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Erro ao atualizar perfil. Verifique seus dados e tente novamente.',
+          ),
+        ),
+      );
+    } finally {
+      setState(() => _salvando = false);
+    }
   }
-
-  setState(() => _salvando = true);
-
-  try {
-    final usuarioAtualizado = await _usuarioService.atualizarUsuario(
-      id: TokenConfig.userId!,
-      nome: _nomeController.text.trim(),
-      email: _emailController.text.trim(),
-      currentPassword: _senhaAtualController.text, 
-      newPassword: _novaSenhaController.text.isNotEmpty
-          ? _novaSenhaController.text
-          : null, 
-    );
-
-    TokenConfig.usuario = usuarioAtualizado;
-
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Perfil atualizado com sucesso!')),
-    );
-    Navigator.pop(context);
-  } catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))), 
-    );
-  } finally {
-    setState(() => _salvando = false);
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +162,15 @@ class _PerfilEditarState extends State<PerfilEditar> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SectionLabel(
-                    texto: 'Senha',
-                    cor: AppColors.perfil,
-                  ),
+                  SectionLabel(texto: 'Senha', cor: AppColors.perfil),
                   SizedBox(height: 4),
                   Text(
                     'Informe sua senha atual para confirmar as mudanças. Preencha os campos abaixo apenas se quiser trocá-la.',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiary.withOpacity(0.7),
                     ),
                   ),
                   SizedBox(height: 16),

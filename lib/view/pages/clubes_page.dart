@@ -144,12 +144,10 @@ class _ClubesPageState extends State<ClubesPage> {
                               MaterialPageRoute(
                                 builder: (_) => ClubeHome(clube: clube),
                               ),
-                            ).then((deletado) {
-                              if (deletado == true) {
-                                setState(() {
-                                  _future = clubeService.fetchClubesDoLivro();
-                                });
-                              }
+                            ).then((_) {
+                              setState(() {
+                                _future = clubeService.fetchClubesDoLivro();
+                              });
                             }),
                       );
                     },
