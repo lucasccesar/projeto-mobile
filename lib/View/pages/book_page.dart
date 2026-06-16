@@ -2,6 +2,8 @@ import 'package:projeto_mobile/config/token_config.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/models/reading_status.dart';
+import 'package:projeto_mobile/services/reading_status_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
 import 'package:projeto_mobile/View/widgets/capa_widget.dart';
@@ -19,9 +21,13 @@ class BookPage extends StatefulWidget {
 
 class _BookPageState extends State<BookPage> {
   bool _favoritado = false;
-  String _statusLeitura = 'Lendo';
+  String? _statusLeitura;
+  final ReadingStatusService _readingStatusService = ReadingStatusService();
+  ReadingStatus? _readingStatusAtual;
+  bool _carregandoStatus = true;
+  bool _salvandoStatus = false;
 
-  static const _statusOpcoes = ['Quero Ler', 'Lendo', 'Lido', 'Abandonado'];
+  static const _statusOpcoes = ['Quero Ler', 'Lendo', 'Lido'];
 
   static const Color _highland = Color(0xFF7A8C63);
   static const Color _millbrook = Color(0xFF5A4631);
@@ -65,6 +71,12 @@ class _BookPageState extends State<BookPage> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _carregarStatusLeitura();
+  }
+
   void _abrirModalColecoes() {
     showModalBottomSheet(
       context: context,
@@ -93,6 +105,146 @@ class _BookPageState extends State<BookPage> {
       context,
       MaterialPageRoute(builder: (_) => AvaliarLivroPage(livro: widget.livro)),
     );
+  }
+
+  Future<void> _carregarStatusLeitura() async {
+    final userId = TokenConfig.userId;
+
+    if (userId == null || userId.isEmpty) {
+      if (!mounted) return;
+      setState(() {
+        _statusLeitura = null;
+        _carregandoStatus = false;
+      });
+      return;
+    }
+
+    try {
+      final status = await _readingStatusService.fetchStatusByBookAndUser(
+        widget.livro.id,
+        userId,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _readingStatusAtual = status;
+        _statusLeitura =
+            status != null ? _statusLabelFromApi(status.status) : null;
+        _carregandoStatus = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _statusLeitura = null;
+        _carregandoStatus = false;
+      });
+    }
+  }
+
+  String _statusApiFromLabel(String label) {
+    switch (label) {
+      case 'Quero Ler':
+        return 'QUERO_LER';
+      case 'Lendo':
+        return 'LENDO';
+      case 'Lido':
+        return 'LIDO';
+      default:
+        return 'LENDO';
+    }
+  }
+
+  String _statusLabelFromApi(String status) {
+    switch (status.toUpperCase()) {
+      case 'QUERO_LER':
+        return 'Quero Ler';
+      case 'LENDO':
+        return 'Lendo';
+      case 'LIDO':
+        return 'Lido';
+      default:
+        return 'Lendo';
+    }
+  }
+
+  Future<void> _salvarStatusLeitura(String opcao) async {
+    final userId = TokenConfig.userId;
+    if (userId == null || userId.isEmpty) return;
+
+    final statusApi = _statusApiFromLabel(opcao);
+
+    setState(() {
+      _statusLeitura = opcao;
+      _salvandoStatus = true;
+    });
+
+    try {
+      ReadingStatus? statusAtual = _readingStatusAtual;
+
+      statusAtual ??= await _readingStatusService.fetchStatusByBookAndUser(
+        widget.livro.id,
+        userId,
+      );
+
+      final ReadingStatus statusSalvo;
+      if (statusAtual == null) {
+        statusSalvo = await _readingStatusService.createStatus(
+          bookId: widget.livro.id,
+          userId: userId,
+          status: statusApi,
+        );
+      } else {
+        statusSalvo = await _readingStatusService.updateStatus(
+          statusId: statusAtual.id,
+          bookId: widget.livro.id,
+          userId: userId,
+          status: statusApi,
+        );
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _readingStatusAtual = statusSalvo;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Status atualizado para $opcao',
+            style: const TextStyle(fontSize: 13),
+          ),
+          backgroundColor: _highland,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString().replaceFirst('Exception: ', ''),
+            style: const TextStyle(fontSize: 13),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _salvandoStatus = false;
+      });
+    }
   }
 
   @override
@@ -334,18 +486,29 @@ class _BookPageState extends State<BookPage> {
                   color: Color(0xFF3D9080),
                 ),
               ),
+              if (_carregandoStatus || _salvandoStatus) ...[
+                const SizedBox(width: 8),
+                const SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: _statusOpcoes.map((opcao) {
-              final selecionado = opcao == _statusLeitura;
+              final selecionado =
+                  _statusLeitura != null && opcao == _statusLeitura;
               final isLast = opcao == _statusOpcoes.last;
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(right: isLast ? 0 : 6),
                   child: GestureDetector(
-                    onTap: () => setState(() => _statusLeitura = opcao),
+                    onTap: (_carregandoStatus || _salvandoStatus)
+                        ? null
+                        : () => _salvarStatusLeitura(opcao),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       height: 34,

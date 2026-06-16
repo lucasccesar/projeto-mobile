@@ -1,69 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/config/token_config.dart';
+import 'package:projeto_mobile/models/reading_status.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/widgets/livro_card_widget.dart';
 import 'package:projeto_mobile/View/widgets/rodape_widget.dart';
 import 'package:projeto_mobile/View/widgets/sidebar_widget.dart';
+import 'package:projeto_mobile/services/reading_status_service.dart';
 
-class StatusLeituraPage extends StatelessWidget {
+class StatusLeituraPage extends StatefulWidget {
   const StatusLeituraPage({super.key});
 
-  static const _lendoAgora = [
-    Book(
-      id: 'l1',
-      title: 'Duna',
-      author: 'Frank Herbert',
-      genre: 'Ficção Científica',
-      rating: 9.1,
-      price: 99.90,
-    ),
-  ];
+  @override
+  State<StatusLeituraPage> createState() => _StatusLeituraPageState();
+}
 
-  static const _queroLer = [
-    Book(
-      id: 'l2',
-      title: 'O Grande Gatsby',
-      author: 'F. Scott Fitzgerald',
-      genre: 'Clássico',
-      rating: 8.7,
-      price: 54.90,
-    ),
-    Book(
-      id: 'l3',
-      title: 'Dom Quixote',
-      author: 'Miguel de Cervantes',
-      genre: 'Clássico',
-      rating: 8.9,
-      price: 64.90,
-    ),
-  ];
+class _StatusLeituraPageState extends State<StatusLeituraPage> {
+  final ReadingStatusService _readingStatusService = ReadingStatusService();
+  late Future<List<ReadingStatus>> _futureStatuses;
 
-  static const _jaLi = [
-    Book(
-      id: 'l4',
-      title: '1984',
-      author: 'George Orwell',
-      genre: 'Distopia',
-      rating: 9.3,
-      price: 59.90,
-    ),
-    Book(
-      id: 'l5',
-      title: 'Crime e Castigo',
-      author: 'Fiódor Dostoiévski',
-      genre: 'Romance Psicológico',
-      rating: 9.2,
-      price: 69.90,
-    ),
-    Book(
-      id: 'l6',
-      title: 'A Revolução dos Bichos',
-      author: 'George Orwell',
-      genre: 'Fábula',
-      rating: 9.0,
-      price: 49.90,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _futureStatuses = _carregarStatuses();
+  }
+
+  Future<List<ReadingStatus>> _carregarStatuses() async {
+    final userId = TokenConfig.userId;
+    if (userId == null || userId.isEmpty) {
+      return [];
+    }
+
+    return _readingStatusService.fetchStatusesByUser(userId);
+  }
+
+  List<ReadingStatus> _filtrarPorStatus(
+    List<ReadingStatus> statuses,
+    List<String> statusDesejados,
+  ) {
+    return statuses
+        .where((item) => statusDesejados.contains(item.status.toUpperCase()))
+        .toList();
+  }
+
+  Future<void> _recarregar() async {
+    final future = _carregarStatuses();
+    setState(() {
+      _futureStatuses = future;
+    });
+    await future;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,36 +62,126 @@ class StatusLeituraPage extends StatelessWidget {
         iconeSeta: false,
         iconeCarrinho: false,
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 16, bottom: 12),
-        children: [
-          _CabecalhoSecao(
-            titulo: 'Lendo agora',
-            icone: Icons.auto_stories_outlined,
-            corAccent: const Color(0xFF3D9080),
-          ),
-          ..._lendoAgora.map(
-            (l) => _CardComBorda(livro: l, corAccent: const Color(0xFF3D9080)),
-          ),
-          const SizedBox(height: 8),
-          _CabecalhoSecao(
-            titulo: 'Quero ler',
-            icone: Icons.bookmark_border_rounded,
-            corAccent: const Color(0xFF4A7FA5),
-          ),
-          ..._queroLer.map(
-            (l) => _CardComBorda(livro: l, corAccent: const Color(0xFF4A7FA5)),
-          ),
-          const SizedBox(height: 8),
-          _CabecalhoSecao(
-            titulo: 'Já li',
-            icone: Icons.check_circle_outline_rounded,
-            corAccent: const Color(0xFF7A8C63),
-          ),
-          ..._jaLi.map(
-            (l) => _CardComBorda(livro: l, corAccent: const Color(0xFF7A8C63)),
-          ),
-        ],
+      body: FutureBuilder<List<ReadingStatus>>(
+        future: _futureStatuses,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline_rounded,
+                      size: 38,
+                      color: Colors.redAccent,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      snapshot.error.toString().replaceFirst('Exception: ', ''),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _recarregar,
+                      child: const Text('Tentar novamente'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final statuses = snapshot.data ?? [];
+          final lendoAgora = _filtrarPorStatus(statuses, ['LENDO']);
+          final queroLer = _filtrarPorStatus(statuses, ['QUERO_LER']);
+          final jaLi = _filtrarPorStatus(statuses, ['LIDO']);
+
+          if (statuses.isEmpty) {
+            return RefreshIndicator(
+              onRefresh: _recarregar,
+              child: ListView(
+                children: const [
+                  SizedBox(height: 180),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        'Você ainda não possui livros com status de leitura.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF777777),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: _recarregar,
+            child: ListView(
+              padding: const EdgeInsets.only(top: 16, bottom: 12),
+              children: [
+                _CabecalhoSecao(
+                  titulo: 'Lendo agora',
+                  icone: Icons.auto_stories_outlined,
+                  corAccent: const Color(0xFF3D9080),
+                ),
+                if (lendoAgora.isEmpty)
+                  const _SecaoVazia(texto: 'Nenhum livro em leitura no momento.')
+                else
+                  ...lendoAgora.map(
+                    (item) => _CardComBorda(
+                      livro: item.book,
+                      corAccent: const Color(0xFF3D9080),
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                _CabecalhoSecao(
+                  titulo: 'Quero ler',
+                  icone: Icons.bookmark_border_rounded,
+                  corAccent: const Color(0xFF4A7FA5),
+                ),
+                if (queroLer.isEmpty)
+                  const _SecaoVazia(texto: 'Nenhum livro marcado como quero ler.')
+                else
+                  ...queroLer.map(
+                    (item) => _CardComBorda(
+                      livro: item.book,
+                      corAccent: const Color(0xFF4A7FA5),
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                _CabecalhoSecao(
+                  titulo: 'Já li',
+                  icone: Icons.check_circle_outline_rounded,
+                  corAccent: const Color(0xFF7A8C63),
+                ),
+                if (jaLi.isEmpty)
+                  const _SecaoVazia(texto: 'Nenhum livro concluído ainda.')
+                else
+                  ...jaLi.map(
+                    (item) => _CardComBorda(
+                      livro: item.book,
+                      corAccent: const Color(0xFF7A8C63),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
       bottomNavigationBar: const Rodape(
         selectedTab: NavTab.leitura,
@@ -149,7 +224,7 @@ class _CabecalhoSecao extends StatelessWidget {
 }
 
 class _CardComBorda extends StatelessWidget {
-  final Book livro;
+  final dynamic livro;
   final Color corAccent;
 
   const _CardComBorda({required this.livro, required this.corAccent});
@@ -175,6 +250,33 @@ class _CardComBorda extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SecaoVazia extends StatelessWidget {
+  final String texto;
+
+  const _SecaoVazia({required this.texto});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          texto,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFF777777),
+          ),
+        ),
+      ),
     );
   }
 }
