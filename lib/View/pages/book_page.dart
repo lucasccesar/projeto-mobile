@@ -2,7 +2,9 @@ import 'package:projeto_mobile/config/token_config.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/models/rating.dart';
 import 'package:projeto_mobile/models/reading_status.dart';
+import 'package:projeto_mobile/services/rating_service.dart';
 import 'package:projeto_mobile/services/reading_status_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
@@ -23,9 +25,13 @@ class _BookPageState extends State<BookPage> {
   bool _favoritado = false;
   String? _statusLeitura;
   final ReadingStatusService _readingStatusService = ReadingStatusService();
+  final RatingService _ratingService = RatingService();
   ReadingStatus? _readingStatusAtual;
   bool _carregandoStatus = true;
   bool _salvandoStatus = false;
+  bool _carregandoAvaliacoes = true;
+  List<Rating> _avaliacoes = [];
+  double _mediaAvaliacoes = 0;
 
   static const _statusOpcoes = ['Quero Ler', 'Lendo', 'Lido'];
 
@@ -36,45 +42,11 @@ class _BookPageState extends State<BookPage> {
   static const Color _fuzzyWuzzy = Color(0xFFC06248);
   static const Color _starActive = Color(0xFFD4A84B);
 
-  static const List<_Comentario> _comentarios = [
-    _Comentario(
-      autor: 'Ana Lima',
-      nota: 10,
-      texto:
-          'Uma obra-prima absoluta! A construção do mundo e dos personagens é simplesmente inigualável. Li três vezes e sempre descubro algo novo.',
-      data: 'há 2 dias',
-      iniciais: 'AL',
-    ),
-    _Comentario(
-      autor: 'Carlos Mendes',
-      nota: 9,
-      texto:
-          'Tolkien criou um universo inteiro com linguagens, histórias e culturas próprias. O ritmo pode ser lento no início, mas vale cada página.',
-      data: 'há 1 semana',
-      iniciais: 'CM',
-    ),
-    _Comentario(
-      autor: 'Beatriz Souza',
-      nota: 10,
-      texto:
-          'Impossível não se apaixonar pela Terra-Média. A jornada de Frodo é emocionante do início ao fim. Um dos melhores livros que já li.',
-      data: 'há 2 semanas',
-      iniciais: 'BS',
-    ),
-    _Comentario(
-      autor: 'Rafael Torres',
-      nota: 8,
-      texto:
-          'Leitura densa, mas recompensadora. As batalhas e os momentos de amizade entre os personagens são memoráveis.',
-      data: 'há 1 mês',
-      iniciais: 'RT',
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
     _carregarStatusLeitura();
+    _carregarAvaliacoes();
   }
 
   void _abrirModalColecoes() {
@@ -100,11 +72,40 @@ class _BookPageState extends State<BookPage> {
     }
   }
 
-  void _abrirAvaliar() {
-    Navigator.push(
+  Future<void> _abrirAvaliar() async {
+    final enviado = await Navigator.push<bool>(
       context,
       MaterialPageRoute(builder: (_) => AvaliarLivroPage(livro: widget.livro)),
     );
+
+    if (enviado == true && mounted) {
+      await _carregarAvaliacoes();
+    }
+  }
+
+  Future<void> _carregarAvaliacoes() async {
+    try {
+      final resultados = await Future.wait([
+        _ratingService.fetchRatingsByBook(widget.livro.id),
+        _ratingService.fetchAverageRating(widget.livro.id),
+      ]);
+
+      if (!mounted) return;
+
+      setState(() {
+        _avaliacoes = resultados[0] as List<Rating>;
+        _mediaAvaliacoes = resultados[1] as double;
+        _carregandoAvaliacoes = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      setState(() {
+        _avaliacoes = [];
+        _mediaAvaliacoes = 0;
+        _carregandoAvaliacoes = false;
+      });
+    }
   }
 
   Future<void> _carregarStatusLeitura() async {
@@ -247,6 +248,45 @@ class _BookPageState extends State<BookPage> {
     }
   }
 
+  String _textoQuantidadeAvaliacoes() {
+    if (_carregandoAvaliacoes) return '(carregando...)';
+    final total = _avaliacoes.length;
+    return total == 1 ? '(1 avaliação)' : '($total avaliações)';
+  }
+
+  String _textoQuantidadeComentarios() {
+    if (_carregandoAvaliacoes) return 'Carregando comentários...';
+    final total = _avaliacoes.length;
+    return total == 1 ? '1 comentário' : '$total comentários';
+  }
+
+  String _iniciaisDoUsuario(String userId) {
+    final base = userId.replaceAll('-', '').toUpperCase();
+    if (base.length >= 2) {
+      return base.substring(0, 2);
+    }
+    if (base.isNotEmpty) return base;
+    return 'U';
+  }
+
+  String _autorDoComentario(String userId) {
+    final usuarioAtual = TokenConfig.usuario;
+    if (usuarioAtual != null && usuarioAtual.id == userId) {
+      return usuarioAtual.nome;
+    }
+    return 'Leitor';
+  }
+
+  String _dataFormatada(DateTime? data) {
+    if (data == null) return 'Sem data';
+
+    final dia = data.day.toString().padLeft(2, '0');
+    final mes = data.month.toString().padLeft(2, '0');
+    final ano = data.year.toString().padLeft(4, '0');
+
+    return '$dia/$mes/$ano';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -386,12 +426,16 @@ class _BookPageState extends State<BookPage> {
   }
 
   Widget _buildRating() {
+    final textoNota = _carregandoAvaliacoes
+        ? widget.livro.rating.toString()
+        : _mediaAvaliacoes.toStringAsFixed(1);
+
     return Row(
       children: [
         const Icon(Icons.star_rounded, size: 13, color: _highland),
         const SizedBox(width: 5),
         Text(
-          widget.livro.rating.toString(),
+          textoNota,
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w700,
@@ -399,9 +443,9 @@ class _BookPageState extends State<BookPage> {
           ),
         ),
         const SizedBox(width: 5),
-        const Text(
-          '(128 avaliações)',
-          style: TextStyle(fontSize: 11, color: _shadow),
+        Text(
+          _textoQuantidadeAvaliacoes(),
+          style: const TextStyle(fontSize: 11, color: _shadow),
         ),
         const Spacer(),
         GestureDetector(
@@ -630,18 +674,47 @@ class _BookPageState extends State<BookPage> {
             ),
           ),
           const SizedBox(height: 2),
-          const Text(
-            '4 comentários',
-            style: TextStyle(fontSize: 11, color: _shadow),
+          Text(
+            _textoQuantidadeComentarios(),
+            style: const TextStyle(fontSize: 11, color: _shadow),
           ),
           const SizedBox(height: 14),
-          ..._comentarios.map((c) => _buildCardComentario(c)),
+          if (_carregandoAvaliacoes)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else if (_avaliacoes.isEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: _ecruWhite,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _millbrook.withValues(alpha: 0.10),
+                  width: 1,
+                ),
+              ),
+              child: const Text(
+                'Nenhuma avaliação cadastrada para este livro ainda.',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: _shadow,
+                  height: 1.6,
+                ),
+              ),
+            )
+          else
+            ..._avaliacoes.map((rating) => _buildCardComentario(rating)),
         ],
       ),
     );
   }
 
-  Widget _buildCardComentario(_Comentario comentario) {
+  Widget _buildCardComentario(Rating rating) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -668,7 +741,7 @@ class _BookPageState extends State<BookPage> {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  comentario.iniciais,
+                  _iniciaisDoUsuario(rating.userId),
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -682,7 +755,7 @@ class _BookPageState extends State<BookPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      comentario.autor,
+                      _autorDoComentario(rating.userId),
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -690,7 +763,7 @@ class _BookPageState extends State<BookPage> {
                       ),
                     ),
                     Text(
-                      comentario.data,
+                      _dataFormatada(rating.ratingDate),
                       style: const TextStyle(fontSize: 11, color: _shadow),
                     ),
                   ],
@@ -708,7 +781,7 @@ class _BookPageState extends State<BookPage> {
                     Icon(Icons.star_rounded, size: 11, color: _starActive),
                     const SizedBox(width: 3),
                     Text(
-                      '${comentario.nota}/10',
+                      '${rating.ratingValue}/10',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -720,11 +793,13 @@ class _BookPageState extends State<BookPage> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            comentario.texto,
-            style: const TextStyle(fontSize: 13, color: _shadow, height: 1.6),
-          ),
+          if (rating.comment.trim().isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              rating.comment,
+              style: const TextStyle(fontSize: 13, color: _shadow, height: 1.6),
+            ),
+          ],
         ],
       ),
     );
@@ -761,22 +836,6 @@ class _BookPageState extends State<BookPage> {
     return mapa[titulo] ??
         'Uma obra literária de destaque, aclamada por críticos e leitores ao redor do mundo. Um mergulho profundo em narrativas que marcaram gerações e continuam relevantes nos dias de hoje.';
   }
-}
-
-class _Comentario {
-  final String autor;
-  final int nota;
-  final String texto;
-  final String data;
-  final String iniciais;
-
-  const _Comentario({
-    required this.autor,
-    required this.nota,
-    required this.texto,
-    required this.data,
-    required this.iniciais,
-  });
 }
 
 class _ModalColecoes extends StatefulWidget {
