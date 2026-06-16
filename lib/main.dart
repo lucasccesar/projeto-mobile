@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:projeto_mobile/View/pages/login.dart';
+import 'package:projeto_mobile/View/pages/splash_page.dart';
 import 'package:projeto_mobile/config/light_theme.dart';
 import 'package:projeto_mobile/config/dark_theme.dart';
 import 'package:projeto_mobile/config/theme_controller.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [Locale('pt', 'BR')],
-          home: const LoginPage(),
+          home: const SplashPage(),
         );
       },
     );

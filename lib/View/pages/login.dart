@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_mobile/View/pages/splash_page.dart';
 import 'package:projeto_mobile/services/auth_service.dart';
 import 'package:projeto_mobile/View/widgets/theme_toggle_button.dart';
 import '../widgets/logo.dart';
@@ -137,9 +138,9 @@ class _LoginCard extends StatelessWidget {
               'Entre com sua conta para continuar',
               style: TextStyle(
                 fontSize: 13,
-                color: Theme.of(context).colorScheme.onSurface.withValues(
-                  alpha: 0.7,
-                ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
           ),
@@ -194,6 +195,14 @@ class _LoginCard extends StatelessWidget {
               ),
             ],
           ),
+          // const SizedBox(height: 16), 
+          // LinkButton(
+          //   label: 'animação de entrada',
+          //   onPressed: () => Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(builder: (_) => const SplashPage()),
+          //   ),
+          // ),
         ],
       ),
     );
