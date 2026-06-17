@@ -5,7 +5,7 @@ import 'package:projeto_mobile/config/app_colors.dart';
 class PerfilCardWidget extends StatelessWidget {
   final String nome;
   final String email;
-  final String livros;
+  //final String livros;
   final String clubes;
   final VoidCallback? onEditarVoltar;
 
@@ -13,7 +13,7 @@ class PerfilCardWidget extends StatelessWidget {
     super.key,
     required this.nome,
     required this.email,
-    required this.livros,
+    //required this.livros,
     required this.clubes,
     this.onEditarVoltar,
   });
@@ -62,25 +62,25 @@ class PerfilCardWidget extends StatelessWidget {
                 SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(
-                      Icons.library_books_outlined,
-                      size: 15,
-                      color: AppColors.catalogo,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    // Icon(
+                    //   Icons.library_books_outlined,
+                    //   size: 15,
+                    //   color: AppColors.catalogo,
+                    //   fontWeight: FontWeight.bold,
+                    // ),
 
-                    SizedBox(width: 4),
+                    //SizedBox(width: 4),
 
-                    Text(
-                      '$livros livros',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.catalogo,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    // Text(
+                    //   '$livros livros',
+                    //   style: TextStyle(
+                    //     fontSize: 13,
+                    //     color: AppColors.catalogo,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
 
-                    SizedBox(width: 12),
+                    //SizedBox(width: 12),
 
                     Icon(
                       Icons.group,

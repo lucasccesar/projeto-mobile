@@ -68,7 +68,7 @@ class _PerfilHomeState extends State<PerfilHome> {
             PerfilCardWidget(
               nome: nome,
               email: email,
-              livros: widget.livros,
+              //livros: widget.livros,
               clubes: _carregando ? '...' : _totalClubes.toString(),
               onEditarVoltar: () => setState(() {}),
             ),
