@@ -62,12 +62,19 @@ class _BookPageState extends State<BookPage> {
   }
 
   Future<void> _abrirEditar() async {
-    final atualizado = await Navigator.push<Book>(
+    final atualizado = await Navigator.push<dynamic>(
       context,
       MaterialPageRoute(builder: (_) => EditarLivroPage(livro: widget.livro)),
     );
 
-    if (atualizado != null && mounted) {
+    if (!mounted) return;
+
+    if (atualizado == 'deleted') {
+      Navigator.pop(context);
+      return;
+    }
+
+    if (atualizado is Book) {
       setState(() {});
     }
   }

@@ -105,10 +105,12 @@ class BookService {
   }
 
   Future<void> excluirLivro(String id) async {
-    final response = await http.delete(
-      Uri.parse('$_url/api/books/$id'),
-      headers: _headers,
-    );
+    final response = await http
+        .delete(
+          Uri.parse('$_url/api/books/$id'),
+          headers: _headers,
+        )
+        .timeout(const Duration(seconds: 15));
 
     if (response.statusCode != 200 && response.statusCode != 204) {
       throw Exception(_mensagemErro(response));

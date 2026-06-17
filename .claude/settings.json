@@ -6,7 +6,16 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(flutter analyze *)",
       "Read(//c/Users/jmafa/Downloads/Mobile/backend-projeto-mobile/src/main/java/br/com/bookly/services/impl/**)",
-      "Read(//c/Users/jmafa/Downloads/Mobile/backend-projeto-mobile/src/main/java/br/com/bookly/entities/**)"
+      "Read(//c/Users/jmafa/Downloads/Mobile/backend-projeto-mobile/src/main/java/br/com/bookly/entities/**)",
+      "Read(//c/Users/jmafa/Downloads/Mobile/backend-projeto-mobile/src/main/java/br/com/bookly/controllers/**)",
+      "Read(//c/Users/jmafa/Downloads/Mobile/backend-projeto-mobile/src/main/java/br/com/bookly/services/**)",
+      "Read(//c/Users/jmafa/Downloads/Mobile/backend-projeto-mobile/src/**)",
+      "Bash(xargs grep -l \"deleteBook\\\\|BookRepository\")",
+      "Bash(pg_isready -h localhost -p 5432)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\jmafa\\Downloads\\Mobile\\backend-projeto-mobile\\src\\main\\java\\br\\com\\bookly\\entities",
+      "c:\\Users\\jmafa\\Downloads\\Mobile\\backend-projeto-mobile\\src\\main\\java\\br\\com\\bookly\\services\\impl"
     ]
   }
 }
