@@ -7,7 +7,11 @@ import 'package:projeto_mobile/models/usuario.dart';
 class UsuarioService {
   final url = ApiConfig.baseUrl;
 
+  static final Map<String, String> _cache = {};
+
   Future<String> fetchNome(String userId) async {
+    if (_cache.containsKey(userId)) return _cache[userId]!;
+
     final response = await http.get(
       Uri.parse('$url/api/users/$userId'),
       headers: {
@@ -18,17 +22,21 @@ class UsuarioService {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      return json['name'] ?? 'Usuário';
+      final nome = json['name']?.toString() ?? 'Usuário';
+      _cache[userId] = nome;
+      return nome;
     } else {
       return 'Usuário';
     }
   }
 
+  Future<String> buscarPorId(String userId) => fetchNome(userId);
+
   Future<Usuario> atualizarUsuario({
     required String id,
     required String nome,
     required String email,
-    required String currentPassword, 
+    required String currentPassword,
     String? newPassword,
   }) async {
     final response = await http.put(

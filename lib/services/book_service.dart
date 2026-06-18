@@ -4,9 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/config/url_config.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/services/rating_service.dart';
 
 class BookService {
   final _url = ApiConfig.baseUrl;
+  final _ratingService = RatingService();
 
   Map<String, String> get _headers => {
         'Authorization': 'Bearer ${TokenConfig.token}',
@@ -26,6 +28,19 @@ class BookService {
     } else {
       throw Exception(_mensagemErro(response));
     }
+  }
+
+  Future<List<Book>> fetchLivrosComMedias() async {
+    final livros = await fetchLivros();
+
+    final medias = await Future.wait(
+      livros.map((l) => _ratingService.fetchAverageRating(l.id).catchError((_) => 0.0)),
+    );
+
+    return List.generate(
+      livros.length,
+      (i) => livros[i].copyWith(rating: medias[i]),
+    );
   }
 
   Future<Book> fetchLivroPorId(String id) async {

@@ -9,6 +9,7 @@ import 'package:projeto_mobile/services/colecao_service.dart';
 import 'package:projeto_mobile/services/favorito_service.dart';
 import 'package:projeto_mobile/services/rating_service.dart';
 import 'package:projeto_mobile/services/reading_status_service.dart';
+import 'package:projeto_mobile/services/usuario_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
 import 'package:projeto_mobile/View/widgets/capa_widget.dart';
@@ -32,12 +33,14 @@ class _BookPageState extends State<BookPage> {
   final ReadingStatusService _readingStatusService = ReadingStatusService();
   final RatingService _ratingService = RatingService();
   final FavoritoService _favoritoService = FavoritoService();
+  final UsuarioService _usuarioService = UsuarioService();
   ReadingStatus? _readingStatusAtual;
   bool _carregandoStatus = true;
   bool _salvandoStatus = false;
   bool _carregandoAvaliacoes = true;
   List<Rating> _avaliacoes = [];
   double _mediaAvaliacoes = 0;
+  final Map<String, String> _nomesUsuarios = {};
 
   static const _statusOpcoes = ['Quero Ler', 'Lendo', 'Lido'];
 
@@ -106,11 +109,15 @@ class _BookPageState extends State<BookPage> {
 
       if (!mounted) return;
 
+      final avaliacoes = resultados[0] as List<Rating>;
+
       setState(() {
-        _avaliacoes = resultados[0] as List<Rating>;
+        _avaliacoes = avaliacoes;
         _mediaAvaliacoes = resultados[1] as double;
         _carregandoAvaliacoes = false;
       });
+
+      await _resolverNomesAvaliacoes(avaliacoes);
     } catch (_) {
       if (!mounted) return;
 
@@ -120,6 +127,34 @@ class _BookPageState extends State<BookPage> {
         _carregandoAvaliacoes = false;
       });
     }
+  }
+
+  Future<void> _resolverNomesAvaliacoes(List<Rating> avaliacoes) async {
+    final usuarioAtual = TokenConfig.usuario;
+    final idsParaBuscar = avaliacoes
+        .map((r) => r.userId)
+        .where((id) => id.isNotEmpty && !_nomesUsuarios.containsKey(id))
+        .toSet();
+
+    if (idsParaBuscar.isEmpty) return;
+
+    final futures = idsParaBuscar.map((id) async {
+      if (usuarioAtual != null && usuarioAtual.id == id) {
+        return MapEntry(id, usuarioAtual.nome);
+      }
+      final nome = await _usuarioService.buscarPorId(id);
+      return MapEntry(id, nome);
+    });
+
+    final entradas = await Future.wait(futures);
+
+    if (!mounted) return;
+
+    setState(() {
+      for (final entrada in entradas) {
+        _nomesUsuarios[entrada.key] = entrada.value;
+      }
+    });
   }
 
   Future<void> _carregarFavorito() async {
@@ -389,21 +424,23 @@ class _BookPageState extends State<BookPage> {
     return total == 1 ? '1 comentário' : '$total comentários';
   }
 
-  String _iniciaisDoUsuario(String userId) {
-    final base = userId.replaceAll('-', '').toUpperCase();
-    if (base.length >= 2) {
-      return base.substring(0, 2);
-    }
-    if (base.isNotEmpty) return base;
-    return 'U';
-  }
-
-  String _autorDoComentario(String userId) {
+  String _nomeDoAutor(String userId) {
+    if (_nomesUsuarios.containsKey(userId)) return _nomesUsuarios[userId]!;
     final usuarioAtual = TokenConfig.usuario;
     if (usuarioAtual != null && usuarioAtual.id == userId) {
       return usuarioAtual.nome;
     }
     return 'Leitor';
+  }
+
+  String _iniciaisDoNome(String nome) {
+    final partes = nome.trim().split(RegExp(r'\s+'));
+    if (partes.length >= 2) {
+      return '${partes[0][0]}${partes[1][0]}'.toUpperCase();
+    }
+    if (nome.length >= 2) return nome.substring(0, 2).toUpperCase();
+    if (nome.isNotEmpty) return nome[0].toUpperCase();
+    return 'U';
   }
 
   String _dataFormatada(DateTime? data) {
@@ -873,6 +910,9 @@ class _BookPageState extends State<BookPage> {
   }
 
   Widget _buildCardComentario(Rating rating) {
+    final nome = _nomeDoAutor(rating.userId);
+    final iniciais = _iniciaisDoNome(nome);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -899,7 +939,7 @@ class _BookPageState extends State<BookPage> {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  _iniciaisDoUsuario(rating.userId),
+                  iniciais,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -913,7 +953,7 @@ class _BookPageState extends State<BookPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _autorDoComentario(rating.userId),
+                      nome,
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,

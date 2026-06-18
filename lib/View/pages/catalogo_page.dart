@@ -42,7 +42,7 @@ class _CatalogoPageState extends State<CatalogoPage> {
       _erro = null;
     });
     try {
-      final livros = await _bookService.fetchLivros();
+      final livros = await _bookService.fetchLivrosComMedias();
       setState(() => _livros = livros);
     } catch (e) {
       setState(() => _erro = e.toString());

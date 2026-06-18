@@ -5,6 +5,7 @@ class Rating {
   final String comment;
   final int ratingValue;
   final DateTime? ratingDate;
+  final String? userName;
 
   const Rating({
     required this.id,
@@ -13,6 +14,7 @@ class Rating {
     required this.comment,
     required this.ratingValue,
     this.ratingDate,
+    this.userName,
   });
 
   factory Rating.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Rating {
       comment: json['comment']?.toString() ?? '',
       ratingValue: (json['ratingValue'] ?? 0) as int,
       ratingDate: _parseDate(json['ratingDate']),
+      userName: json['userName']?.toString(),
     );
   }
 
