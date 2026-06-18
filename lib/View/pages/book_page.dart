@@ -2,8 +2,10 @@ import 'package:projeto_mobile/config/token_config.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
 import 'package:projeto_mobile/models/book.dart';
+import 'package:projeto_mobile/models/colecao.dart';
 import 'package:projeto_mobile/models/rating.dart';
 import 'package:projeto_mobile/models/reading_status.dart';
+import 'package:projeto_mobile/services/colecao_service.dart';
 import 'package:projeto_mobile/services/rating_service.dart';
 import 'package:projeto_mobile/services/reading_status_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
@@ -57,7 +59,7 @@ class _BookPageState extends State<BookPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => _ModalColecoes(tituloLivro: widget.livro.title),
+      builder: (_) => _ModalColecoes(livro: widget.livro),
     );
   }
 
@@ -887,9 +889,9 @@ class _BookPageState extends State<BookPage> {
 }
 
 class _ModalColecoes extends StatefulWidget {
-  final String tituloLivro;
+  final Book livro;
 
-  const _ModalColecoes({required this.tituloLivro});
+  const _ModalColecoes({required this.livro});
 
   @override
   State<_ModalColecoes> createState() => _ModalColecoesState();
@@ -901,14 +903,100 @@ class _ModalColecoesState extends State<_ModalColecoes> {
   static const Color _shadow = Color(0xFF8B7355);
   static const Color _ecruWhite = Color(0xFFF5EFDB);
 
-  final List<_Colecao> _colecoes = [
-    _Colecao(nome: 'Favoritos', icone: Icons.favorite_outline_rounded, qtd: 4),
-    _Colecao(nome: 'Para o Verão', icone: Icons.wb_sunny_outlined, qtd: 7),
-    _Colecao(nome: 'Clássicos', icone: Icons.auto_stories_outlined, qtd: 12),
-    _Colecao(nome: 'Recomendados', icone: Icons.thumb_up_outlined, qtd: 3),
-  ];
+  final ColecaoService _colecaoService = ColecaoService();
 
-  final Set<int> _selecionados = {};
+  List<Colecao> _colecoes = [];
+  final Set<String> _selecionados = {};
+  bool _carregando = true;
+  bool _salvando = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarColecoes();
+  }
+
+  Future<void> _carregarColecoes() async {
+    try {
+      final colecoes = await _colecaoService.buscarPorUsuario();
+      if (!mounted) return;
+      setState(() {
+        _colecoes = colecoes;
+        _selecionados.addAll(
+          colecoes
+              .where((c) => c.books.any((b) => b.id == widget.livro.id))
+              .map((c) => c.id),
+        );
+        _carregando = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _carregando = false);
+    }
+  }
+
+  Future<void> _confirmar() async {
+    setState(() => _salvando = true);
+
+    try {
+      final futures = _colecoes.map((colecao) {
+        final jaEstava = colecao.books.any((b) => b.id == widget.livro.id);
+        final estaSelecionado = _selecionados.contains(colecao.id);
+
+        if (!jaEstava && estaSelecionado) {
+          return _colecaoService.adicionarLivros(
+            colecao: colecao,
+            livrosParaAdicionar: [widget.livro],
+          );
+        }
+
+        if (jaEstava && !estaSelecionado) {
+          return _colecaoService.removerLivro(
+            colecao: colecao,
+            livroId: widget.livro.id,
+          );
+        }
+
+        return Future<Colecao?>.value(null);
+      });
+
+      await Future.wait(futures);
+
+      if (!mounted) return;
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Coleções atualizadas',
+            style: TextStyle(fontSize: 13),
+          ),
+          backgroundColor: _highland,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _salvando = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString().replaceFirst('Exception: ', ''),
+            style: const TextStyle(fontSize: 13),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -967,7 +1055,7 @@ class _ModalColecoesState extends State<_ModalColecoes> {
                   const SizedBox(width: 5),
                   Expanded(
                     child: Text(
-                      widget.tituloLivro,
+                      widget.livro.title,
                       style: const TextStyle(fontSize: 12, color: _shadow),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -976,128 +1064,158 @@ class _ModalColecoesState extends State<_ModalColecoes> {
               ),
             ),
             const SizedBox(height: 12),
-            ...List.generate(_colecoes.length, (i) {
-              final colecao = _colecoes[i];
-              final selecionado = _selecionados.contains(i);
-              return Column(
-                children: [
-                  if (i > 0)
-                    Divider(
-                      height: 1,
-                      indent: 20,
-                      endIndent: 20,
-                      color: _millbrook.withValues(alpha: 0.08),
-                    ),
-                  InkWell(
-                    onTap: () => setState(() {
-                      if (selecionado) {
-                        _selecionados.remove(i);
-                      } else {
-                        _selecionados.add(i);
-                      }
-                    }),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+            if (_carregando)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (_colecoes.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Text(
+                  'Nenhuma coleção encontrada.',
+                  style: TextStyle(fontSize: 13, color: _shadow),
+                ),
+              )
+            else
+              ...List.generate(_colecoes.length, (i) {
+                final colecao = _colecoes[i];
+                final selecionado = _selecionados.contains(colecao.id);
+                return Column(
+                  children: [
+                    if (i > 0)
+                      Divider(
+                        height: 1,
+                        indent: 20,
+                        endIndent: 20,
+                        color: _millbrook.withValues(alpha: 0.08),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 38,
-                            height: 38,
-                            decoration: BoxDecoration(
-                              color: selecionado
-                                  ? _highland.withValues(alpha: 0.12)
-                                  : _ecruWhite,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
+                    InkWell(
+                      onTap: _salvando
+                          ? null
+                          : () => setState(() {
+                                if (selecionado) {
+                                  _selecionados.remove(colecao.id);
+                                } else {
+                                  _selecionados.add(colecao.id);
+                                }
+                              }),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
                                 color: selecionado
-                                    ? _highland.withValues(alpha: 0.3)
-                                    : _millbrook.withValues(alpha: 0.1),
-                                width: 1,
+                                    ? _highland.withValues(alpha: 0.12)
+                                    : _ecruWhite,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: selecionado
+                                      ? _highland.withValues(alpha: 0.3)
+                                      : _millbrook.withValues(alpha: 0.1),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.collections_bookmark_outlined,
+                                size: 18,
+                                color: selecionado ? _highland : _shadow,
                               ),
                             ),
-                            child: Icon(
-                              colecao.icone,
-                              size: 18,
-                              color: selecionado ? _highland : _shadow,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  colecao.nome,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: selecionado ? _highland : _millbrook,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    colecao.name,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: selecionado
+                                          ? _highland
+                                          : _millbrook,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '${colecao.qtd} livros',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: _shadow,
+                                  Text(
+                                    '${colecao.books.length} livros',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: _shadow,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
-                            width: 22,
-                            height: 22,
-                            decoration: BoxDecoration(
-                              color: selecionado
-                                  ? _highland
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(99),
-                              border: Border.all(
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              width: 22,
+                              height: 22,
+                              decoration: BoxDecoration(
                                 color: selecionado
                                     ? _highland
-                                    : _millbrook.withValues(alpha: 0.2),
-                                width: 1.5,
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(99),
+                                border: Border.all(
+                                  color: selecionado
+                                      ? _highland
+                                      : _millbrook.withValues(alpha: 0.2),
+                                  width: 1.5,
+                                ),
                               ),
+                              child: selecionado
+                                  ? const Icon(
+                                      Icons.check_rounded,
+                                      size: 13,
+                                      color: Colors.white,
+                                    )
+                                  : null,
                             ),
-                            child: selecionado
-                                ? const Icon(
-                                    Icons.check_rounded,
-                                    size: 13,
-                                    color: Colors.white,
-                                  )
-                                : null,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            }),
+                  ],
+                );
+              }),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
               child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
+                onTap: _salvando ? null : _confirmar,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
                   height: 44,
                   decoration: BoxDecoration(
-                    color: _highland,
+                    color: _salvando
+                        ? _highland.withValues(alpha: 0.5)
+                        : _highland,
                     borderRadius: BorderRadius.circular(99),
                   ),
                   alignment: Alignment.center,
-                  child: const Text(
-                    'Confirmar',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: _salvando
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Confirmar',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -1106,12 +1224,4 @@ class _ModalColecoesState extends State<_ModalColecoes> {
       ),
     );
   }
-}
-
-class _Colecao {
-  final String nome;
-  final IconData icone;
-  final int qtd;
-
-  const _Colecao({required this.nome, required this.icone, required this.qtd});
 }
