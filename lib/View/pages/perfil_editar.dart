@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
+import 'package:projeto_mobile/View/widgets/avatar_selector.dart';
 import 'package:projeto_mobile/View/widgets/primary_button.dart';
 import 'package:projeto_mobile/View/widgets/text_field.dart';
 import 'package:projeto_mobile/View/widgets/colecao_form_widgets.dart';
@@ -22,11 +23,11 @@ class _PerfilEditarState extends State<PerfilEditar> {
   final _novaSenhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
   bool _salvando = false;
+  int? _avatarSelecionado;
 
   bool get _senhasValidas {
     if (_novaSenhaController.text.isEmpty) return true;
     return _novaSenhaController.text == _confirmarSenhaController.text;
-    //_novaSenhaController.text.length >= 4;
   }
 
   bool get _podeSalvar =>
@@ -42,6 +43,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
     final usuario = TokenConfig.usuario;
     _nomeController.text = usuario?.nome ?? '';
     _emailController.text = usuario?.email ?? '';
+    _avatarSelecionado = usuario?.avatarId;
 
     _nomeController.addListener(() => setState(() {}));
     _emailController.addListener(() => setState(() {}));
@@ -65,9 +67,9 @@ class _PerfilEditarState extends State<PerfilEditar> {
 
     if (_novaSenhaController.text.isNotEmpty &&
         _novaSenhaController.text != _confirmarSenhaController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('As senhas não coincidem')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('As senhas não coincidem')),
+      );
       return;
     }
 
@@ -82,6 +84,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
         newPassword: _novaSenhaController.text.isNotEmpty
             ? _novaSenhaController.text
             : null,
+        avatarId: _avatarSelecionado,
       );
 
       TokenConfig.usuario = usuarioAtualizado;
@@ -119,15 +122,12 @@ class _PerfilEditarState extends State<PerfilEditar> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Center(
-              child: CircleAvatar(
-                radius: 40,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                child: Icon(Icons.person, size: 40, color: AppColors.clube),
-              ),
+            AvatarSelector(
+              selectedAvatarId: _avatarSelecionado,
+              onSelected: (id) => setState(() => _avatarSelecionado = id),
             ),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             CardSection(
               child: Column(
@@ -137,14 +137,14 @@ class _PerfilEditarState extends State<PerfilEditar> {
                     texto: 'Informações Pessoais',
                     cor: Theme.of(context).colorScheme.tertiary,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   BooklyTextField(
                     label: 'Nome completo',
                     hintText: 'Seu nome',
                     controller: _nomeController,
                     showBorder: true,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   BooklyTextField(
                     label: 'Email',
                     hintText: 'seu@email.com',
@@ -156,24 +156,25 @@ class _PerfilEditarState extends State<PerfilEditar> {
               ),
             ),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             CardSection(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SectionLabel(texto: 'Senha', cor: AppColors.perfil),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'Informe sua senha atual para confirmar as mudanças. Preencha os campos abaixo apenas se quiser trocá-la.',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.tertiary.withOpacity(0.7),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .tertiary
+                          .withOpacity(0.7),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   BooklyTextField(
                     label: 'Senha atual *',
                     hintText: 'Senha atual',
@@ -181,7 +182,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
                     obscureText: true,
                     showBorder: true,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   BooklyTextField(
                     label: 'Nova senha',
                     hintText: 'Nova senha (opcional)',
@@ -189,7 +190,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
                     obscureText: true,
                     showBorder: true,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   BooklyTextField(
                     label: 'Confirmar nova senha',
                     hintText: 'Repita a nova senha',
@@ -201,7 +202,7 @@ class _PerfilEditarState extends State<PerfilEditar> {
               ),
             ),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             PrimaryButton(
               label: _salvando ? 'Salvando...' : 'Salvar alterações',

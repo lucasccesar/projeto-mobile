@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_mobile/View/pages/perfil_editar.dart';
+import 'package:projeto_mobile/View/widgets/user_avatar.dart';
 import 'package:projeto_mobile/config/app_colors.dart';
+import 'package:projeto_mobile/config/token_config.dart';
 
 class PerfilCardWidget extends StatelessWidget {
   final String nome;
   final String email;
-  //final String livros;
   final String clubes;
   final VoidCallback? onEditarVoltar;
 
@@ -13,13 +14,14 @@ class PerfilCardWidget extends StatelessWidget {
     super.key,
     required this.nome,
     required this.email,
-    //required this.livros,
     required this.clubes,
     this.onEditarVoltar,
   });
 
   @override
   Widget build(BuildContext context) {
+    final avatarId = TokenConfig.usuario?.avatarId;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -29,16 +31,16 @@ class PerfilCardWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Avatar
-          CircleAvatar(
+          UserAvatar(
+            avatarId: avatarId,
+            nome: nome,
             radius: 30,
             backgroundColor: AppColors.perfil.withOpacity(0.3),
-            child: Icon(Icons.person, size: 32, color: AppColors.clube),
+            textColor: AppColors.clube,
           ),
 
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
 
-          //infos do usuario
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +53,7 @@ class PerfilCardWidget extends StatelessWidget {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
                   email,
                   style: TextStyle(
@@ -59,38 +61,16 @@ class PerfilCardWidget extends StatelessWidget {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Row(
                   children: [
-                    // Icon(
-                    //   Icons.library_books_outlined,
-                    //   size: 15,
-                    //   color: AppColors.catalogo,
-                    //   fontWeight: FontWeight.bold,
-                    // ),
-
-                    //SizedBox(width: 4),
-
-                    // Text(
-                    //   '$livros livros',
-                    //   style: TextStyle(
-                    //     fontSize: 13,
-                    //     color: AppColors.catalogo,
-                    //     fontWeight: FontWeight.bold,
-                    //   ),
-                    // ),
-
-                    //SizedBox(width: 12),
-
                     Icon(
                       Icons.group,
                       size: 15,
                       color: AppColors.clube,
                       fontWeight: FontWeight.bold,
                     ),
-
-                    SizedBox(width: 4),
-
+                    const SizedBox(width: 4),
                     Text(
                       '$clubes clubes',
                       style: TextStyle(
@@ -105,7 +85,6 @@ class PerfilCardWidget extends StatelessWidget {
             ),
           ),
 
-          //botao editar
           TextButton(
             onPressed: () {
               Navigator.push(

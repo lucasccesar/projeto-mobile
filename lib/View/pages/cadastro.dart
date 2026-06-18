@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projeto_mobile/services/auth_service.dart';
+import 'package:projeto_mobile/View/widgets/avatar_selector.dart';
 import '../widgets/logo.dart';
 import '../widgets/text_field.dart';
 import '../widgets/primary_button.dart';
@@ -25,6 +26,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
   bool _senhaVisivel = false;
   bool _confirmarSenhaVisivel = false;
   bool _carregando = false;
+  int? _avatarSelecionado;
 
   @override
   void dispose() {
@@ -75,6 +77,10 @@ class _CriarContaPageState extends State<CriarContaPage> {
       _mostrarErro('As senhas não coincidem');
       return;
     }
+    if (_avatarSelecionado == null) {
+      _mostrarErro('Selecione uma foto de perfil');
+      return;
+    }
 
     setState(() => _carregando = true);
     try {
@@ -84,6 +90,7 @@ class _CriarContaPageState extends State<CriarContaPage> {
         senha: senha,
         nascimento: nascimento,
         adminCode: _adminCodeController.text.trim(),
+        avatarId: _avatarSelecionado,
       );
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
@@ -105,7 +112,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
     );
   }
 
-  /// Converte "dd/mm/aaaa" em DateTime; retorna null se a data for inválida.
   DateTime? _parseData(String texto) {
     final partes = texto.split('/');
     if (partes.length != 3) return null;
@@ -114,7 +120,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
     final ano = int.tryParse(partes[2]);
     if (dia == null || mes == null || ano == null) return null;
     final data = DateTime(ano, mes, dia);
-    // rejeita datas impossíveis (ex.: 31/02) e datas futuras
     if (data.year != ano || data.month != mes || data.day != dia) return null;
     if (data.isAfter(DateTime.now())) return null;
     return data;
@@ -154,6 +159,12 @@ class _CriarContaPageState extends State<CriarContaPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      AvatarSelector(
+                        selectedAvatarId: _avatarSelecionado,
+                        onSelected: (id) =>
+                            setState(() => _avatarSelecionado = id),
+                      ),
+                      const SizedBox(height: 16),
                       BooklyTextField(
                         label: 'NOME COMPLETO*',
                         hintText: 'Nome completo',
@@ -194,7 +205,8 @@ class _CriarContaPageState extends State<CriarContaPage> {
                             color: const Color(0xFFAAAAAA),
                             size: 20,
                           ),
-                          onPressed: () => setState(() => _senhaVisivel = !_senhaVisivel),
+                          onPressed: () =>
+                              setState(() => _senhaVisivel = !_senhaVisivel),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -205,11 +217,14 @@ class _CriarContaPageState extends State<CriarContaPage> {
                         obscureText: !_confirmarSenhaVisivel,
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _confirmarSenhaVisivel ? Icons.visibility_off : Icons.visibility,
+                            _confirmarSenhaVisivel
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                             color: const Color(0xFFAAAAAA),
                             size: 20,
                           ),
-                          onPressed: () => setState(() => _confirmarSenhaVisivel = !_confirmarSenhaVisivel),
+                          onPressed: () => setState(
+                              () => _confirmarSenhaVisivel = !_confirmarSenhaVisivel),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -242,7 +257,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
   }
 }
 
-/// Formata a digitação como dd/mm/aaaa, inserindo as barras automaticamente.
 class _DataInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

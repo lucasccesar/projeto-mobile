@@ -14,6 +14,7 @@ import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
 import 'package:projeto_mobile/View/pages/editar_livro_page.dart';
 import 'package:projeto_mobile/View/widgets/capa_widget.dart';
 import 'package:projeto_mobile/View/pages/avaliar_livro_page.dart';
+import 'package:projeto_mobile/View/widgets/user_avatar.dart';
 
 class BookPage extends StatefulWidget {
   final Book livro;
@@ -41,6 +42,7 @@ class _BookPageState extends State<BookPage> {
   List<Rating> _avaliacoes = [];
   double _mediaAvaliacoes = 0;
   final Map<String, String> _nomesUsuarios = {};
+  final Map<String, int?> _avatarIds = {};
 
   static const _statusOpcoes = ['Quero Ler', 'Lendo', 'Lido'];
 
@@ -117,7 +119,7 @@ class _BookPageState extends State<BookPage> {
         _carregandoAvaliacoes = false;
       });
 
-      await _resolverNomesAvaliacoes(avaliacoes);
+      await _resolverDadosAvaliacoes(avaliacoes);
     } catch (_) {
       if (!mounted) return;
 
@@ -129,7 +131,7 @@ class _BookPageState extends State<BookPage> {
     }
   }
 
-  Future<void> _resolverNomesAvaliacoes(List<Rating> avaliacoes) async {
+  Future<void> _resolverDadosAvaliacoes(List<Rating> avaliacoes) async {
     final usuarioAtual = TokenConfig.usuario;
     final idsParaBuscar = avaliacoes
         .map((r) => r.userId)
@@ -140,10 +142,9 @@ class _BookPageState extends State<BookPage> {
 
     final futures = idsParaBuscar.map((id) async {
       if (usuarioAtual != null && usuarioAtual.id == id) {
-        return MapEntry(id, usuarioAtual.nome);
+        return MapEntry(id, usuarioAtual);
       }
-      final nome = await _usuarioService.buscarPorId(id);
-      return MapEntry(id, nome);
+      return MapEntry(id, await _usuarioService.fetchUsuario(id));
     });
 
     final entradas = await Future.wait(futures);
@@ -152,7 +153,14 @@ class _BookPageState extends State<BookPage> {
 
     setState(() {
       for (final entrada in entradas) {
-        _nomesUsuarios[entrada.key] = entrada.value;
+        final usuario = entrada.value;
+        if (usuario != null) {
+          _nomesUsuarios[entrada.key] = usuario.nome;
+          _avatarIds[entrada.key] = usuario.avatarId;
+        } else {
+          _nomesUsuarios[entrada.key] = 'Leitor';
+          _avatarIds[entrada.key] = null;
+        }
       }
     });
   }
@@ -433,14 +441,13 @@ class _BookPageState extends State<BookPage> {
     return 'Leitor';
   }
 
-  String _iniciaisDoNome(String nome) {
-    final partes = nome.trim().split(RegExp(r'\s+'));
-    if (partes.length >= 2) {
-      return '${partes[0][0]}${partes[1][0]}'.toUpperCase();
+  int? _avatarIdDoAutor(String userId) {
+    if (_avatarIds.containsKey(userId)) return _avatarIds[userId];
+    final usuarioAtual = TokenConfig.usuario;
+    if (usuarioAtual != null && usuarioAtual.id == userId) {
+      return usuarioAtual.avatarId;
     }
-    if (nome.length >= 2) return nome.substring(0, 2).toUpperCase();
-    if (nome.isNotEmpty) return nome[0].toUpperCase();
-    return 'U';
+    return null;
   }
 
   String _dataFormatada(DateTime? data) {
@@ -911,7 +918,7 @@ class _BookPageState extends State<BookPage> {
 
   Widget _buildCardComentario(Rating rating) {
     final nome = _nomeDoAutor(rating.userId);
-    final iniciais = _iniciaisDoNome(nome);
+    final avatarId = _avatarIdDoAutor(rating.userId);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -926,26 +933,12 @@ class _BookPageState extends State<BookPage> {
         children: [
           Row(
             children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: _highland.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(99),
-                  border: Border.all(
-                    color: _highland.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  iniciais,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: _highland,
-                  ),
-                ),
+              UserAvatar(
+                avatarId: avatarId,
+                nome: nome,
+                radius: 17,
+                backgroundColor: _highland.withValues(alpha: 0.12),
+                textColor: _highland,
               ),
               const SizedBox(width: 10),
               Expanded(

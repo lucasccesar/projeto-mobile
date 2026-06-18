@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:projeto_mobile/config/token_config.dart';
 import 'package:projeto_mobile/config/url_config.dart';
@@ -7,11 +8,24 @@ import 'package:projeto_mobile/models/usuario.dart';
 class UsuarioService {
   final url = ApiConfig.baseUrl;
 
-  static final Map<String, String> _cache = {};
+  static final Map<String, String> _cacheNomes = {};
+  static final Map<String, int?> _cacheAvatarId = {};
 
   Future<String> fetchNome(String userId) async {
-    if (_cache.containsKey(userId)) return _cache[userId]!;
+    if (_cacheNomes.containsKey(userId)) return _cacheNomes[userId]!;
 
+    final usuario = await fetchUsuario(userId);
+    return usuario?.nome ?? 'Usuário';
+  }
+
+  Future<int?> fetchAvatarId(String userId) async {
+    if (_cacheAvatarId.containsKey(userId)) return _cacheAvatarId[userId];
+
+    final usuario = await fetchUsuario(userId);
+    return usuario?.avatarId;
+  }
+
+  Future<Usuario?> fetchUsuario(String userId) async {
     final response = await http.get(
       Uri.parse('$url/api/users/$userId'),
       headers: {
@@ -23,11 +37,12 @@ class UsuarioService {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       final nome = json['name']?.toString() ?? 'Usuário';
-      _cache[userId] = nome;
-      return nome;
-    } else {
-      return 'Usuário';
+      final avatarId = json['avatarId'] as int?;
+      _cacheNomes[userId] = nome;
+      _cacheAvatarId[userId] = avatarId;
+      return Usuario.fromJson(json);
     }
+    return null;
   }
 
   Future<String> buscarPorId(String userId) => fetchNome(userId);
@@ -38,6 +53,7 @@ class UsuarioService {
     required String email,
     required String currentPassword,
     String? newPassword,
+    int? avatarId,
   }) async {
     final response = await http.put(
       Uri.parse('$url/api/users/$id'),
@@ -50,6 +66,7 @@ class UsuarioService {
         'email': email,
         'currentPassword': currentPassword,
         'newPassword': newPassword ?? '',
+        if (avatarId != null) 'avatarId': avatarId,
       }),
     );
 

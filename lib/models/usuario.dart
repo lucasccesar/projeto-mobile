@@ -3,9 +3,8 @@ class Usuario {
   final String nome;
   final String email;
   final DateTime? nascimento;
-
-
   final String? tipo;
+  final int? avatarId;
 
   const Usuario({
     required this.id,
@@ -13,8 +12,8 @@ class Usuario {
     required this.email,
     this.nascimento,
     this.tipo,
+    this.avatarId,
   });
-
 
   bool get isAdmin {
     final role = tipo?.trim().toUpperCase();
@@ -33,6 +32,7 @@ class Usuario {
       email: json['email']?.toString() ?? '',
       nascimento: _parseData(json['birthday']),
       tipo: (tipo != null && tipo.isNotEmpty) ? tipo : null,
+      avatarId: json['avatarId'] as int?,
     );
   }
 
@@ -41,6 +41,7 @@ class Usuario {
         'email': email,
         if (nascimento != null) 'birthday': _formatData(nascimento!),
         if (tipo != null) 'type': tipo,
+        if (avatarId != null) 'avatarId': avatarId,
       };
 
   Usuario copyWith({
@@ -49,6 +50,7 @@ class Usuario {
     String? email,
     DateTime? nascimento,
     String? tipo,
+    int? avatarId,
   }) {
     return Usuario(
       id: id ?? this.id,
@@ -56,16 +58,15 @@ class Usuario {
       email: email ?? this.email,
       nascimento: nascimento ?? this.nascimento,
       tipo: tipo ?? this.tipo,
+      avatarId: avatarId ?? this.avatarId,
     );
   }
-
 
   static DateTime? _parseData(dynamic valor) {
     if (valor == null) return null;
     if (valor is DateTime) return valor;
     return DateTime.tryParse(valor.toString());
   }
-
 
   static String _formatData(DateTime data) {
     return '${data.year.toString().padLeft(4, '0')}-'

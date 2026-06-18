@@ -58,6 +58,7 @@ class AuthService {
     required String senha,
     required DateTime nascimento,
     String? adminCode,
+    int? avatarId,
   }) async {
     final birthday =
         '${nascimento.year.toString().padLeft(4, '0')}-'
@@ -73,6 +74,7 @@ class AuthService {
         'password': senha,
         'birthday': birthday,
         if (adminCode != null && adminCode.isNotEmpty) 'adminCode': adminCode,
+        if (avatarId != null) 'avatarId': avatarId,
       }),
     );
 
