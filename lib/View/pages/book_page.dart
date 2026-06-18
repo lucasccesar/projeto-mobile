@@ -6,6 +6,7 @@ import 'package:projeto_mobile/models/colecao.dart';
 import 'package:projeto_mobile/models/rating.dart';
 import 'package:projeto_mobile/models/reading_status.dart';
 import 'package:projeto_mobile/services/colecao_service.dart';
+import 'package:projeto_mobile/services/favorito_service.dart';
 import 'package:projeto_mobile/services/rating_service.dart';
 import 'package:projeto_mobile/services/reading_status_service.dart';
 import 'package:projeto_mobile/View/widgets/appbar_widget.dart';
@@ -25,9 +26,12 @@ class BookPage extends StatefulWidget {
 
 class _BookPageState extends State<BookPage> {
   bool _favoritado = false;
+  bool _carregandoFavorito = true;
+  bool _salvandoFavorito = false;
   String? _statusLeitura;
   final ReadingStatusService _readingStatusService = ReadingStatusService();
   final RatingService _ratingService = RatingService();
+  final FavoritoService _favoritoService = FavoritoService();
   ReadingStatus? _readingStatusAtual;
   bool _carregandoStatus = true;
   bool _salvandoStatus = false;
@@ -49,6 +53,7 @@ class _BookPageState extends State<BookPage> {
     super.initState();
     _carregarStatusLeitura();
     _carregarAvaliacoes();
+    _carregarFavorito();
   }
 
   void _abrirModalColecoes() {
@@ -114,6 +119,80 @@ class _BookPageState extends State<BookPage> {
         _mediaAvaliacoes = 0;
         _carregandoAvaliacoes = false;
       });
+    }
+  }
+
+  Future<void> _carregarFavorito() async {
+    final userId = TokenConfig.userId;
+    if (userId == null || userId.isEmpty) {
+      if (!mounted) return;
+      setState(() => _carregandoFavorito = false);
+      return;
+    }
+
+    try {
+      final favoritado = await _favoritoService.isFavoritado(widget.livro.id);
+      if (!mounted) return;
+      setState(() {
+        _favoritado = favoritado;
+        _carregandoFavorito = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _carregandoFavorito = false);
+    }
+  }
+
+  Future<void> _toggleFavorito() async {
+    final userId = TokenConfig.userId;
+    if (userId == null || userId.isEmpty) return;
+    if (_salvandoFavorito) return;
+
+    setState(() => _salvandoFavorito = true);
+
+    try {
+      bool novoEstado;
+      if (_favoritado) {
+        novoEstado = await _favoritoService.desfavoritar(widget.livro);
+      } else {
+        novoEstado = await _favoritoService.favoritar(widget.livro);
+      }
+
+      if (!mounted) return;
+      setState(() => _favoritado = novoEstado);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            novoEstado ? 'Adicionado aos favoritos' : 'Removido dos favoritos',
+            style: const TextStyle(fontSize: 13),
+          ),
+          backgroundColor: _fuzzyWuzzy,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString().replaceFirst('Exception: ', ''),
+            style: const TextStyle(fontSize: 13),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() => _salvandoFavorito = false);
     }
   }
 
@@ -690,13 +769,7 @@ class _BookPageState extends State<BookPage> {
             ),
           ),
           const SizedBox(width: 8),
-          _buildBotaoIcone(
-            onTap: () => setState(() => _favoritado = !_favoritado),
-            icon: _favoritado
-                ? Icons.favorite_rounded
-                : Icons.favorite_border_rounded,
-            iconColor: _fuzzyWuzzy,
-          ),
+          _buildBotaoFavorito(),
           const SizedBox(width: 8),
           _buildBotaoIcone(
             onTap: _abrirModalColecoes,
@@ -705,6 +778,41 @@ class _BookPageState extends State<BookPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBotaoFavorito() {
+    if (_carregandoFavorito) {
+      return Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: _ecruWhite,
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(
+            color: _millbrook.withValues(alpha: 0.15),
+            width: 1,
+          ),
+        ),
+        child: const SizedBox(
+          width: 16,
+          height: 16,
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      );
+    }
+
+    return _buildBotaoIcone(
+      onTap: _salvandoFavorito ? () {} : _toggleFavorito,
+      icon: _salvandoFavorito
+          ? Icons.favorite_border_rounded
+          : (_favoritado
+              ? Icons.favorite_rounded
+              : Icons.favorite_border_rounded),
+      iconColor: _fuzzyWuzzy,
     );
   }
 
