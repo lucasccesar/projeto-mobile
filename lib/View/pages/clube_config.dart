@@ -215,32 +215,31 @@ class _ClubeConfigState extends State<ClubeConfig> {
   }
 
   Future<void> _adicionarLivros() async {
-    if (_livrosSelecionados.isEmpty) return;
+  if (_livrosSelecionados.isEmpty) return;
 
-    try {
-      await Future.wait(
-        _livrosSelecionados.map(
-          (bookId) => _assignmentService.addBookToClub(
-            clubId: widget.clube.id,
-            bookId: bookId,
-          ),
-        ),
+  try {
+    
+    for (final bookId in _livrosSelecionados) {
+      await _assignmentService.addBookToClub(
+        clubId: widget.clube.id,
+        bookId: bookId,
       );
-
-      setState(() {
-        _livrosDoClube.addAll(_livrosSelecionados);
-        _livrosSelecionados.clear();
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Livros adicionados com sucesso!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Erro ao adicionar livros')));
     }
+
+    setState(() {
+      _livrosDoClube.addAll(_livrosSelecionados);
+      _livrosSelecionados.clear();
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Livros adicionados com sucesso!')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Erro ao adicionar livros')),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
