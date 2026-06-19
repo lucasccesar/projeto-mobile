@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:projeto_mobile/services/auth_service.dart';
 import 'package:projeto_mobile/View/widgets/avatar_selector.dart';
 import '../widgets/logo.dart';
@@ -20,7 +19,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
-  final _nascimentoController = TextEditingController();
   final _adminCodeController = TextEditingController();
   final _authService = AuthService();
   bool _senhaVisivel = false;
@@ -34,28 +32,8 @@ class _CriarContaPageState extends State<CriarContaPage> {
     _emailController.dispose();
     _senhaController.dispose();
     _confirmarSenhaController.dispose();
-    _nascimentoController.dispose();
     _adminCodeController.dispose();
     super.dispose();
-  }
-
-  Future<void> _selecionarNascimento() async {
-    final agora = DateTime.now();
-    final data = await showDatePicker(
-      context: context,
-      initialDate: _parseData(_nascimentoController.text) ??
-          DateTime(agora.year - 18, agora.month, agora.day),
-      firstDate: DateTime(1900),
-      lastDate: agora,
-      helpText: 'Data de nascimento',
-      cancelText: 'Cancelar',
-      confirmText: 'Confirmar',
-    );
-    if (data != null) {
-      _nascimentoController.text =
-          '${data.day.toString().padLeft(2, '0')}/'
-          '${data.month.toString().padLeft(2, '0')}/${data.year}';
-    }
   }
 
   Future<void> _criarConta() async {
@@ -66,11 +44,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
 
     if (nome.isEmpty || email.isEmpty || senha.isEmpty) {
       _mostrarErro('Preencha todos os campos');
-      return;
-    }
-    final nascimento = _parseData(_nascimentoController.text);
-    if (nascimento == null) {
-      _mostrarErro('Data de nascimento inválida (use dd/mm/aaaa)');
       return;
     }
     if (senha != confirmar) {
@@ -88,7 +61,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
         nome: nome,
         email: email,
         senha: senha,
-        nascimento: nascimento,
         adminCode: _adminCodeController.text.trim(),
         avatarId: _avatarSelecionado,
       );
@@ -110,19 +82,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(mensagem), backgroundColor: Colors.red),
     );
-  }
-
-  DateTime? _parseData(String texto) {
-    final partes = texto.split('/');
-    if (partes.length != 3) return null;
-    final dia = int.tryParse(partes[0]);
-    final mes = int.tryParse(partes[1]);
-    final ano = int.tryParse(partes[2]);
-    if (dia == null || mes == null || ano == null) return null;
-    final data = DateTime(ano, mes, dia);
-    if (data.year != ano || data.month != mes || data.day != dia) return null;
-    if (data.isAfter(DateTime.now())) return null;
-    return data;
   }
 
   @override
@@ -176,22 +135,6 @@ class _CriarContaPageState extends State<CriarContaPage> {
                         hintText: 'seu@email.com',
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 16),
-                      BooklyTextField(
-                        label: 'DATA DE NASCIMENTO*',
-                        hintText: 'dd/mm/aaaa',
-                        controller: _nascimentoController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [_DataInputFormatter()],
-                        suffixIcon: IconButton(
-                          icon: const Icon(
-                            Icons.calendar_today,
-                            color: Color(0xFFAAAAAA),
-                            size: 20,
-                          ),
-                          onPressed: _selecionarNascimento,
-                        ),
                       ),
                       const SizedBox(height: 16),
                       BooklyTextField(
@@ -257,22 +200,3 @@ class _CriarContaPageState extends State<CriarContaPage> {
   }
 }
 
-class _DataInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final digitos = newValue.text.replaceAll(RegExp(r'\D'), '');
-    final buffer = StringBuffer();
-    for (var i = 0; i < digitos.length && i < 8; i++) {
-      if (i == 2 || i == 4) buffer.write('/');
-      buffer.write(digitos[i]);
-    }
-    final texto = buffer.toString();
-    return TextEditingValue(
-      text: texto,
-      selection: TextSelection.collapsed(offset: texto.length),
-    );
-  }
-}

@@ -56,15 +56,9 @@ class AuthService {
     required String nome,
     required String email,
     required String senha,
-    required DateTime nascimento,
     String? adminCode,
     int? avatarId,
   }) async {
-    final birthday =
-        '${nascimento.year.toString().padLeft(4, '0')}-'
-        '${nascimento.month.toString().padLeft(2, '0')}-'
-        '${nascimento.day.toString().padLeft(2, '0')}';
-
     final response = await http.post(
       Uri.parse('$url/api/auth/register'),
       headers: {'Content-Type': 'application/json'},
@@ -72,7 +66,6 @@ class AuthService {
         'name': nome,
         'email': email,
         'password': senha,
-        'birthday': birthday,
         if (adminCode != null && adminCode.isNotEmpty) 'adminCode': adminCode,
         if (avatarId != null) 'avatarId': avatarId,
       }),
